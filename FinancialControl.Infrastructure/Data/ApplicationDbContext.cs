@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using FinancialControl.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace FinancialControl.Infrastructure.Data
 {
@@ -6,7 +7,8 @@ namespace FinancialControl.Infrastructure.Data
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
-            
         }
+
+        public DbSet<User> Users { get; set; }
     }
 }
