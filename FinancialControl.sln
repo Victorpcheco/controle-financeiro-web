@@ -3,7 +3,48 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.13.35919.96 d17.13
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Itens de Solução", "Itens de Solução", "{380A7511-A354-6D7A-0CC0-8FA1F1BA7B6C}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinancialControl.Domain", "FinancialControl.Domain\FinancialControl.Domain.csproj", "{42758C96-F58C-4ED1-8DB8-C6CFA6B2F778}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinancialControl.Application", "FinancialControl.Application\FinancialControl.Application.csproj", "{D50A81EA-4B78-4762-949C-47C6039CBE7D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinancialControl.Infrastructure", "FinancialControl.Infrastructure\FinancialControl.Infrastructure.csproj", "{49E28476-F468-44EF-BD05-B978A68AFA88}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinancialControl.API", "FinancialControl.API\FinancialControl.API.csproj", "{0EE2679C-C133-411D-991A-C8977269CD88}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinancialControl.Tests", "FinancialControl.Tests\FinancialControl.Tests.csproj", "{942BB056-F692-42C5-BE98-64BEE6F1AA3C}"
+EndProject
 Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{42758C96-F58C-4ED1-8DB8-C6CFA6B2F778}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{42758C96-F58C-4ED1-8DB8-C6CFA6B2F778}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{42758C96-F58C-4ED1-8DB8-C6CFA6B2F778}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{42758C96-F58C-4ED1-8DB8-C6CFA6B2F778}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D50A81EA-4B78-4762-949C-47C6039CBE7D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D50A81EA-4B78-4762-949C-47C6039CBE7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D50A81EA-4B78-4762-949C-47C6039CBE7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D50A81EA-4B78-4762-949C-47C6039CBE7D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49E28476-F468-44EF-BD05-B978A68AFA88}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49E28476-F468-44EF-BD05-B978A68AFA88}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49E28476-F468-44EF-BD05-B978A68AFA88}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49E28476-F468-44EF-BD05-B978A68AFA88}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0EE2679C-C133-411D-991A-C8977269CD88}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0EE2679C-C133-411D-991A-C8977269CD88}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0EE2679C-C133-411D-991A-C8977269CD88}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0EE2679C-C133-411D-991A-C8977269CD88}.Release|Any CPU.Build.0 = Release|Any CPU
+		{942BB056-F692-42C5-BE98-64BEE6F1AA3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{942BB056-F692-42C5-BE98-64BEE6F1AA3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{942BB056-F692-42C5-BE98-64BEE6F1AA3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{942BB056-F692-42C5-BE98-64BEE6F1AA3C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
