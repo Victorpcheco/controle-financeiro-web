@@ -1,5 +1,4 @@
-﻿
-using System.IdentityModel.Tokens.Jwt;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
@@ -72,16 +71,5 @@ namespace FinancialControl.Infrastructure.Authentication
             }
             return Convert.ToBase64String(randomNumber);
         }
-
-
-
-
-
-
-
-
-
-
-
     }
 }

@@ -13,19 +13,22 @@ namespace FinancialControl.Domain.Entities
 
         public User() { }
 
-        public User(string nomeCompleto, string email, string senhaHash)
+        public User(string nomeCompleto, string email, string senhaHash, string refreshToken, DateTime expiration)
         {
             NomeCompleto = nomeCompleto;
             Email = email;
             SenhaHash = senhaHash;
+            RefreshToken = refreshToken;
+            RefreshTokenExpiracao = expiration;
         }
 
-        public static User Criar(string nomeCompleto, string email, string senhaHash)
+        public static User Criar(string nomeCompleto, string email, string senha, string refreshToken, DateTime expiration)
         {
             ValidarNomeCompleto(nomeCompleto);
             ValidarEmail(email);
-            ValidarSenha(senhaHash);
-            return new User(nomeCompleto, email, senhaHash);
+            var senhaHash = CriarSenha(senha);
+
+            return new User(nomeCompleto, email, senhaHash, refreshToken, expiration);
         }
 
         private static void ValidarNomeCompleto(string nomeCompelto)
@@ -61,6 +64,12 @@ namespace FinancialControl.Domain.Entities
             var regex = new System.Text.RegularExpressions.Regex(@"^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$");
             if (!regex.IsMatch(senha))
                 throw new ArgumentException("Senha deve conter pelo menos uma letra maiúscula, um número e um caractere especial.");
+        }
+
+        private static string CriarSenha(string senha)
+        {
+            ValidarSenha(senha);
+            return BCrypt.Net.BCrypt.HashPassword(senha);
         }
     }
 }

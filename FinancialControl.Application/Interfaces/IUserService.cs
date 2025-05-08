@@ -1,11 +1,10 @@
 ﻿
-using FinancialControl.Domain.Entities;
+using FinancialControl.Application.DTOs;
 
 namespace FinancialControl.Application.Interfaces
 {
     public interface IUserService
     {
-        public string GenerateToken(User user);
-        public string GenerateRefreshToken();
+        Task<(string token, string refreshToken)> RegisterUserAsync(UserRegisterDto dto);
     }
 }
