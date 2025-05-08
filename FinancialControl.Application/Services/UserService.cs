@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using FinancialControl.Application.Core.Utilities;
 using FinancialControl.Application.DTOs;
 using FinancialControl.Application.Interfaces;
 using FinancialControl.Domain.Entities;
@@ -30,15 +29,16 @@ namespace FinancialControl.Application.Services
             if (!resultValidation.IsValid)
                 throw new ValidationException(resultValidation.Errors);
 
-            var userExisting = await _userRepository.UserExistsAsync(dto.Email);
-            if (userExisting != null)
-                Result.Error("Usuário já cadastrado no sistema!");
-
             var userMapper = _mapper.Map<User>(dto);
+
             var jwtToken = _jwtTokenService.GenerateToken(userMapper);
             var refreshToken = _jwtTokenService.GenerateRefreshToken();
             var expiration = DateTime.Now.AddDays(RefreshTokenExpirationDays);
-            
+
+            var userExisting = await _userRepository.UserExistsAsync(dto.Email);
+            if (userExisting != null)
+                throw new ArgumentException("Usuário já cadastrado no sistema.");
+
             var user = User.Criar(dto.NomeCompleto, dto.Email, dto.SenhaHash, refreshToken, expiration);
             await _userRepository.AddUserAsync(user);
 
