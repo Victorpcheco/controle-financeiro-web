@@ -10,6 +10,7 @@ namespace FinancialControl.Application.Mapping
         public UserProfile()
         {
             CreateMap<UserRegisterDto, User>();
+            CreateMap<UserLoginDto, User>();
         }
     }
 }

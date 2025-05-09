@@ -27,5 +27,14 @@ namespace FinancialControl.Infrastructure.Repositories
             await _context.SaveChangesAsync();
         }
 
+        public async Task UpdateRefreshTokenAsync(User user, string refreshToken, DateTime expiration)
+        {
+            await _context.Users
+                .Where(u => u.Email == user.Email)
+                .ExecuteUpdateAsync(u => u.SetProperty(x => x.RefreshToken, refreshToken)
+                    .SetProperty(x => x.RefreshTokenExpiracao, expiration));
+            await _context.SaveChangesAsync();
+        }
+
     }
 }

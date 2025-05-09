@@ -7,5 +7,6 @@ namespace FinancialControl.Domain.Interfaces
     {
         Task<User?> UserExistsAsync(string email);
         Task AddUserAsync(User user);
+        Task UpdateRefreshTokenAsync(User user, string refreshToken, DateTime expiration);
     }
 }
