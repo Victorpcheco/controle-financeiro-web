@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const emailError = document.getElementById('email-error');
   const passwordError = document.getElementById('password-error');
   
-  // Check if user is already logged in
+  // // Check if user is already logged in
   if (localStorage.getItem('authToken')) {
     window.location.href = './dashboard.html';
   }

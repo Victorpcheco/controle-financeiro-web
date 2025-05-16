@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Financeiro</title>
+    <meta name="description" content="Dashboard para controle financeiro pessoal">
+    <meta name="author" content="FinDash">
+    
+    <meta property="og:title" content="Dashboard Financeiro">
+    <meta property="og:description" content="Dashboard para controle financeiro pessoal">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png">
+    
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@lovable_dev">
+    <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png">
+    
+    <link rel="stylesheet" href="../styles/dashboard.css">
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar">
+      <div class="container navbar-container">
+        <div class="navbar-logo">Meu Controle Financeiro</div>
+        
+        <button class="navbar-mobile-toggle" id="mobileMenuToggle">
+          <span class="menu-icon">☰</span>
+        </button>
+        
+        <ul class="navbar-menu">
+          <li class="navbar-item">
+            <a href="#" class="navbar-link">Visão Geral</a>
+          </li>
+          
+          <li class="navbar-item">
+            <a href="#" class="navbar-link">
+              Financeiro
+              <svg class="dropdown-icon" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </a>
+            <div class="navbar-dropdown">
+              <a href="#" class="dropdown-item">Despesas</a>
+              <a href="#" class="dropdown-item">Receitas</a>
+              <a href="#" class="dropdown-item">Relatórios</a>
+            </div>
+          </li>
+          
+          <li class="navbar-item">
+            <a href="#" class="navbar-link">
+              Mais
+              <svg class="dropdown-icon" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </a>
+            <div class="navbar-dropdown">
+              <a href="#" class="dropdown-item">Categorias</a>
+              <a href="#" class="dropdown-item">Contas Bancárias</a>
+              <a href="#" class="dropdown-item">Cartões de Crédito</a>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Mobile Menu -->
+      <div class="mobile-menu" id="mobileMenu">
+        <div class="mobile-menu-item">
+          <a href="#" class="mobile-menu-link">Visão Geral</a>
+        </div>
+        <div class="mobile-menu-item">
+          <div class="mobile-menu-category">Financeiro</div>
+          <div class="mobile-submenu">
+            <a href="#" class="mobile-submenu-link">Despesas</a>
+            <a href="#" class="mobile-submenu-link">Receitas</a>
+            <a href="#" class="mobile-submenu-link">Relatórios</a>
+          </div>
+        </div>
+        <div class="mobile-menu-item">
+          <div class="mobile-menu-category">Mais</div>
+          <div class="mobile-submenu">
+            <a href="#" class="mobile-submenu-link">Categorias</a>
+            <a href="#" class="mobile-submenu-link">Contas Bancárias</a>
+            <a href="#" class="mobile-submenu-link">Cartões de Crédito</a>
+          </div>
+        </div>
+      </div>
+    </nav>
+    
+    <!-- Content -->
+    <div class="container" id="mainContent">
+      <div class="page-header">
+        <h1 class="page-title">Dashboard Financeiro</h1>
+        <p class="page-subtitle">Acompanhe suas finanças em um só lugar</p>
+      </div>
+      
+      <!-- Summary Cards -->
+      <div class="cards-grid">
+        <!-- Saldo Total Card -->
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">Saldo Total</h2>
+            <button class="eye-button" id="toggleValues">
+              <svg class="eye-icon" id="eyeIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+              <svg class="eye-icon hidden" id="eyeSlashIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"></path>
+                <path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"></path>
+                <path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"></path>
+                <line x1="2" x2="22" y1="2" y2="22"></line>
+              </svg>
+            </button>
+          </div>
+          
+          <div id="accountSummary">
+            <div class="card-value" id="totalBalance">R$ 0,00</div>
+          </div>
+          
+          <div id="accountDetails" class="account-list hidden">
+            <!-- Account details will be populated by JS -->
+          </div>
+          
+          <button class="toggle-details" id="toggleAccountDetails">
+            Mostrar por conta
+          </button>
+        </div>
+        
+        <!-- Receitas a Vencer Card -->
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">Receitas a Vencer</h2>
+            <button class="eye-button toggle-eye">
+              <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+              <svg class="eye-icon hidden" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"></path>
+                <path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"></path>
+                <path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"></path>
+                <line x1="2" x2="22" y1="2" y2="22"></line>
+              </svg>
+            </button>
+          </div>
+          <div class="card-value value-success" id="pendingIncomes">R$ 0,00</div>
+        </div>
+        
+        <!-- Despesas a Vencer Card -->
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">Despesas a Vencer</h2>
+            <button class="eye-button toggle-eye">
+              <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+              <svg class="eye-icon hidden" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"></path>
+                <path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"></path>
+                <path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"></path>
+                <line x1="2" x2="22" y1="2" y2="22"></line>
+              </svg>
+            </button>
+          </div>
+          <div class="card-value value-destructive" id="pendingExpenses">R$ 0,00</div>
+        </div>
+      </div>
+      
+      <!-- Filter Section -->
+      <div class="filter-section">
+        <div class="filter-header">
+          <h2 class="filter-title">Transações</h2>
+          <button class="filter-toggle" id="toggleFilters">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path>
+            </svg>
+            Filtros
+          </button>
+        </div>
+        
+        <div class="filter-body" id="filterBody">
+          <div class="filter-group">
+            <label class="filter-label">Data Inicial</label>
+            <input type="date" class="filter-input" id="startDate">
+          </div>
+          
+          <div class="filter-group">
+            <label class="filter-label">Data Final</label>
+            <input type="date" class="filter-input" id="endDate">
+          </div>
+          
+          <div class="filter-group">
+            <label class="filter-label">Categoria</label>
+            <select class="filter-select" id="categoryFilter">
+              <option value="">Todas as categorias</option>
+              <!-- Categories will be populated by JS -->
+            </select>
+          </div>
+          
+          <div class="filter-group">
+            <label class="filter-label">Conta</label>
+            <select class="filter-select" id="accountFilter">
+              <option value="">Todas as contas</option>
+              <!-- Accounts will be populated by JS -->
+            </select>
+          </div>
+          
+          <div class="filter-actions">
+            <button id="applyFilters" class="button button-primary">Aplicar Filtros</button>
+            <button id="clearFilters" class="button button-secondary">Limpar Filtros</button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Transactions Table -->
+      <div class="transactions-container" id="transactionsContainer">
+        <table class="transactions-table" id="transactionsTable">
+          <thead>
+            <tr>
+              <th>Descrição</th>
+              <th>Valor</th>
+              <th>Tipo</th>
+              <th>Vencimento</th>
+              <th>Status</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody id="transactionsBody">
+            <!-- Transactions will be populated by JS -->
+          </tbody>
+        </table>
+        
+        <div id="emptyState" class="card empty-state hidden">
+          <p>Nenhuma transação encontrada com os filtros selecionados.</p>
+        </div>
+      </div>
+    </div>
+    
+    <script src="../Js/dashboard/dashboard.js"></script>
+  </body>
+</html>
