@@ -9,9 +9,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const passwordError = document.getElementById('password-error');
   
   // // Check if user is already logged in
-  if (localStorage.getItem('authToken')) {
-    window.location.href = './dashboard.html';
-  }
+  // if (localStorage.getItem('authToken')) {
+  //   window.location.href = './dashboard.html';
+  // }
   
   registerForm.addEventListener('submit', async function(e) {
     e.preventDefault();
