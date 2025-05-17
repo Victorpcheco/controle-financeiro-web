@@ -18,38 +18,23 @@ namespace FinancialControl.API.Controllers
         [HttpPost("register")]
         public async Task<ActionResult> RegisterUser([FromBody] UserRegisterDto dto)
         {
-            try
-            {
                 var (jwtToken, refreshToken) = await _userService.RegisterUserAsync(dto);
-                return Ok(new
+                return Ok(new UserResponseDto
                 {
-                    Token = jwtToken,
-                    RefreshToken = refreshToken
+                    token = jwtToken,
+                    refreshToken = refreshToken
                 });
-                    
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
         }
 
         [HttpPost("login")]
         public async Task<ActionResult> LoginUser([FromBody] UserLoginDto dto)
         {
-            try
-            {
                 var (jwtToken, refreshToken) = await _userService.LoginUserAsync(dto);
-                return Ok(new
+                return Ok(new UserResponseDto
                 {
-                    Token = jwtToken,
-                    RefreshToken = refreshToken
+                    token = jwtToken,
+                    refreshToken = refreshToken
                 });
-            } catch
-            (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
         }   
     }
 }

@@ -69,6 +69,8 @@ app.UseHttpsRedirection();
 // Ativando o middleware de CORS
 app.UseCors("AllowSpecificOrigin");
 
+app.UseMiddleware<FinancialControl.API.Middlewares.ExceptionMiddleware>(); // Configura o middleware de exceções
+
 app.UseAuthorization();
 
 app.MapControllers();

@@ -24,5 +24,18 @@ namespace FinancialControl.Application.Services
 
             return (categorias, total);
         }
+        
+        public async Task<Categoria?> BuscarPorIdAsync(int id)
+        {
+            if (id < 1)
+                throw new ArgumentException("Id inválido");
+
+            var categoria = await _categoriaRepository.BuscarPorId(id);
+
+            if (categoria == null)
+                throw new KeyNotFoundException($"Categoria com id {id} não encontrada.");
+
+            return categoria;
+        }
     }
 }

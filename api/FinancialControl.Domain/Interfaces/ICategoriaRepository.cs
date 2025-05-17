@@ -7,5 +7,7 @@ namespace FinancialControl.Domain.Interfaces
     {
         Task<IReadOnlyList<Categoria>> ListarPaginadoAsync(int pagina, int quantidadePorPagina);
         Task<int> ContarTotalAsync();
+        Task<Categoria> BuscarPorId(int id);
+
     }
 }

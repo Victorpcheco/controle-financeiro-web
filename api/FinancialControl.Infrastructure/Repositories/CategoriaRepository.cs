@@ -20,10 +20,15 @@ namespace FinancialControl.Infrastructure.Repositories
                 .Take(quantidadePorPagina) // pega a próxima quantidade de registros especificada
                 .ToListAsync();
         }
-
         public async Task<int> ContarTotalAsync()
         {
             return await _context.Categorias.CountAsync();
+        }
+        public async Task<Categoria?> BuscarPorId(int id)
+        {
+            return await _context.Categorias
+                .AsNoTracking()
+                .FirstOrDefaultAsync(c => c.Id == id);
         }
     }
 }

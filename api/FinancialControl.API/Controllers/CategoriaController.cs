@@ -27,7 +27,11 @@ namespace FinancialControl.API.Controllers
             });
         }
 
-
-
+        [HttpGet("Listar/{id:int}")]
+        public async Task<IActionResult> GetCategoriaPorId(int id)
+        {
+            var categoria = await _categoriaService.BuscarPorIdAsync(id);
+            return Ok(categoria);
+        }
     }
 }
