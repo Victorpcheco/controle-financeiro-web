@@ -30,5 +30,23 @@ namespace FinancialControl.Infrastructure.Repositories
                 .AsNoTracking()
                 .FirstOrDefaultAsync(c => c.Id == id);
         }
+        
+        public async Task CriarCategoriaAsync(Categoria categoria)
+        {
+            await _context.Categorias.AddAsync(categoria);
+            await _context.SaveChangesAsync();
+        }
+        
+        public async Task AtualizarCategoriaAsync(Categoria categoria)
+        {
+            _context.Categorias.Update(categoria);
+            await _context.SaveChangesAsync();
+        }
+        
+        public async Task DeletarCategoriaAsync(Categoria categoria)
+        {
+            _context.Categorias.Remove(categoria);
+            await _context.SaveChangesAsync();
+        }
     }
 }

@@ -15,7 +15,7 @@ namespace FinancialControl.Infrastructure.Data
             base.OnModelCreating(modelBuilder);
         }
 
-        public DbSet<User> Users { get; set; }
+        public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<Categoria> Categorias { get; set; }
     }
 }

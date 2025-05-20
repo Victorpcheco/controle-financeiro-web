@@ -5,32 +5,32 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FinancialControl.Infrastructure.Repositories
 {
-    public class UserRepository : IUserRepository
+    public class UsuarioRepository : IUsuarioRepository
     {
         private readonly ApplicationDbContext _context;
-        public UserRepository(ApplicationDbContext context)
+        public UsuarioRepository(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        public async Task<User?> UserExistsAsync(string email)
+        public async Task<Usuario?> UsuarioExisteAsync(string email)
         {
-            return await _context.Users
+            return await _context.Usuarios
                 .AsNoTracking()
                 .FirstOrDefaultAsync(u => u.Email == email);
              
         }
 
-        public async Task AddUserAsync(User user)
+        public async Task AdicionarUsuarioAsync(Usuario usuario)
         {
-            await _context.Users.AddAsync(user);
+            await _context.Usuarios.AddAsync(usuario);
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateRefreshTokenAsync(User user, string refreshToken, DateTime expiration)
+        public async Task AtualizarRefreshTokenAsync(Usuario usuario, string refreshToken, DateTime expiration)
         {
-            await _context.Users
-                .Where(u => u.Email == user.Email)
+            await _context.Usuarios
+                .Where(u => u.Email == usuario.Email)
                 .ExecuteUpdateAsync(u => u.SetProperty(x => x.RefreshToken, refreshToken)
                     .SetProperty(x => x.RefreshTokenExpiracao, expiration));
             await _context.SaveChangesAsync();

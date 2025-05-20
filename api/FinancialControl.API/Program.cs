@@ -13,39 +13,34 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configuração carrega da variavel de ambiente de forma automática
-//var connectionString = Environment.GetEnvironmentVariable("DefaultConnection");
-//builder.Services.AddDbContext<ApplicationDbContext>(options =>
-//    options.UseSqlServer(connectionString));
-
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
-builder.Services.AddAutoMapper(typeof(UserProfile));
-
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IValidator<UserRegisterDto>, UserRegisterDtoValidator>();
-
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IValidator<UserLoginDto>, UserLoginDtoValidator>();
-
+// Adicionando ServiÃ§os e RepositÃ³rios
+builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddAutoMapper(typeof(UsuarioProfike));
+builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+builder.Services.AddScoped<IValidator<UsuarioRegistroDto>, UsuarioRegistroDtoValidator>();
+builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+builder.Services.AddScoped<IValidator<UsuarioLoginDto>, UsuarioLoginDtoValidator>();
 builder.Services.AddScoped<ICategoriaRepository, CategoriaRepository>();
 builder.Services.AddScoped<ICategoriaService, CategoriaService>();
-builder.Services.AddControllers() // converte a saída do enum no json para string (TipoCategoria)
+builder.Services.AddScoped<IValidator<CategoriaRequestDto>, CategoriaRequestDtoValidator>();
+
+builder.Services.AddControllers() // Converte enum para string
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
-    });
+    }); 
 
-// Configuração do CORS
+// Adicionando configuraÃ§Ã£o do Cors (frontend)
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigin", policy =>
     {
-        policy.WithOrigins("http://127.0.0.1:5500", "http://localhost:5500") // Substitua pela URL do seu front-end
+        policy.WithOrigins("http://127.0.0.1:5500", "http://localhost:5500")
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
@@ -65,14 +60,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-// Ativando o middleware de CORS
-app.UseCors("AllowSpecificOrigin");
-
-app.UseMiddleware<FinancialControl.API.Middlewares.ExceptionMiddleware>(); // Configura o middleware de exceções
-
+app.UseCors("AllowSpecificOrigin"); 
+app.UseMiddleware<FinancialControl.API.Middlewares.ExceptionMiddleware>(); // Tratamento de exceÃ§Ãµes
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();

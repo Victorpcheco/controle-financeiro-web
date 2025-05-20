@@ -2,9 +2,9 @@
 
 namespace FinancialControl.Application.Interfaces
 {
-    public interface IJwtTokenService
+    public interface ITokenService
     {
-        public string GenerateToken(User user);
+        public string GenerateToken(Usuario usuario);
         public string GenerateRefreshToken();
     }
 }

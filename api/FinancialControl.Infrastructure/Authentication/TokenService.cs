@@ -9,7 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace FinancialControl.Infrastructure.Authentication
 {
-    public class JwtTokenService : IJwtTokenService
+    public class TokenService : ITokenService
     {
 
         private readonly string _secretKey;
@@ -18,7 +18,7 @@ namespace FinancialControl.Infrastructure.Authentication
         private readonly int _tokenExpirationInMinutes;
 
 
-        public JwtTokenService(IConfiguration configuration)
+        public TokenService(IConfiguration configuration)
         {
             var jwtSettings = configuration.GetSection("JwtSettings");
             _secretKey = jwtSettings["SecretKey"];
@@ -28,14 +28,14 @@ namespace FinancialControl.Infrastructure.Authentication
 
         }
 
-        public string GenerateToken(User user)
+        public string GenerateToken(Usuario usuario)
         {
             // Busca as inormações do usuário no banco de dados
             var claims = new List<Claim> 
             {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, user.NomeCompleto),
-                new Claim(ClaimTypes.Email, user.Email)
+                new Claim(ClaimTypes.NameIdentifier, usuario.Id.ToString()),
+                new Claim(ClaimTypes.Name, usuario.NomeCompleto),
+                new Claim(ClaimTypes.Email, usuario.Email)
             };
 
             // Cria uma chave de segurança simétrica a partir da chave secreta (_secretKey).

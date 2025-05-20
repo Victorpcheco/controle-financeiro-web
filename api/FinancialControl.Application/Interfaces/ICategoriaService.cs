@@ -1,11 +1,15 @@
-﻿using FinancialControl.Domain.Entities;
+﻿using FinancialControl.Application.DTOs;
+using FinancialControl.Domain.Entities;
 
 namespace FinancialControl.Application.Interfaces
 {
     public interface ICategoriaService
     {
-        Task<(IReadOnlyList<Categoria> Categorias, int Total)> ListarPaginadoAsync(int pagina, int quantidadePorPagina);
+        Task<CategoriaPaginadoResponse> ListarPaginadoAsync(int pagina, int quantidadePorPagina);
         Task<Categoria?> BuscarPorIdAsync(int id);
+        Task<bool> CriarCategoriaAsync(CategoriaRequestDto dto);
+        Task<bool> AtualizarCategoriaAsync(int id, CategoriaRequestDto dto);
+        Task<bool> DeletarCategoriaAsync(int id);
 
     }
 }

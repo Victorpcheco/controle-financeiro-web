@@ -2,7 +2,7 @@
 
 namespace FinancialControl.Domain.Entities
 {
-    public class User
+    public class Usuario
     {
         public int Id { get; private set; }
         public string NomeCompleto { get; private set; } = string.Empty;
@@ -11,9 +11,9 @@ namespace FinancialControl.Domain.Entities
         public string ?RefreshToken { get; private set; }
         public DateTime ?RefreshTokenExpiracao { get; private set; }
 
-        public User() { }
+        public Usuario() { }
 
-        public User(string nomeCompleto, string email, string senhaHash, string refreshToken, DateTime expiration)
+        public Usuario(string nomeCompleto, string email, string senhaHash, string refreshToken, DateTime expiration)
         {
             NomeCompleto = nomeCompleto;
             Email = email;
@@ -22,13 +22,13 @@ namespace FinancialControl.Domain.Entities
             RefreshTokenExpiracao = expiration;
         }
 
-        public static User Criar(string nomeCompleto, string email, string senha, string refreshToken, DateTime expiration)
+        public static Usuario Criar(string nomeCompleto, string email, string senha, string refreshToken, DateTime expiration)
         {
             ValidarNomeCompleto(nomeCompleto);
             ValidarEmail(email);
             var senhaHash = CriarSenha(senha);
 
-            return new User(nomeCompleto, email, senhaHash, refreshToken, expiration);
+            return new Usuario(nomeCompleto, email, senhaHash, refreshToken, expiration);
         }
 
         private static void ValidarNomeCompleto(string nomeCompelto)

@@ -3,9 +3,9 @@ using FluentValidation;
 
 namespace FinancialControl.Application.Validators
 {
-    public class UserRegisterDtoValidator : AbstractValidator<UserRegisterDto>
+    public class UsuarioRegistroDtoValidator : AbstractValidator<UsuarioRegistroDto>
     {
-        public UserRegisterDtoValidator()
+        public UsuarioRegistroDtoValidator()
         {
             RuleFor(x => x.NomeCompleto)
                 .NotEmpty().WithMessage("Nome completo é obrigatório.")

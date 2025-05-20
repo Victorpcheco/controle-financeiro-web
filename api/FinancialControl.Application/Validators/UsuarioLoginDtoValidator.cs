@@ -3,9 +3,9 @@ using FluentValidation;
 
 namespace FinancialControl.Application.Validators
 {
-    public class UserLoginDtoValidator : AbstractValidator<UserLoginDto>
+    public class UsuarioLoginDtoValidator : AbstractValidator<UsuarioLoginDto>
     {
-        public UserLoginDtoValidator()
+        public UsuarioLoginDtoValidator()
         {
             RuleFor(x => x.Email)
                 .NotEmpty().WithMessage("Email é obrigatório.")
