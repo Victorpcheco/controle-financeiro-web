@@ -14,10 +14,10 @@ namespace FinancialControl.API.Controllers
             _categoriaService = categoriaService;
         }
 
-        [HttpGet("listar")]
-        public async Task<IActionResult> ListarCategoriasPaginado([FromQuery] int pagina = 1, [FromQuery] int quantidade = 15)
+        [HttpGet("listarPaginado/{usuarioId:int}")]
+        public async Task<IActionResult> ListarCategoriasPaginado(int usuarioId, [FromQuery] int pagina = 1, [FromQuery] int quantidade = 15)
         {
-            var categorias = await _categoriaService.ListarPaginadoAsync(pagina, quantidade);
+            var categorias = await _categoriaService.ListarPaginadoAsync(usuarioId,pagina, quantidade);
 
             return Ok(categorias);
         }

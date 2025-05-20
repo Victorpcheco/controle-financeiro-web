@@ -13,6 +13,12 @@ namespace FinancialControl.Infrastructure.Data
         {
             modelBuilder.ApplyConfiguration(new CategoriaConfiguration());
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Categoria>()
+                .HasOne(c => c.Usuario)
+                .WithMany(u => u.Categorias)
+                .HasForeignKey(c => c.UsuarioId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
 
         public DbSet<Usuario> Usuarios { get; set; }

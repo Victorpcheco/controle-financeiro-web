@@ -12,13 +12,15 @@ namespace FinancialControl.Infrastructure.Repositories
         {
             _context = context;
         }
-        public async Task<IReadOnlyList<Categoria>> ListarPaginadoAsync(int pagina, int quantidadePorPagina)
+        public async Task<IReadOnlyList<Categoria>> ListarPaginadoAsync(int usuarioId,int pagina, int quantidadePorPagina)
         {
             return await _context.Categorias
-                .OrderBy(c => c.Id)
-                .Skip((pagina - 1) * quantidadePorPagina) // pula os registros de acordo com a página fornecida
-                .Take(quantidadePorPagina) // pega a próxima quantidade de registros especificada
-                .ToListAsync();
+                    .Where(c => c.UsuarioId == usuarioId)
+                    .OrderBy(c => c.Id)
+                    .Skip((pagina - 1) * quantidadePorPagina)
+                    .Take(quantidadePorPagina)
+                    .AsNoTracking()
+                    .ToListAsync();
         }
         public async Task<int> ContarTotalAsync()
         {

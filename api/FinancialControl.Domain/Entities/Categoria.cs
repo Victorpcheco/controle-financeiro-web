@@ -12,5 +12,7 @@ namespace FinancialControl.Domain.Entities
         public string Nome { get; set; } = string.Empty;
         [Required(ErrorMessage = "O tipo da categoria é obrigatório!")]
         public TipoCategoria Tipo { get; set; }
+        public int UsuarioId { get; set; }
+        public Usuario Usuario { get; set; }
     }
 }
