@@ -19,9 +19,16 @@ namespace FinancialControl.Infrastructure.Data
                 .WithMany(u => u.Categorias)
                 .HasForeignKey(c => c.UsuarioId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<ContaBancaria>()
+                .HasOne(c => c.Usuario)
+                .WithMany(u => u.ContasBancarias)
+                .HasForeignKey(c => c.UsuarioId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
 
         public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<Categoria> Categorias { get; set; }
+        public DbSet<ContaBancaria> ContasBancarias { get; set; }
     }
 }

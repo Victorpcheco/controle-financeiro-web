@@ -11,6 +11,7 @@ namespace FinancialControl.Domain.Entities
         public string ?RefreshToken { get; private set; }
         public DateTime ?RefreshTokenExpiracao { get; private set; }
         public ICollection<Categoria> Categorias { get; set; }
+        public ICollection<ContaBancaria> ContasBancarias { get; set; }
         public Usuario() { }
 
         public Usuario(string nomeCompleto, string email, string senhaHash, string refreshToken, DateTime expiration)

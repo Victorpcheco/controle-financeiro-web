@@ -7,9 +7,8 @@ namespace FinancialControl.Application.Interfaces
     {
         Task<CategoriaPaginadoResponse> ListarPaginadoAsync(int usuarioId,int pagina, int quantidadePorPagina);
         Task<Categoria?> BuscarPorIdAsync(int id);
-        Task<bool> CriarCategoriaAsync(CategoriaRequestDto dto);
+        Task<bool> CriarCategoriaAsync(int usuarioId, CategoriaRequestDto dto);
         Task<bool> AtualizarCategoriaAsync(int id, CategoriaRequestDto dto);
         Task<bool> DeletarCategoriaAsync(int id);
-
     }
 }

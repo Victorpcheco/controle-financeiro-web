@@ -54,7 +54,7 @@ namespace FinancialControl.Application.Services
             return categoria;
         }
 
-        public async Task<bool> CriarCategoriaAsync(CategoriaRequestDto dto)
+        public async Task<bool> CriarCategoriaAsync(int usuarioId, CategoriaRequestDto dto)
         {
             var validationResult = await _categoriaValidator.ValidateAsync(dto);
             if (!validationResult.IsValid)
@@ -64,12 +64,13 @@ namespace FinancialControl.Application.Services
 
             var categoria = _mapper.Map<Categoria>(dto);
 
-            var categoriaExists = await _categoriaRepository.BuscarPorId(categoria.Id);
-            if (categoriaExists != null)
+            var categoriaExiste = await _categoriaRepository.BuscarPorNome(categoria.Nome);
+            if (categoriaExiste != null)
             {
                 throw new InvalidOperationException($"Categoria com id {categoria.Id} já existe.");
             }
-
+            
+            categoria.UsuarioId = usuarioId;
             await _categoriaRepository.CriarCategoriaAsync(categoria);
             return true;
         }
@@ -84,16 +85,15 @@ namespace FinancialControl.Application.Services
 
             var categoria = _mapper.Map<Categoria>(dto);
 
-            var categoriaExists = await _categoriaRepository.BuscarPorId(id);
-            if (categoriaExists == null)
+            var atualizaCategoria = await _categoriaRepository.BuscarPorId(id);
+            if (atualizaCategoria == null)
             {
                 throw new KeyNotFoundException($"Categoria com id {categoria.Id} não encontrada.");
             }
             
-            categoriaExists.Nome = dto.Nome;
-            categoriaExists.Tipo = dto.Tipo;
-            
-            await _categoriaRepository.AtualizarCategoriaAsync(categoriaExists);
+            atualizaCategoria.Nome = categoria.Nome;
+            atualizaCategoria.Tipo = categoria.Tipo;
+            await _categoriaRepository.AtualizarCategoriaAsync(atualizaCategoria);
             return true;
         }
 

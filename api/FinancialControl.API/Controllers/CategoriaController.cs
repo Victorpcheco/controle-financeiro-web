@@ -22,26 +22,26 @@ namespace FinancialControl.API.Controllers
             return Ok(categorias);
         }
 
-        [HttpGet("Listar/{id:int}")]
+        [HttpGet("listar/{id:int}")]
         public async Task<IActionResult> ListarCategoriaPorId(int id)
         {
             var categoria = await _categoriaService.BuscarPorIdAsync(id);
             return Ok(categoria);
         }
 
-        [HttpPost("Criar")]
-        public async Task<ActionResult> CriarCategoria([FromBody] CategoriaRequestDto dto)
+        [HttpPost("criar/{usuarioId:int}")]
+        public async Task<ActionResult> CriarCategoria(int usuarioId, [FromBody] CategoriaRequestDto dto)
         {
-            await _categoriaService.CriarCategoriaAsync(dto);
+            await _categoriaService.CriarCategoriaAsync(usuarioId, dto);
             return NoContent();
         }
-        [HttpPut("Atualizar/{id:int}")]
-        public async Task<ActionResult> AtualizarCategoria( [FromRoute] int id, [FromBody] CategoriaRequestDto dto)
+        [HttpPut("atualizar/{id:int}")]
+        public async Task<ActionResult> AtualizarCategoria(int id, [FromBody] CategoriaRequestDto dto)
         {
             await _categoriaService.AtualizarCategoriaAsync(id, dto);
             return NoContent();
         }
-        [HttpDelete("Deletar/{id:int}")]
+        [HttpDelete("deletar/{id:int}")]
         public async Task<ActionResult> DeletarCategoria(int id)
         {
             await _categoriaService.DeletarCategoriaAsync(id);

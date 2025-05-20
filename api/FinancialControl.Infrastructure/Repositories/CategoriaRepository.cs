@@ -32,6 +32,13 @@ namespace FinancialControl.Infrastructure.Repositories
                 .AsNoTracking()
                 .FirstOrDefaultAsync(c => c.Id == id);
         }
+
+        public async Task<Categoria> BuscarPorNome(string nome)
+        {
+            return await _context.Categorias
+                .AsNoTracking() 
+                .FirstOrDefaultAsync(c => c.Nome == nome);
+        }
         
         public async Task CriarCategoriaAsync(Categoria categoria)
         {
