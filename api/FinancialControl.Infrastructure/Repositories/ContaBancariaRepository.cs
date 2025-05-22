@@ -14,7 +14,7 @@ public class ContaBancariaRepository : IContaBancariaRepository
         _context = context;
     }
     
-    public async Task<IReadOnlyList<ContaBancaria>> ListarContasPaginado(int usuarioId, int pagina, int quantidadePorPagina)
+    public async Task<IReadOnlyList<ContaBancaria>> ListarPaginadoAsync(int usuarioId, int pagina, int quantidadePorPagina)
     {
         return await _context.ContasBancarias
             .Where(c => c.UsuarioId == usuarioId)
@@ -27,23 +27,23 @@ public class ContaBancariaRepository : IContaBancariaRepository
     {
         return await _context.ContasBancarias.CountAsync();
     }
-    public async Task<ContaBancaria> BuscarPorId(int id)
+    public async Task<ContaBancaria> BuscarPorIdAsync(int id)
     {
         return await _context.ContasBancarias
             .AsNoTracking()
             .FirstOrDefaultAsync(c => c.Id == id);
     }
-    public async Task AdicionarContaBancaria(ContaBancaria contaBancaria)
+    public async Task AdicionarAsync(ContaBancaria contaBancaria)
     {
         await _context.ContasBancarias.AddAsync(contaBancaria);
         await _context.SaveChangesAsync();
     }
-    public async Task AtualizarContaBancaria(ContaBancaria contaBancaria)
+    public async Task AtualizarAsync(ContaBancaria contaBancaria)
     {
         _context.ContasBancarias.Update(contaBancaria);
         await _context.SaveChangesAsync();
     }
-    public async Task DeletarContaBancaria(ContaBancaria contaBancaria)
+    public async Task DeletarAsync(ContaBancaria contaBancaria)
     {
         _context.ContasBancarias.Remove(contaBancaria);
         await _context.SaveChangesAsync();

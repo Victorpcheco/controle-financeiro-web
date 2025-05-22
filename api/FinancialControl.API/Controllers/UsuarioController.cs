@@ -27,6 +27,14 @@ namespace FinancialControl.API.Controllers
         {
                 var token = await _usuarioService.LoginUsuarioAsync(dto);
                 return Ok(token);
-        }   
+        }
+
+        [HttpDelete("deletar")]
+        public async Task<ActionResult> DeleteUser([FromBody] string email)
+        {
+            await _usuarioService.RemoverUsuarioAsync(email);
+            return NoContent();
+        }
+
     }
 }

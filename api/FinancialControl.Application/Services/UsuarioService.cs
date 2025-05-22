@@ -66,6 +66,14 @@ namespace FinancialControl.Application.Services
            await _usuarioRepository.AtualizarRefreshTokenAsync(user, refreshToken, expiration);
            return new TokenResponseDto { Token = token, RefreshToken = refreshToken };
         }
+        
+        public async Task<bool> RemoverUsuarioAsync(string email)
+        {
+            var usuario = await _usuarioRepository.UsuarioExisteAsync(email);
+
+            await _usuarioRepository.DeletarAsync(usuario);
+            return true;
+        }
 
     }
 }

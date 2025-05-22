@@ -35,6 +35,12 @@ namespace FinancialControl.Infrastructure.Repositories
                     .SetProperty(x => x.RefreshTokenExpiracao, expiration));
             await _context.SaveChangesAsync();
         }
+        
+        public async Task DeletarAsync(Usuario usuario)
+        {
+            _context.Usuarios.Remove(usuario);
+            await _context.SaveChangesAsync();
+        }
 
     }
 }

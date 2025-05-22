@@ -4,10 +4,10 @@ namespace FinancialControl.Domain.Interfaces;
 
 public interface IContaBancariaRepository
 {
-    Task<IReadOnlyList<ContaBancaria>> ListarContasPaginado(int usuarioId,int pagina, int quantidadePorPagina);
+    Task<IReadOnlyList<ContaBancaria>> ListarPaginadoAsync(int usuarioId, int pagina, int quantidadePorPagina);
     Task<int> ContarTotalAsync();
-    Task<ContaBancaria> BuscarPorId(int id);
-    Task AdicionarContaBancaria(ContaBancaria contaBancaria);
-    Task AtualizarContaBancaria(ContaBancaria contaBancaria);
-    Task DeletarContaBancaria(ContaBancaria contaBancaria);
+    Task<ContaBancaria> BuscarPorIdAsync(int id);
+    Task AdicionarAsync(ContaBancaria contaBancaria);
+    Task AtualizarAsync(ContaBancaria contaBancaria);
+    Task DeletarAsync(ContaBancaria contaBancaria);
 }

@@ -2,7 +2,7 @@
 
 namespace FinancialControl.Application.DTOs
 {
-    public class CategoriaPaginadoResponse
+    public class CategoriaPaginadoResponseDto
     {
         public int Total { get; set; }
         public int Pagina { get; set; }

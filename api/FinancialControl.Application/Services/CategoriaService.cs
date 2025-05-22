@@ -21,7 +21,7 @@ namespace FinancialControl.Application.Services
             _categoriaValidator = categoriaValidator;
         }
 
-        public async Task<CategoriaPaginadoResponse> ListarPaginadoAsync(int usuarioId, int pagina, int quantidadePorPagina)
+        public async Task<CategoriaPaginadoResponseDto> ListarPaginadoAsync(int usuarioId, int pagina, int quantidadePorPagina)
         {
             if (pagina < 1)
                 throw new ArgumentException("A página deve ser maior ou igual a 1.");
@@ -32,7 +32,7 @@ namespace FinancialControl.Application.Services
             var categoriaDto = categorias.Select(x => _mapper.Map<CategoriaResponseDto>(x)).ToList();
             var total = await _categoriaRepository.ContarTotalAsync();
 
-            return new CategoriaPaginadoResponse
+            return new CategoriaPaginadoResponseDto
             {
                 Total = total,
                 Pagina = pagina,

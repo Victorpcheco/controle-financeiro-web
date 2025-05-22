@@ -5,9 +5,9 @@ using FinancialControl.Domain.Entities;
 
 namespace FinancialControl.Application.Mapping
 {
-    public class UsuarioProfike : Profile
+    public class UsuarioProfile : Profile
     {
-        public UsuarioProfike()
+        public UsuarioProfile()
         {
             CreateMap<UsuarioRegistroDto, Usuario>();
             CreateMap<UsuarioLoginDto, Usuario>();

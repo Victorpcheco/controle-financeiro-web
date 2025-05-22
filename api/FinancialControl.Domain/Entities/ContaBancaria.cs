@@ -16,15 +16,31 @@ public class ContaBancaria
     [Required]
     public int UsuarioId { get; set; }
     public Usuario Usuario { get; set; }
-    
-    public void CriarContaBancaria(string nome, string banco, decimal saldoInicial)
+
+    public ContaBancaria()
+    {
+        
+    }
+
+    public ContaBancaria(string nome, string banco, decimal saldoInicial, int usuarioId)
     {
         Nome = nome;
         Banco = banco;
         SaldoInicial = saldoInicial;
         SaldoAtual = saldoInicial;
+        DataCriacao = DateTime.Now;
+        UsuarioId = usuarioId;
     }
-    
+    public static ContaBancaria Criar(string nome, string banco, decimal saldoInicial, int usuarioId)
+    {
+        return new ContaBancaria(nome, banco, saldoInicial, usuarioId);
+    }
+    public void AtualizarContaBancaria(string nome, string banco, decimal saldoAtual)
+    {
+        Nome = nome;
+        Banco = banco;
+        SaldoAtual = saldoAtual;
+    }
 }
 
  

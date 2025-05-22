@@ -5,7 +5,7 @@ namespace FinancialControl.Application.Interfaces
 {
     public interface ICategoriaService
     {
-        Task<CategoriaPaginadoResponse> ListarPaginadoAsync(int usuarioId,int pagina, int quantidadePorPagina);
+        Task<CategoriaPaginadoResponseDto> ListarPaginadoAsync(int usuarioId,int pagina, int quantidadePorPagina);
         Task<Categoria?> BuscarPorIdAsync(int id);
         Task<bool> CriarCategoriaAsync(int usuarioId, CategoriaRequestDto dto);
         Task<bool> AtualizarCategoriaAsync(int id, CategoriaRequestDto dto);

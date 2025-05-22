@@ -18,7 +18,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 // Adicionando Serviços e Repositórios
 builder.Services.AddScoped<ITokenService, TokenService>();
-builder.Services.AddAutoMapper(typeof(UsuarioProfike));
+builder.Services.AddAutoMapper(typeof(UsuarioProfile));
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<IValidator<UsuarioRegistroDto>, UsuarioRegistroDtoValidator>();
@@ -28,6 +28,10 @@ builder.Services.AddScoped<IValidator<UsuarioLoginDto>, UsuarioLoginDtoValidator
 builder.Services.AddScoped<ICategoriaRepository, CategoriaRepository>();
 builder.Services.AddScoped<ICategoriaService, CategoriaService>();
 builder.Services.AddScoped<IValidator<CategoriaRequestDto>, CategoriaRequestDtoValidator>();
+builder.Services.AddScoped<IContaBancariaService, ContaBancariaService>();
+builder.Services.AddScoped<IContaBancariaRepository, ContaBancariaRepository>();
+builder.Services.AddAutoMapper(typeof(ContaBancariaProfile));
+builder.Services.AddScoped<IValidator<ContaBancariaRequestDto>, ContaBancariaRequestDtoValidator>();
 
 builder.Services.AddControllers() // Converte enum para string
     .AddJsonOptions(options =>
