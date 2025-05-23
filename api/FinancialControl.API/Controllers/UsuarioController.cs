@@ -29,12 +29,11 @@ namespace FinancialControl.API.Controllers
                 return Ok(token);
         }
 
-        [HttpDelete("deletar")]
-        public async Task<ActionResult> DeleteUser([FromBody] string email)
-        {
-            await _usuarioService.RemoverUsuarioAsync(email);
-            return NoContent();
-        }
-
+        // [HttpDelete("deletar")]
+        // public async Task<ActionResult> DeleteUser([FromBody] string email)
+        // {
+        //     await _usuarioService.RemoverUsuarioAsync(email);
+        //     return NoContent();
+        // }
     }
 }
