@@ -38,10 +38,11 @@ namespace FinancialControl.Application.Services
             var refreshToken = _tokenService.GenerateRefreshToken();
             var expiration = DateTime.Now.AddDays(RefreshTokenExpirationDays);
 
-            var user = Usuario.Criar(dto.NomeCompleto, dto.Email, dto.SenhaHash, refreshToken, expiration);
-            await _usuarioRepository.AdicionarUsuarioAsync(user);
+            // var user = Usuario.Criar(dto.NomeCompleto, dto.Email, dto.SenhaHash, refreshToken, expiration);
+            var usuario = new Usuario(dto.NomeCompleto, dto.Email, dto.SenhaHash, refreshToken, expiration);
+            await _usuarioRepository.AdicionarUsuarioAsync(usuario);
 
-            var jwtToken = _tokenService.GenerateToken(user);
+            var jwtToken = _tokenService.GenerateToken(usuario);
 
             return new  TokenResponseDto { Token = jwtToken, RefreshToken = refreshToken };
         }
