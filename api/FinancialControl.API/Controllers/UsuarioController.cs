@@ -6,34 +6,20 @@ namespace FinancialControl.API.Controllers
 {
     [ApiController]
     [Route("api/usuario")]
-    public class UsuarioController : ControllerBase
+    public class UsuarioController(IUsuarioService service) : ControllerBase
     {
-        private readonly IUsuarioService _usuarioService;
-
-        public UsuarioController(IUsuarioService usuarioService)
+        [HttpPost("registrar")]
+        public async Task<ActionResult> RegistrarUsuario([FromBody] UsuarioRegistroDto dto)
         {
-            _usuarioService = usuarioService;
-        }
-
-        [HttpPost("registro")]
-        public async Task<ActionResult> RegisterUser([FromBody] UsuarioRegistroDto dto)
-        {
-                var token = await _usuarioService.RegistrarUsuarioAsync(dto);
+                var token = await service.RegistrarUsuarioAsync(dto);
                 return Ok(token);
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult> LoginUser([FromBody] UsuarioLoginDto dto)
+        public async Task<ActionResult> LoginUsuario([FromBody] UsuarioLoginDto dto)
         {
-                var token = await _usuarioService.LoginUsuarioAsync(dto);
+                var token = await service.LoginUsuarioAsync(dto);
                 return Ok(token);
         }
-
-        // [HttpDelete("deletar")]
-        // public async Task<ActionResult> DeleteUser([FromBody] string email)
-        // {
-        //     await _usuarioService.RemoverUsuarioAsync(email);
-        //     return NoContent();
-        // }
     }
 }
