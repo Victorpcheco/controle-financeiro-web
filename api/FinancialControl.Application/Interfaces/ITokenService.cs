@@ -4,7 +4,7 @@ namespace FinancialControl.Application.Interfaces
 {
     public interface ITokenService
     {
-        public string GenerateToken(Usuario usuario);
-        public string GenerateRefreshToken();
+        public string GerarToken(Usuario usuario);
+        public string GerarRefreshToken();
     }
 }

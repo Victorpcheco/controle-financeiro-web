@@ -25,13 +25,13 @@ namespace FinancialControl.Application.Services
             if (usuarioExiste != null)
                 throw new ArgumentException("Usuário já cadastrado no sistema.");
             
-            var refreshToken = tokenService.GenerateRefreshToken();
+            var refreshToken = tokenService.GerarRefreshToken();
             var expiration = DateTime.Now.AddDays(RefreshTokenExpirationDays);
             
             var novoUsuario = new Usuario(dto.NomeCompleto, dto.Email, dto.SenhaHash, refreshToken, expiration);
             await repository.CriarUsuarioAsync(novoUsuario);
 
-            var jwtToken = tokenService.GenerateToken(novoUsuario);
+            var jwtToken = tokenService.GerarToken(novoUsuario);
 
             return new  TokenResponseDto { Token = jwtToken, RefreshToken = refreshToken };
         }
@@ -48,8 +48,8 @@ namespace FinancialControl.Application.Services
             if (usuario == null)
                 throw new ArgumentException("Usuário não encontrado.");
 
-            var token = tokenService.GenerateToken(usuario);
-            var refreshToken = tokenService.GenerateRefreshToken();
+            var token = tokenService.GerarToken(usuario);
+            var refreshToken = tokenService.GerarRefreshToken();
             var expiration = DateTime.Now.AddDays(RefreshTokenExpirationDays);
 
            await repository.AtualizarRefreshTokenAsync(usuario, refreshToken, expiration);

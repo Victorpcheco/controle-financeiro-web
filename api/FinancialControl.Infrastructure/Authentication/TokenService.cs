@@ -11,24 +11,22 @@ namespace FinancialControl.Infrastructure.Authentication
 {
     public class TokenService : ITokenService
     {
-
-        private readonly string _secretKey;
-        private readonly string _issuer;
-        private readonly string _audience;
+        private readonly string? _secretKey;
+        private readonly string? _issuer;
+        private readonly string? _audience;
         private readonly int _tokenExpirationInMinutes;
-
-
+        
         public TokenService(IConfiguration configuration)
         {
             var jwtSettings = configuration.GetSection("JwtSettings");
-            _secretKey = jwtSettings["SecretKey"];
-            _issuer = jwtSettings["Issuer"];
-            _audience = jwtSettings["Audience"];
-            _tokenExpirationInMinutes = int.Parse(jwtSettings["TokenExpirationInMinutes"]); 
-
+            _secretKey = jwtSettings["SecretKey"] ?? throw new ArgumentNullException("SecretKey não configurada.");
+            _issuer = jwtSettings["Issuer"] ?? throw new ArgumentNullException("Issuer não configurado.");
+            _audience = jwtSettings["Audience"] ?? throw new ArgumentNullException("Audience não configurado.");
+            if (!int.TryParse(jwtSettings["TokenExpirationInMinutes"], out _tokenExpirationInMinutes))
+                throw new ArgumentException("TokenExpirationInMinutes inválido ou não configurado.");
         }
 
-        public string GenerateToken(Usuario usuario)
+        public string GerarToken(Usuario usuario)
         {
             // Busca as inormações do usuário no banco de dados
             var claims = new List<Claim> 
@@ -61,8 +59,10 @@ namespace FinancialControl.Infrastructure.Authentication
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
-
-        public string GenerateRefreshToken()
+        
+        // Gera um refresh token seguro usando um gerador de números aleatórios criptograficamente seguro.
+        // O token é retornado como uma string Base64.
+        public string GerarRefreshToken()
         {
             var randomNumber = new byte[32];
             using (var rng = RandomNumberGenerator.Create())
