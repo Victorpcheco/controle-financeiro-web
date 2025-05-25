@@ -11,6 +11,6 @@ namespace FinancialControl.Domain.Interfaces
         Task<Categoria?> ObterCategoriaPorNomeAsync(string nome);
         Task CriarCategoriaAsync(Categoria categoria);
         Task AtualizarCategoriaAsync(Categoria categoria);
-        Task ExcluirCategoriaAsync(Categoria categoria);
+        Task DeletarCategoriaAsync(Categoria categoria);
     }
 }

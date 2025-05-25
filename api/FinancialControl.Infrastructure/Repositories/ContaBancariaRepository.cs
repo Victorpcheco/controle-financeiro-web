@@ -5,47 +5,46 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FinancialControl.Infrastructure.Repositories;
 
-public class ContaBancariaRepository : IContaBancariaRepository
+public class ContaBancariaRepository(ApplicationDbContext context) : IContaBancariaRepository
 {
-    private readonly ApplicationDbContext _context;
-
-    public ContaBancariaRepository(ApplicationDbContext context)
+    public async Task<IReadOnlyList<ContaBancaria>> ListarContasPaginadoAsync(int usuarioId, int pagina, int quantidadePorPagina)
     {
-        _context = context;
-    }
-    
-    public async Task<IReadOnlyList<ContaBancaria>> ListarPaginadoAsync(int usuarioId, int pagina, int quantidadePorPagina)
-    {
-        return await _context.ContasBancarias
+        return await context.ContasBancarias
             .Where(c => c.UsuarioId == usuarioId)
             .OrderBy(c => c.Id)
             .Skip((pagina - 1) * quantidadePorPagina)
             .Take(quantidadePorPagina)
             .ToListAsync();
     }
+    
     public async Task<int> ContarTotalAsync()
     {
-        return await _context.ContasBancarias.CountAsync();
+        return await context.ContasBancarias.CountAsync();
     }
-    public async Task<ContaBancaria> BuscarPorIdAsync(int id)
+    
+    public async Task<ContaBancaria?> ObterContaPorIdAsync(int id)
     {
-        return await _context.ContasBancarias
+        return await context.ContasBancarias
             .AsNoTracking()
             .FirstOrDefaultAsync(c => c.Id == id);
     }
-    public async Task AdicionarAsync(ContaBancaria contaBancaria)
+    
+    public async Task CriarContaAsync(ContaBancaria contaBancaria)
     {
-        await _context.ContasBancarias.AddAsync(contaBancaria);
-        await _context.SaveChangesAsync();
+        await context.ContasBancarias.AddAsync(contaBancaria);
+        await context.SaveChangesAsync();
     }
-    public async Task AtualizarAsync(ContaBancaria contaBancaria)
+    
+    public async Task AtualizarContaAsync(ContaBancaria contaBancaria)
     {
-        _context.ContasBancarias.Update(contaBancaria);
-        await _context.SaveChangesAsync();
+        context.ContasBancarias.Update(contaBancaria);
+        await context.SaveChangesAsync();
     }
-    public async Task DeletarAsync(ContaBancaria contaBancaria)
+    
+    public async Task DeletarContaAsync(ContaBancaria contaBancaria)
     {
-        _context.ContasBancarias.Remove(contaBancaria);
-        await _context.SaveChangesAsync();
+        context.ContasBancarias.Remove(contaBancaria);
+        await context.SaveChangesAsync();
     }
 }
+

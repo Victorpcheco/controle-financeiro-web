@@ -87,7 +87,7 @@ namespace FinancialControl.Application.Services
             return true;
         }
 
-        public async Task<bool> ExcluirCategoriaAsync(int id)
+        public async Task<bool> DeletarCategoriaAsync(int id)
         {
             if (id < 1)
                 throw new ArgumentException("Id inválido");
@@ -98,7 +98,7 @@ namespace FinancialControl.Application.Services
                 throw new KeyNotFoundException("Categoria não encontrada.");
             }
 
-            await repository.ExcluirCategoriaAsync(categoria);
+            await repository.DeletarCategoriaAsync(categoria);
             return true;
         }
     }

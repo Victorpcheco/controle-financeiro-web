@@ -4,26 +4,23 @@ namespace FinancialControl.Domain.Entities;
 
 public class ContaBancaria
 {
-    [Key]
-    public int Id { get; set; }
-    [Required(ErrorMessage = "O nome da conta é obrigatório.")]
-    public string Nome { get; set; }
-    [Required(ErrorMessage = "É necessário informar o banco.")]
-    public string Banco { get; set; }
+    public int Id { get; private set; }
+    public string Nome { get; private set; } = null!;
+    public string Banco { get; private set; } = null!;
     public decimal SaldoInicial { get; private set; } 
     public decimal? SaldoAtual { get; private set; }
-    public DateTime? DataCriacao { get; set; } = DateTime.Now;
-    [Required]
-    public int UsuarioId { get; set; }
-    public Usuario Usuario { get; set; }
+    public DateTime DataCriacao { get; private set; } = DateTime.Now;
+    public int UsuarioId { get; private set; }
+    public Usuario Usuario { get; private set; } = null!;
 
-    public ContaBancaria()
-    {
-        
-    }
+    public ContaBancaria(){ }
 
     public ContaBancaria(string nome, string banco, decimal saldoInicial, int usuarioId)
     {
+        ValidarNome(nome);
+        ValidarBanco(banco);
+        ValidarUsuarioId(usuarioId);
+        
         Nome = nome;
         Banco = banco;
         SaldoInicial = saldoInicial;
@@ -31,15 +28,36 @@ public class ContaBancaria
         DataCriacao = DateTime.Now;
         UsuarioId = usuarioId;
     }
-    public static ContaBancaria Criar(string nome, string banco, decimal saldoInicial, int usuarioId)
+    
+    private static void ValidarNome(string nome)
     {
-        return new ContaBancaria(nome, banco, saldoInicial, usuarioId);
+        if (string.IsNullOrWhiteSpace(nome))
+            throw new ArgumentException("O nome da conta bancária não pode ser nulo ou vazio.");
     }
-    public void AtualizarContaBancaria(string nome, string banco, decimal saldoAtual)
+    
+    private static void ValidarBanco(string banco)
+    {
+        if (string.IsNullOrWhiteSpace(banco))
+            throw new ArgumentException("O nome do banco não pode ser nulo ou vazio.");
+    }
+    
+    private static void ValidarUsuarioId(int usuarioId)
+    {
+        if (usuarioId <= 0)
+            throw new ArgumentException("O ID do usuário é inválido.");
+    }
+    
+    public void AtualizarUsuarioId(int usuarioId)
+    {
+        ValidarUsuarioId(usuarioId);
+        UsuarioId = usuarioId;
+    }
+    
+    public void AtualizarContaBancaria(string nome, string banco, decimal saldoInicial)
     {
         Nome = nome;
         Banco = banco;
-        SaldoAtual = saldoAtual;
+        SaldoInicial = saldoInicial;
     }
 }
 

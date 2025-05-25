@@ -9,6 +9,6 @@ namespace FinancialControl.Application.Interfaces
         Task<Categoria?> ObterCategoriaPorId(int id);
         Task<bool> CriarCategoriaAsync(int usuarioId, CategoriaRequestDto dto);
         Task<bool> AtualizarCategoriaAsync(int id, CategoriaRequestDto dto);
-        Task<bool> ExcluirCategoriaAsync(int id);
+        Task<bool> DeletarCategoriaAsync(int id);
     }
 }

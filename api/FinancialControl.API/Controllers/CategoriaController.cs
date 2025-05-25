@@ -6,9 +6,7 @@ namespace FinancialControl.API.Controllers
 {
     [ApiController]
     [Route("api/categoria")]
-    public class CategoriaController(
-        ICategoriaService service
-        ) : ControllerBase
+    public class CategoriaController(ICategoriaService service) : ControllerBase
     {
 
         [HttpGet("listarPaginado/{usuarioId:int}")]
@@ -40,10 +38,10 @@ namespace FinancialControl.API.Controllers
             return NoContent();
         }
         
-        [HttpDelete("deletar/{id:int}")]
+        [HttpDelete("excluir/{id:int}")]
         public async Task<ActionResult> DeletarCategoria(int id)
         {
-            await service.ExcluirCategoriaAsync(id);
+            await service.DeletarCategoriaAsync(id);
             return NoContent();
         }
     }

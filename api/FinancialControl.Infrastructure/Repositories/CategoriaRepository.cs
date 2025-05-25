@@ -49,7 +49,7 @@ namespace FinancialControl.Infrastructure.Repositories
             await context.SaveChangesAsync();
         }
         
-        public async Task ExcluirCategoriaAsync(Categoria categoria)
+        public async Task DeletarCategoriaAsync(Categoria categoria)
         {
             context.Categorias.Remove(categoria);
             await context.SaveChangesAsync();

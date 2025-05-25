@@ -7,19 +7,11 @@ using FluentValidation;
 
 namespace FinancialControl.Application.Services;
 
-public class ContaBancariaService : IContaBancariaService
+public class ContaBancariaService(    
+    IContaBancariaRepository repository,
+    IValidator<ContaBancariaRequestDto> validator,
+    IMapper mapper) : IContaBancariaService
 {
-    private readonly IContaBancariaRepository _repository;
-    private readonly IValidator<ContaBancariaRequestDto> _validator;
-    private readonly IMapper _mapper;
-
-    public ContaBancariaService(IContaBancariaRepository repository, IMapper mapper, IValidator<ContaBancariaRequestDto> validator)
-    {
-        _repository = repository;
-        _mapper = mapper;
-        _validator = validator;
-    }
-    
     public async Task<ContaBancariaPaginadoResponseDto> ListarContasPaginadoAsync(int usuarioId, int pagina, int quantidadePorPagina)
     {
         if (pagina < 1)
@@ -27,12 +19,12 @@ public class ContaBancariaService : IContaBancariaService
         if (quantidadePorPagina < 1)
             throw new ArgumentException("A quantidade por página deve ser maior ou igual a 1.");
         
-        var contas = await _repository.ListarPaginadoAsync(usuarioId, pagina, quantidadePorPagina);
+        var contas = await repository.ListarContasPaginadoAsync(usuarioId, pagina, quantidadePorPagina);
         if (contas == null)
             throw new ArgumentException("Nenhuma conta encontrada.");
         
-        var contasDto = contas.Select(x => _mapper.Map<ContaBancariaResponseDto>(x)).ToList();
-        var total = await _repository.ContarTotalAsync();
+        var contasDto = contas.Select(x => mapper.Map<ContaBancariaResponseDto>(x)).ToList();
+        var total = await repository.ContarTotalAsync();
 
         return new ContaBancariaPaginadoResponseDto
         {
@@ -43,46 +35,51 @@ public class ContaBancariaService : IContaBancariaService
         };
     }
     
-    public async Task<ContaBancaria?> BuscarContaPorIdAsync(int id)
+    public async Task<ContaBancaria?> ObterContaPorIdAsync(int id)
     {
         if (id < 1)
             throw new ArgumentException("Id inválido.");
 
-        var conta = await _repository.BuscarPorIdAsync(id);
+        var conta = await repository.ObterContaPorIdAsync(id);
+        if (conta == null)
+            throw new ArgumentException("Conta não encontrada.");
+        
         return conta;
     }
     
     public async Task<bool> CriarContaAsync(int usuarioId, ContaBancariaRequestDto dto)
     {
-        var validationResult = await _validator.ValidateAsync(dto);
+        var validationResult = await validator.ValidateAsync(dto);
         if (!validationResult.IsValid)
             throw new ValidationException(validationResult.Errors);
         
         if (usuarioId < 1)
             throw new ArgumentException("Id inválido.");
-
-        var conta = ContaBancaria.Criar(dto.Nome, dto.Banco, dto.SaldoInicial, usuarioId);
-        await _repository.AdicionarAsync(conta);
+        
+        var conta = mapper.Map<ContaBancaria>(dto);
+        conta.AtualizarUsuarioId(usuarioId);
+        // var conta = ContaBancaria.Criar(dto.Nome, dto.Banco, dto.SaldoInicial, usuarioId);
+        await repository.CriarContaAsync(conta);
         
         return true;
     }
     
     public async Task<bool> AtualizarContaAsync(int id, ContaBancariaRequestDto dto)
     {
-        var validationResult = await _validator.ValidateAsync(dto);
+        var validationResult = await validator.ValidateAsync(dto);
         if (!validationResult.IsValid)
             throw new ValidationException(validationResult.Errors);
         
         if (id < 1)
             throw new ArgumentException("Id inválido.");
 
-        var conta = await _repository.BuscarPorIdAsync(id);
+        var conta = await repository.ObterContaPorIdAsync(id);
         if (conta == null)
             throw new ArgumentException("Conta não encontrada.");
 
         conta.AtualizarContaBancaria(dto.Nome, dto.Banco, dto.SaldoInicial);
 
-        await _repository.AtualizarAsync(conta);
+        await repository.AtualizarContaAsync(conta);
         return true;
     }
     
@@ -91,11 +88,11 @@ public class ContaBancariaService : IContaBancariaService
         if (id < 1)
             throw new ArgumentException("Id inválido.");
 
-        var conta = await _repository.BuscarPorIdAsync(id);
+        var conta = await repository.ObterContaPorIdAsync(id);
         if (conta == null)
             throw new ArgumentException("Conta não encontrada.");
 
-        await _repository.DeletarAsync(conta);
+        await repository.DeletarContaAsync(conta);
         return true;
     }
     
