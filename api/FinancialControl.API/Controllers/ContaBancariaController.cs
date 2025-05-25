@@ -16,9 +16,9 @@ public class ContaBancariaController(IContaBancariaService service) : Controller
     }
     
     [HttpGet("listar/{id:int}")]
-    public async Task<IActionResult> ObterContaPorId(int id)
+    public async Task<IActionResult> ListarContaPorId(int id)
     {
-        var conta = await service.ObterContaPorIdAsync(id);
+        var conta = await service.BuscarContaPorIdAsync(id);
         return Ok(conta);
     }
     

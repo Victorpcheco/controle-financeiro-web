@@ -7,6 +7,7 @@ namespace FinancialControl.Domain.Entities
         public int Id { get; private set; }
         public string Nome { get; private set; } = null!;
         public TipoCategoria Tipo { get; private set; }
+        
         public int UsuarioId { get; private set; }
         public Usuario Usuario { get; private set; } = null!;
 

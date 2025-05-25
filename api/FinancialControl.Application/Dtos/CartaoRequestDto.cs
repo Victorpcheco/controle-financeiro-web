@@ -4,7 +4,8 @@ public class CartaoRequestDto
 {
     public string Nome { get; set; } = null!;
     public decimal LimiteTotal { get; set; }
-    public string? DiaFechamentoFatura { get; set; }
-    public string? DiaVencimentoFatura { get; set; }
-
+    public int DiaFechamentoFatura { get; set; }
+    public int DiaVencimentoFatura { get; set; }
+    public int ContaDePagamentoId { get; set; }
+    public int UsuarioId { get; set; }
 }

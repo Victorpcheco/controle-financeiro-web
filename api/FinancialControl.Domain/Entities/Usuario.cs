@@ -10,6 +10,7 @@ namespace FinancialControl.Domain.Entities
         public string SenhaHash { get; private set; } = null!;
         public string? RefreshToken { get; private set; }
         public DateTime? RefreshTokenExpiracao { get; private set; }
+        
         public ICollection<Categoria> Categorias { get; set; } = null!;
         public ICollection<ContaBancaria> ContasBancarias { get; set; } = null!;
         public ICollection<Cartao> Cartoes { get; set; } = null!;

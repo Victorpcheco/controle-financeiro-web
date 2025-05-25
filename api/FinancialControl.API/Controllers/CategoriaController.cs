@@ -20,7 +20,7 @@ namespace FinancialControl.API.Controllers
         [HttpGet("listar/{id:int}")]
         public async Task<IActionResult> ListarCategoriaPorId(int id)
         {
-            var categoria = await service.ObterCategoriaPorId(id);
+            var categoria = await service.BuscarCategoriaPorIdAsync(id);
             return Ok(categoria);
         }
 

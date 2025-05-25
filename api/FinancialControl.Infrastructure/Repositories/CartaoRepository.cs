@@ -5,18 +5,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FinancialControl.Infrastructure.Repositories;
 
-public class CartaoRepository : ICartaoRepository
+public class CartaoRepository(ApplicationDbContext context) : ICartaoRepository
 {
-    private readonly ApplicationDbContext _context;
-
-    public CartaoRepository(ApplicationDbContext context)
+    public async Task<IReadOnlyList<Cartao>> ListarCartaoPaginadoAsync(int usuarioId, int pagina, int quantidade)
     {
-        _context = context;
-    }
-    
-    public async Task<IReadOnlyList<Cartao>> ListarPaginadoAsync(int usuarioId, int pagina, int quantidade)
-    {
-        return await _context.Cartoes
+        return await context.Cartoes
             .Where(c => c.UsuarioId == usuarioId)
             .OrderBy(c => c.Id)
             .Skip((pagina - 1) * quantidade)
@@ -24,36 +17,36 @@ public class CartaoRepository : ICartaoRepository
             .ToListAsync();
     }
     
-    public async Task<int> ContarAsync(int usuarioId)
+    public async Task<int> ContarTotalAsync(int usuarioId)
     {
-        return await _context.Cartoes
+        return await context.Cartoes
             .AsNoTracking()
             .CountAsync(c => c.UsuarioId == usuarioId);
     }
     
-    public async Task<Cartao?> BuscarPorIdAsync(int id)
+    public async Task<Cartao?> BuscarCartaoPorId(int id)
     {
-       return await _context.Cartoes
+       return await context.Cartoes
            .AsNoTracking()
            .FirstOrDefaultAsync(c => c.Id == id);
     }
     
-    public async Task AdicionarAsync(Cartao cartao)
+    public async Task AdicionarCartaoAsync(Cartao cartao)
     {
-        await _context.Cartoes.AddAsync(cartao);
-        await _context.SaveChangesAsync();
+        await context.Cartoes.AddAsync(cartao);
+        await context.SaveChangesAsync();
     }
     
-    public async Task AtualizarAsync(Cartao cartao)
+    public async Task AtualizarCartaoAsync(Cartao cartao)
     {
-        _context.Cartoes.Update(cartao);
-        await _context.SaveChangesAsync();
+        context.Cartoes.Update(cartao);
+        await context.SaveChangesAsync();
     }
     
-    public async Task RemoverAsync(Cartao cartao)
+    public async Task DeletarCartaoAsync(Cartao cartao)
     {
-        _context.Cartoes.Remove(cartao);
-        await _context.SaveChangesAsync();
+        context.Cartoes.Remove(cartao);
+        await context.SaveChangesAsync();
     }
     
 }

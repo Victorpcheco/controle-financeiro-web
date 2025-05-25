@@ -7,7 +7,7 @@ namespace FinancialControl.Infrastructure.Repositories
 {
     public class UsuarioRepository(ApplicationDbContext context) : IUsuarioRepository
     {
-        public async Task<Usuario?> ObterUsuarioAsync(string email)
+        public async Task<Usuario?> BuscarUsuarioPorEmailAsync(string email)
         {
             return await context.Usuarios
                 .AsNoTracking()

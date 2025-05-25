@@ -4,10 +4,10 @@ namespace FinancialControl.Domain.Interfaces;
 
 public interface ICartaoRepository
 {
-    Task <IReadOnlyList<Cartao>> ListarPaginadoAsync (int usuarioId, int pagina, int quantidade);
-    Task <int> ContarAsync(int usuarioId);
-    Task <Cartao> BuscarPorIdAsync (int id);
-    Task AdicionarAsync(Cartao cartao);
-    Task AtualizarAsync(Cartao cartao);
-    Task RemoverAsync(Cartao cartao);
+    Task <IReadOnlyList<Cartao>> ListarCartaoPaginadoAsync (int usuarioId, int pagina, int quantidade);
+    Task <int> ContarTotalAsync(int usuarioId);
+    Task <Cartao?> BuscarCartaoPorId (int id);
+    Task AdicionarCartaoAsync(Cartao cartao);
+    Task AtualizarCartaoAsync(Cartao cartao);
+    Task DeletarCartaoAsync(Cartao cartao);
 }

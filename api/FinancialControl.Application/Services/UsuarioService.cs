@@ -21,7 +21,7 @@ namespace FinancialControl.Application.Services
             if (!resultValidation.IsValid)
                 throw new ValidationException(resultValidation.Errors);
 
-            var usuarioExiste = await repository.ObterUsuarioAsync(dto.Email);
+            var usuarioExiste = await repository.BuscarUsuarioPorEmailAsync(dto.Email);
             if (usuarioExiste != null)
                 throw new ArgumentException("Usuário já cadastrado no sistema.");
             
@@ -43,7 +43,7 @@ namespace FinancialControl.Application.Services
             if (!resultValidation.IsValid)
                 throw new ValidationException(resultValidation.Errors);
             
-            var usuario = await repository.ObterUsuarioAsync(dto.Email);
+            var usuario = await repository.BuscarUsuarioPorEmailAsync(dto.Email);
 
             if (usuario == null)
                 throw new ArgumentException("Usuário não encontrado.");

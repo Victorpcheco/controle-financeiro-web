@@ -22,7 +22,7 @@ public class ContaBancariaRepository(ApplicationDbContext context) : IContaBanca
         return await context.ContasBancarias.CountAsync();
     }
     
-    public async Task<ContaBancaria?> ObterContaPorIdAsync(int id)
+    public async Task<ContaBancaria?> BuscarContaPorIdAsync(int id)
     {
         return await context.ContasBancarias
             .AsNoTracking()

@@ -23,14 +23,14 @@ namespace FinancialControl.Infrastructure.Repositories
             return await context.Categorias.CountAsync();
         }
         
-        public async Task<Categoria?> ObterCategoriaPorIdAsync(int id)
+        public async Task<Categoria?> BuscarCategoriaPorIdAsync(int id)
         {
             return await context.Categorias
                 .AsNoTracking()
                 .FirstOrDefaultAsync(c => c.Id == id);
         }
 
-        public async Task<Categoria?> ObterCategoriaPorNomeAsync(string nome)
+        public async Task<Categoria?> BuscarCategoriaPorNomeAsync(string nome)
         {
             return await context.Categorias
                 .AsNoTracking() 

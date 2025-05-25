@@ -1,23 +1,61 @@
-using System.ComponentModel.DataAnnotations;
 
 namespace FinancialControl.Domain.Entities;
 
 public class Cartao
 {
-    [Key]
-    public int Id { get; set; }
-    [Required(ErrorMessage = "O nome é obrigatório.")]
-    public string Nome { get; set; } = null!;
-    [Required(ErrorMessage = "O limite do cartão é obrigatório.")]
-    public decimal LimiteTotal { get; set; }
-    public decimal LimiteDisponivel { get; set; }
-    [Required(ErrorMessage = "A data de fechamento da fatura é obrigatória.")]
-    public string DiaFechamentoFatura { get; set; } = null!;
-    [Required(ErrorMessage = "A data de vencimento da fatura é obrigatória.")]
-    public string DiaVencimentoFatura { get; set; } = null!;
-    public int ContaDePagamentoId { get; set; }
-    public ContaBancaria ContaDePagamento { get; set; } = null!;
-    public int UsuarioId { get; set; }
-    public Usuario Usuario { get; set; } = null!;
+    public int Id { get; private set; }
+    public string Nome { get; private set; } = null!;
+    public decimal LimiteTotal { get; private set; }
+    public decimal LimiteDisponivel { get; private set; }
+    public int DiaFechamentoFatura { get; private set; }
+    public int DiaVencimentoFatura { get; private set; }
+    
+    public int ContaDePagamentoId { get; private set; }
+    public ContaBancaria ContaDePagamento { get; private set; } = null!;
+    public int UsuarioId { get; private set; }
+    public Usuario Usuario { get; private set; } = null!;
+
+    public Cartao() { }
+    
+    public Cartao(string nome, decimal limiteTotal, int diaFechamentoFatura, int diaVencimentoFatura)
+    {
+        ValidarNome(nome);
+        
+        Nome = nome;
+        LimiteTotal = limiteTotal;
+        LimiteDisponivel = limiteTotal;
+        DiaFechamentoFatura = diaFechamentoFatura;
+        DiaVencimentoFatura = diaVencimentoFatura;
+    }
+    
+    private static void ValidarNome(string nome)
+    {
+        if (string.IsNullOrWhiteSpace(nome))
+            throw new ArgumentException("O nome do cartão não pode ser vazio ou nulo.");
+        if (nome.Length < 3)
+            throw new ArgumentException("O nome do cartão deve ter pelo menos 3 caracteres.");
+    }
+
+    public void AdicionarUsuarioId(int usuarioId)
+    {
+        UsuarioId = usuarioId;
+    }
+    
+    public void AtualizarContaDePagamentoId(int contaDePagamentoId)
+    {
+        ContaDePagamentoId = contaDePagamentoId;
+    }
+    
+    public void AtualizarCartao(string nome, decimal limiteTotal, int diaFechamentoFatura, int diaVencimentoFatura, int contaDePagamentoId)
+    {
+        ValidarNome(nome);
+        
+        Nome = nome;
+        LimiteTotal = limiteTotal;
+        LimiteDisponivel = limiteTotal;
+        DiaFechamentoFatura = diaFechamentoFatura;
+        DiaVencimentoFatura = diaVencimentoFatura;
+        ContaDePagamentoId = contaDePagamentoId;
+    }
     
 }

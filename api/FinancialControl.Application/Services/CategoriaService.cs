@@ -33,12 +33,12 @@ namespace FinancialControl.Application.Services
             };
         }
 
-        public async Task<Categoria?> ObterCategoriaPorId(int id)
+        public async Task<Categoria?> BuscarCategoriaPorIdAsync(int id)
         {
             if (id < 1)
                 throw new ArgumentException("Id inválido");
 
-            var categoria = await repository.ObterCategoriaPorIdAsync(id);
+            var categoria = await repository.BuscarCategoriaPorIdAsync(id);
 
             if (categoria == null)
                 throw new KeyNotFoundException("Categoria não encontrada.");
@@ -54,7 +54,7 @@ namespace FinancialControl.Application.Services
                 throw new ValidationException(validationResult.Errors);
             }
             
-            var categoriaExiste = await repository.ObterCategoriaPorNomeAsync(dto.Nome);
+            var categoriaExiste = await repository.BuscarCategoriaPorNomeAsync(dto.Nome);
             if (categoriaExiste != null)
             {
                 throw new InvalidOperationException("Categoria já cadastrada.");
@@ -75,7 +75,7 @@ namespace FinancialControl.Application.Services
                 throw new ValidationException(validationResult.Errors);
             }
             
-            var categoria = await repository.ObterCategoriaPorIdAsync(id);
+            var categoria = await repository.BuscarCategoriaPorIdAsync(id);
             if (categoria == null)
             {
                 throw new KeyNotFoundException("Categoria não encontrada.");
@@ -92,7 +92,7 @@ namespace FinancialControl.Application.Services
             if (id < 1)
                 throw new ArgumentException("Id inválido");
 
-            var categoria = await repository.ObterCategoriaPorIdAsync(id);
+            var categoria = await repository.BuscarCategoriaPorIdAsync(id);
             if (categoria == null)
             {
                 throw new KeyNotFoundException("Categoria não encontrada.");

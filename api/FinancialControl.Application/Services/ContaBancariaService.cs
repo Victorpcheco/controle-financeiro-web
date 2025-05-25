@@ -35,12 +35,12 @@ public class ContaBancariaService(
         };
     }
     
-    public async Task<ContaBancaria?> ObterContaPorIdAsync(int id)
+    public async Task<ContaBancaria?> BuscarContaPorIdAsync(int id)
     {
         if (id < 1)
             throw new ArgumentException("Id inválido.");
 
-        var conta = await repository.ObterContaPorIdAsync(id);
+        var conta = await repository.BuscarContaPorIdAsync(id);
         if (conta == null)
             throw new ArgumentException("Conta não encontrada.");
         

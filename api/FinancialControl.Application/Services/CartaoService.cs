@@ -7,34 +7,20 @@ using FluentValidation;
 
 namespace FinancialControl.Application.Services;
 
-public class CartaoService : ICartaoService
+public class CartaoService(ICartaoRepository repository, IValidator<CartaoRequestDto> validator, IMapper mapper) : ICartaoService
 {
-    private readonly ICartaoRepository _Repository;
-    private readonly IValidator<CartaoRequestDto> _Validator;
-    private readonly IMapper _mapper;
-
-    public CartaoService(ICartaoRepository Repository, IValidator<CartaoRequestDto> Validator, IMapper mapper)
-    {
-        _Repository = Repository;
-        _Validator = Validator;
-        _mapper = mapper;
-    }
     
-    public async Task<CartaoResponsePaginadoDto> ObterCartoesPaginadoAsync(int usuarioId, int pagina, int quantidade)
+    public async Task<CartaoResponsePaginadoDto> ListarCartaoPaginadoAsync(int usuarioId, int pagina, int quantidade)
     {
         if (pagina < 1)
-        {
             throw new ArgumentException("A página deve ser maior ou igual a 1.");
-        }
         if (quantidade < 1)
-        {
             throw new ArgumentException("A quantidade deve ser maior ou igual a 1.");
-        }
         
-        var cartoes = await _Repository.ListarPaginadoAsync(usuarioId, pagina, quantidade);
+        var cartoes = await repository.ListarCartaoPaginadoAsync(usuarioId, pagina, quantidade);
         
-        var cartoesDto = cartoes.Select(x => _mapper.Map<CartaoResponseDto>(x)).ToList();
-        var total = await _Repository.ContarAsync(usuarioId);
+        var cartoesDto = cartoes.Select(x => mapper.Map<CartaoResponseDto>(x)).ToList();
+        var total = await repository.ContarTotalAsync(usuarioId);
         
         return new CartaoResponsePaginadoDto
         {
@@ -45,69 +31,60 @@ public class CartaoService : ICartaoService
         };
     }
     
-    public async Task<Cartao?> ObterCartaoPorIdAsync(int id)
+    public async Task<Cartao?> BuscarCartaoPorIdAsync(int id)
     {
         if (id < 1)
-        {
             throw new ArgumentException("Id inválido.");
-        }
         
-        var cartao = await _Repository.BuscarPorIdAsync(id);
+        var cartao = await repository.BuscarCartaoPorId(id);
+        if (cartao == null)
+            throw new ArgumentException("Cartão não encontrado.");
+        
         return cartao;
     }
     
     
-    public async Task<bool> CriarCartaoAsync(int usuarioId, CartaoRequestDto cartaoRequest)
+    public async Task<bool> CriarCartaoAsync(int usuarioId, CartaoRequestDto dto)
     {
-        var validationResult = await _Validator.ValidateAsync(cartaoRequest);
+        var validationResult = await validator.ValidateAsync(dto);
         if (!validationResult.IsValid)
         {
             throw new ValidationException(validationResult.Errors);
         }
 
-        var cartao = _mapper.Map<Cartao>(cartaoRequest);
-        cartao.UsuarioId = usuarioId;
+        var cartao = mapper.Map<Cartao>(dto);
+        cartao.AdicionarUsuarioId(usuarioId);
+        cartao.AtualizarContaDePagamentoId(dto.ContaDePagamentoId);
 
-        await _Repository.AdicionarAsync(cartao);
+        await repository.AdicionarCartaoAsync(cartao);
         return true;
     }
     
-    public async Task<bool> AtualizarCartaoAsync(int id, CartaoRequestDto cartaoRequest)
+    public async Task<bool> AtualizarCartaoAsync(int id, CartaoRequestDto dto)
     {
-        var validationResult = await _Validator.ValidateAsync(cartaoRequest);
+        var validationResult = await validator.ValidateAsync(dto);
         if (!validationResult.IsValid)
-        {
             throw new ValidationException(validationResult.Errors);
-        }
         
         if (id < 1)
             throw new ArgumentException("Id inválido.");
 
-        var cartaoExiste = await _Repository.BuscarPorIdAsync(id);
-        if (cartaoExiste == null)
-            throw new ArgumentException("Conta não encontrada.");
-
-        var cartao = _mapper.Map<Cartao>(cartaoRequest);
-        cartaoExiste.Nome = cartao.Nome;
-        cartaoExiste.DiaFechamentoFatura = cartao.DiaFechamentoFatura;
-        cartaoExiste.DiaVencimentoFatura = cartao.DiaVencimentoFatura;
-        cartaoExiste.LimiteTotal = cartao.LimiteTotal;
-        // cartaoExiste.ContaDePagamentoId = cartao.ContaDePagamento;
+        var cartao = await repository.BuscarCartaoPorId(id);
+        if (cartao == null)
+            throw new ArgumentException("cartão não encontrado.");
         
-
-        await _Repository.AtualizarAsync(cartaoExiste);
+        cartao.AtualizarCartao(dto.Nome, dto.LimiteTotal, dto.DiaFechamentoFatura, dto.DiaVencimentoFatura, dto.ContaDePagamentoId);
+        await repository.AtualizarCartaoAsync(cartao);
         return true;
     }
     
-    // public async Task<bool> DeletarCartaoAsync(int usuarioId, int cartaoId)
-    // {
-    //     var cartao = await _Repository.BuscarPorIdAsync(cartaoId);
-    //     if (cartao == null || cartao.UsuarioId != usuarioId)
-    //     {
-    //         return false;
-    //     }
-    //
-    //     return await _Repository.RemoverAsync(cartao);
-    // }
+    public async Task<bool> DeletarCartaoAsync(int id)
+    {
+        var cartao = await repository.BuscarCartaoPorId(id);
+        if (cartao == null)
+            throw new ArgumentException("Cartão não encontrado.");
     
+        await repository.DeletarCartaoAsync(cartao);
+        return true;
+    }
 }

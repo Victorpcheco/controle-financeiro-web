@@ -10,6 +10,7 @@ public class ContaBancaria
     public decimal SaldoInicial { get; private set; } 
     public decimal? SaldoAtual { get; private set; }
     public DateTime DataCriacao { get; private set; } = DateTime.Now;
+    
     public int UsuarioId { get; private set; }
     public Usuario Usuario { get; private set; } = null!;
 
