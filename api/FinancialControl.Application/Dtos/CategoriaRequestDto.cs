@@ -4,6 +4,6 @@ namespace FinancialControl.Application.DTOs;
 
 public class CategoriaRequestDto
 {
-    public string Nome { get; set; } = string.Empty;
+    public string Nome { get; set; } = null!;
     public TipoCategoria Tipo { get; set; }
 }

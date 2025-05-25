@@ -19,7 +19,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // Registra repositórios e serviços para injeção de dependência
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
-builder.Services.AddScoped<IValidator<UsuarioRegistroDto>, UsuarioRegistroDtoValidator>();
+builder.Services.AddScoped<IValidator<UsuarioRequestDto>, UsuarioRegistroDtoValidator>();
 builder.Services.AddScoped<IValidator<UsuarioLoginDto>, UsuarioLoginDtoValidator>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 

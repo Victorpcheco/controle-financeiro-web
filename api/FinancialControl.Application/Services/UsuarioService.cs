@@ -9,13 +9,13 @@ namespace FinancialControl.Application.Services
     public class UsuarioService(
         IUsuarioRepository repository,
         IValidator<UsuarioLoginDto> loginValidator,
-        IValidator<UsuarioRegistroDto> registroValidator,
+        IValidator<UsuarioRequestDto> registroValidator,
         ITokenService tokenService
     ) : IUsuarioService
     {
         private const int RefreshTokenExpirationDays = 1;
         
-        public async Task<TokenResponseDto> RegistrarUsuarioAsync(UsuarioRegistroDto dto)
+        public async Task<TokenResponseDto> RegistrarUsuarioAsync(UsuarioRequestDto dto)
         {
             var resultValidation = await registroValidator.ValidateAsync(dto);
             if (!resultValidation.IsValid)

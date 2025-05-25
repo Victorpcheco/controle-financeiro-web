@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace FinancialControl.Application.Validators
 {
-    public class UsuarioRegistroDtoValidator : AbstractValidator<UsuarioRegistroDto>
+    public class UsuarioRegistroDtoValidator : AbstractValidator<UsuarioRequestDto>
     {
         public UsuarioRegistroDtoValidator()
         {

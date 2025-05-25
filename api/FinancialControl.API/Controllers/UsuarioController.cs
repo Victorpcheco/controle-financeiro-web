@@ -9,7 +9,7 @@ namespace FinancialControl.API.Controllers
     public class UsuarioController(IUsuarioService service) : ControllerBase
     {
         [HttpPost("registrar")]
-        public async Task<ActionResult> RegistrarUsuario([FromBody] UsuarioRegistroDto dto)
+        public async Task<ActionResult> RegistrarUsuario([FromBody] UsuarioRequestDto dto)
         {
                 var token = await service.RegistrarUsuarioAsync(dto);
                 return Ok(token);

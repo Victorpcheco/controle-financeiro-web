@@ -6,18 +6,15 @@ namespace FinancialControl.API.Controllers
 {
     [ApiController]
     [Route("api/categoria")]
-    public class CategoriaController : ControllerBase
+    public class CategoriaController(
+        ICategoriaService service
+        ) : ControllerBase
     {
-        private readonly ICategoriaService _categoriaService;
-        public CategoriaController(ICategoriaService categoriaService)
-        {
-            _categoriaService = categoriaService;
-        }
 
         [HttpGet("listarPaginado/{usuarioId:int}")]
         public async Task<IActionResult> ListarCategoriasPaginado(int usuarioId, [FromQuery] int pagina = 1, [FromQuery] int quantidade = 15)
         {
-            var categorias = await _categoriaService.ListarPaginadoAsync(usuarioId,pagina, quantidade);
+            var categorias = await service.ListarCategoriaPaginadoAsync(usuarioId,pagina, quantidade);
 
             return Ok(categorias);
         }
@@ -25,26 +22,28 @@ namespace FinancialControl.API.Controllers
         [HttpGet("listar/{id:int}")]
         public async Task<IActionResult> ListarCategoriaPorId(int id)
         {
-            var categoria = await _categoriaService.BuscarPorIdAsync(id);
+            var categoria = await service.ObterCategoriaPorId(id);
             return Ok(categoria);
         }
 
         [HttpPost("criar/{usuarioId:int}")]
         public async Task<ActionResult> CriarCategoria(int usuarioId, [FromBody] CategoriaRequestDto dto)
         {
-            await _categoriaService.CriarCategoriaAsync(usuarioId, dto);
+            await service.CriarCategoriaAsync(usuarioId, dto);
             return NoContent();
         }
+        
         [HttpPut("atualizar/{id:int}")]
         public async Task<ActionResult> AtualizarCategoria(int id, [FromBody] CategoriaRequestDto dto)
         {
-            await _categoriaService.AtualizarCategoriaAsync(id, dto);
+            await service.AtualizarCategoriaAsync(id, dto);
             return NoContent();
         }
+        
         [HttpDelete("deletar/{id:int}")]
         public async Task<ActionResult> DeletarCategoria(int id)
         {
-            await _categoriaService.DeletarCategoriaAsync(id);
+            await service.ExcluirCategoriaAsync(id);
             return NoContent();
         }
     }

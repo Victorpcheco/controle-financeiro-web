@@ -4,7 +4,7 @@ namespace FinancialControl.Application.Interfaces
 {
     public interface IUsuarioService
     {
-        Task<TokenResponseDto> RegistrarUsuarioAsync(UsuarioRegistroDto dto);
+        Task<TokenResponseDto> RegistrarUsuarioAsync(UsuarioRequestDto dto);
         Task<TokenResponseDto> LoginUsuarioAsync(UsuarioLoginDto dto);
     }
 }

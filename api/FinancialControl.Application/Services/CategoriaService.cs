@@ -7,31 +7,23 @@ using FluentValidation;
 
 namespace FinancialControl.Application.Services
 {
-    public class CategoriaService : ICategoriaService
+    public class CategoriaService(
+        ICategoriaRepository repository,
+        IMapper mapper,
+        IValidator<CategoriaRequestDto> validator
+        ) : ICategoriaService
     {
-        private readonly ICategoriaRepository _categoriaRepository;
-        private readonly IMapper _mapper;
-        private readonly IValidator<CategoriaRequestDto> _categoriaValidator;
-
-        public CategoriaService(ICategoriaRepository categoriaRepository, IMapper mapper,
-            IValidator<CategoriaRequestDto> categoriaValidator)
-        {
-            _categoriaRepository = categoriaRepository;
-            _mapper = mapper;
-            _categoriaValidator = categoriaValidator;
-        }
-
-        public async Task<CategoriaPaginadoResponseDto> ListarPaginadoAsync(int usuarioId, int pagina, int quantidadePorPagina)
+        public async Task<CategoriaPaginadoResponseDto> ListarCategoriaPaginadoAsync(int usuarioId, int pagina, int quantidadePorPagina)
         {
             if (pagina < 1)
                 throw new ArgumentException("A página deve ser maior ou igual a 1.");
             if (quantidadePorPagina < 1)
                 throw new ArgumentException("A quantidade deve ser maior ou igual a 1.");
 
-            var categorias = await _categoriaRepository.ListarPaginadoAsync(usuarioId, pagina, quantidadePorPagina);
-            var categoriaDto = categorias.Select(x => _mapper.Map<CategoriaResponseDto>(x)).ToList();
-            var total = await _categoriaRepository.ContarTotalAsync();
-
+            var categorias = await repository.ListarCategoriaPaginadoAsync(usuarioId, pagina, quantidadePorPagina);
+            var total = await repository.ContarTotalAsync();
+            var categoriaDto = categorias.Select(x => mapper.Map<CategoriaResponseDto>(x)).ToList();
+            
             return new CategoriaPaginadoResponseDto
             {
                 Total = total,
@@ -41,74 +33,72 @@ namespace FinancialControl.Application.Services
             };
         }
 
-        public async Task<Categoria?> BuscarPorIdAsync(int id)
+        public async Task<Categoria?> ObterCategoriaPorId(int id)
         {
             if (id < 1)
                 throw new ArgumentException("Id inválido");
 
-            var categoria = await _categoriaRepository.BuscarPorId(id);
+            var categoria = await repository.ObterCategoriaPorIdAsync(id);
 
             if (categoria == null)
-                throw new KeyNotFoundException($"Categoria com id {id} não encontrada.");
+                throw new KeyNotFoundException("Categoria não encontrada.");
 
             return categoria;
         }
 
         public async Task<bool> CriarCategoriaAsync(int usuarioId, CategoriaRequestDto dto)
         {
-            var validationResult = await _categoriaValidator.ValidateAsync(dto);
+            var validationResult = await validator.ValidateAsync(dto);
             if (!validationResult.IsValid)
             {
                 throw new ValidationException(validationResult.Errors);
             }
-
-            var categoria = _mapper.Map<Categoria>(dto);
-
-            var categoriaExiste = await _categoriaRepository.BuscarPorNome(categoria.Nome);
+            
+            var categoriaExiste = await repository.ObterCategoriaPorNomeAsync(dto.Nome);
             if (categoriaExiste != null)
             {
-                throw new InvalidOperationException($"Categoria com id {categoria.Id} já existe.");
+                throw new InvalidOperationException("Categoria já cadastrada.");
             }
             
-            categoria.UsuarioId = usuarioId;
-            await _categoriaRepository.CriarCategoriaAsync(categoria);
+            var categoria = mapper.Map<Categoria>(dto);
+            categoria.AtualizarUsuarioId(usuarioId);
+            
+            await repository.CriarCategoriaAsync(categoria);
             return true;
         }
 
         public async Task<bool> AtualizarCategoriaAsync(int id, CategoriaRequestDto dto)
         {
-            var validationResult = await _categoriaValidator.ValidateAsync(dto);
+            var validationResult = await validator.ValidateAsync(dto);
             if (!validationResult.IsValid)
             {
                 throw new ValidationException(validationResult.Errors);
             }
-
-            var categoria = _mapper.Map<Categoria>(dto);
-
-            var atualizaCategoria = await _categoriaRepository.BuscarPorId(id);
-            if (atualizaCategoria == null)
+            
+            var categoria = await repository.ObterCategoriaPorIdAsync(id);
+            if (categoria == null)
             {
-                throw new KeyNotFoundException($"Categoria com id {categoria.Id} não encontrada.");
+                throw new KeyNotFoundException("Categoria não encontrada.");
             }
             
-            atualizaCategoria.Nome = categoria.Nome;
-            atualizaCategoria.Tipo = categoria.Tipo;
-            await _categoriaRepository.AtualizarCategoriaAsync(atualizaCategoria);
+            categoria.AtualizarCategoria(dto.Nome, dto.Tipo);
+            
+            await repository.AtualizarCategoriaAsync(categoria);
             return true;
         }
 
-        public async Task<bool> DeletarCategoriaAsync(int id)
+        public async Task<bool> ExcluirCategoriaAsync(int id)
         {
             if (id < 1)
                 throw new ArgumentException("Id inválido");
 
-            var categoria = await _categoriaRepository.BuscarPorId(id);
+            var categoria = await repository.ObterCategoriaPorIdAsync(id);
             if (categoria == null)
             {
-                throw new KeyNotFoundException($"Categoria com id {id} não encontrada.");
+                throw new KeyNotFoundException("Categoria não encontrada.");
             }
 
-            await _categoriaRepository.DeletarCategoriaAsync(categoria);
+            await repository.ExcluirCategoriaAsync(categoria);
             return true;
         }
     }
