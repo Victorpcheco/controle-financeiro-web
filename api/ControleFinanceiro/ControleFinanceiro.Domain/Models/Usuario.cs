@@ -13,6 +13,7 @@ public class Usuario
     public ICollection<ContaBancaria> ContasBancarias { get; set; } = null!;
     public ICollection<CartaoCredito> Cartoes { get; set; } = null!;
     public ICollection<Despesa> Despesas { get; set; } = null!;
+    public ICollection<Receita> Receitas { get; set; } = null!;
     public ICollection<MesReferencia> MesesReferencia { get; set; } = null!;
     public ICollection<PlanejamentoCategoria> PlanejamentosCategorias { get; set; } = null!;
 
