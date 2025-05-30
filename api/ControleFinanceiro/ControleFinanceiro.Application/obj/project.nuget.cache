@@ -1,8 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "hoTzgl+/CZo=",
+  "dgSpecHash": "L0yUfTJw2eE=",
   "success": true,
-  "projectFilePath": "C:\\Projects\\api\\ControleFinanceiro\\ControleFinanceiro.Application\\ControleFinanceiro.Application.csproj",
-  "expectedPackageFiles": [],
+  "projectFilePath": "C:\\Projects\\controle-financeiro-web\\api\\ControleFinanceiro\\ControleFinanceiro.Application\\ControleFinanceiro.Application.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\victo\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512"
+  ],
   "logs": []
 }

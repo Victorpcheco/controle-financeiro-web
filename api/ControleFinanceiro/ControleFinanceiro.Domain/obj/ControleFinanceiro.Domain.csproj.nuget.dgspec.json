@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Projects\\api\\ControleFinanceiro\\ControleFinanceiro.Domain\\ControleFinanceiro.Domain.csproj": {}
+    "C:\\Projects\\controle-financeiro-web\\api\\ControleFinanceiro\\ControleFinanceiro.Domain\\ControleFinanceiro.Domain.csproj": {}
   },
   "projects": {
-    "C:\\Projects\\api\\ControleFinanceiro\\ControleFinanceiro.Domain\\ControleFinanceiro.Domain.csproj": {
+    "C:\\Projects\\controle-financeiro-web\\api\\ControleFinanceiro\\ControleFinanceiro.Domain\\ControleFinanceiro.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Projects\\api\\ControleFinanceiro\\ControleFinanceiro.Domain\\ControleFinanceiro.Domain.csproj",
+        "projectUniqueName": "C:\\Projects\\controle-financeiro-web\\api\\ControleFinanceiro\\ControleFinanceiro.Domain\\ControleFinanceiro.Domain.csproj",
         "projectName": "ControleFinanceiro.Domain",
-        "projectPath": "C:\\Projects\\api\\ControleFinanceiro\\ControleFinanceiro.Domain\\ControleFinanceiro.Domain.csproj",
+        "projectPath": "C:\\Projects\\controle-financeiro-web\\api\\ControleFinanceiro\\ControleFinanceiro.Domain\\ControleFinanceiro.Domain.csproj",
         "packagesPath": "C:\\Users\\victo\\.nuget\\packages\\",
-        "outputPath": "C:\\Projects\\api\\ControleFinanceiro\\ControleFinanceiro.Domain\\obj\\",
+        "outputPath": "C:\\Projects\\controle-financeiro-web\\api\\ControleFinanceiro\\ControleFinanceiro.Domain\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -48,6 +48,12 @@
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
+          "dependencies": {
+            "BCrypt.Net-Next": {
+              "target": "Package",
+              "version": "[4.0.3, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
