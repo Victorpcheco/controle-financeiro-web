@@ -1,0 +1,16 @@
+C:\Projects\controle-financeiro-web\api\ControleFinanceiro\ControleFinanceiro.Application\bin\Debug\net8.0\ControleFinanceiro.Application.deps.json
+C:\Projects\controle-financeiro-web\api\ControleFinanceiro\ControleFinanceiro.Application\bin\Debug\net8.0\ControleFinanceiro.Application.dll
+C:\Projects\controle-financeiro-web\api\ControleFinanceiro\ControleFinanceiro.Application\bin\Debug\net8.0\ControleFinanceiro.Application.pdb
+C:\Projects\controle-financeiro-web\api\ControleFinanceiro\ControleFinanceiro.Application\bin\Debug\net8.0\ControleFinanceiro.Domain.dll
+C:\Projects\controle-financeiro-web\api\ControleFinanceiro\ControleFinanceiro.Application\bin\Debug\net8.0\ControleFinanceiro.Domain.pdb
+C:\Projects\controle-financeiro-web\api\ControleFinanceiro\ControleFinanceiro.Application\obj\Debug\net8.0\ControleFinanceiro.Application.csproj.AssemblyReference.cache
+C:\Projects\controle-financeiro-web\api\ControleFinanceiro\ControleFinanceiro.Application\obj\Debug\net8.0\ControleFinanceiro.Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Projects\controle-financeiro-web\api\ControleFinanceiro\ControleFinanceiro.Application\obj\Debug\net8.0\ControleFinanceiro.Application.AssemblyInfoInputs.cache
+C:\Projects\controle-financeiro-web\api\ControleFinanceiro\ControleFinanceiro.Application\obj\Debug\net8.0\ControleFinanceiro.Application.AssemblyInfo.cs
+C:\Projects\controle-financeiro-web\api\ControleFinanceiro\ControleFinanceiro.Application\obj\Debug\net8.0\ControleFinanceiro.Application.csproj.CoreCompileInputs.cache
+C:\Projects\controle-financeiro-web\api\ControleFinanceiro\ControleFinanceiro.Application\obj\Debug\net8.0\ControleFinanceiro.Application.sourcelink.json
+C:\Projects\controle-financeiro-web\api\ControleFinanceiro\ControleFinanceiro.Application\obj\Debug\net8.0\Controle.8EC8DDDC.Up2Date
+C:\Projects\controle-financeiro-web\api\ControleFinanceiro\ControleFinanceiro.Application\obj\Debug\net8.0\ControleFinanceiro.Application.dll
+C:\Projects\controle-financeiro-web\api\ControleFinanceiro\ControleFinanceiro.Application\obj\Debug\net8.0\refint\ControleFinanceiro.Application.dll
+C:\Projects\controle-financeiro-web\api\ControleFinanceiro\ControleFinanceiro.Application\obj\Debug\net8.0\ControleFinanceiro.Application.pdb
+C:\Projects\controle-financeiro-web\api\ControleFinanceiro\ControleFinanceiro.Application\obj\Debug\net8.0\ref\ControleFinanceiro.Application.dll
