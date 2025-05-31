@@ -1,11 +1,13 @@
 using System.Text;
 using ControleFinanceiro.Application.Dtos;
 using ControleFinanceiro.Application.Interfaces;
+using ControleFinanceiro.Application.Interfaces.Categorias;
 using ControleFinanceiro.Application.Interfaces.Contas;
 using ControleFinanceiro.Application.Interfaces.Token;
 using ControleFinanceiro.Application.Interfaces.Usuarios;
 using ControleFinanceiro.Application.Mapping;
 using ControleFinanceiro.Application.UseCases;
+using ControleFinanceiro.Application.UseCases.Categorias;
 using ControleFinanceiro.Application.UseCases.Contas;
 using ControleFinanceiro.Application.UseCases.Usuarios;
 using ControleFinanceiro.Application.Validators;
@@ -41,8 +43,17 @@ builder.Services.AddScoped<IDeletarContaBancaria, DeletarContaBancaria>();
 builder.Services.AddScoped<IValidator<ContaRequest>, ContaRequestValidator>();
 builder.Services.AddScoped<IValidator<ContaAtualizarRequest>, ContaAtualizarRequestValidator>();
 
+builder.Services.AddScoped<ICategoriaRepository, CategoriaRepository>();
+builder.Services.AddScoped<IListarCategorias, ListarCategorias>();
+builder.Services.AddScoped<IObterCategoria, ObterCategoria>();
+builder.Services.AddScoped<ICriarCategoria, CriarCategoria>();
+builder.Services.AddScoped<IAtualizarCategoria, AtualizarCategoria>();
+builder.Services.AddScoped<IDeletarCategoria, DeletarCategoria>();
+builder.Services.AddScoped<IValidator<CategoriaRequest>, CategoriaRequestValidator>();
+
 builder.Services.AddAutoMapper(typeof(Program)); 
 builder.Services.AddAutoMapper(typeof(ContaProfile));
+builder.Services.AddAutoMapper(typeof(CategoriaProfile));
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IUserContext, UserContext>();
@@ -56,7 +67,7 @@ builder.Services.AddAuthentication(options =>
     .AddJwtBearer(options =>
     {
         options.SaveToken = true;
-        options.RequireHttpsMetadata = false; // Para desenvolvimento
+        options.RequireHttpsMetadata = false; 
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
@@ -68,7 +79,7 @@ builder.Services.AddAuthentication(options =>
             IssuerSigningKey = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"]!) 
             ),
-            ClockSkew = TimeSpan.Zero // Remove delay padrão de 5 minutos
+            ClockSkew = TimeSpan.Zero 
         };
     });
 

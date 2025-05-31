@@ -23,6 +23,9 @@ public class ContaBancaria
     {
         if (string.IsNullOrWhiteSpace(nome))
             throw new ArgumentException("O nome da conta bancária não pode ser nulo ou vazio.", nameof(nome));
+        
+        if (nome.Length > 100)
+            throw new ArgumentException("O nome da conta bancária é muito grande", nameof(nome));
     }
     
     private static void ValidarUsuarioId(int usuarioId)
