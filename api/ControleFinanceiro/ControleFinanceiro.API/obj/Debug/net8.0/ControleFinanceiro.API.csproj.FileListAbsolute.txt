@@ -178,3 +178,4 @@ C:\Projects\controle-financeiro-web\api\ControleFinanceiro\ControleFinanceiro.AP
 C:\Projects\controle-financeiro-web\api\ControleFinanceiro\ControleFinanceiro.API\bin\Debug\net8.0\AutoMapper.dll
 C:\Projects\controle-financeiro-web\api\ControleFinanceiro\ControleFinanceiro.API\bin\Debug\net8.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
 C:\Projects\controle-financeiro-web\api\ControleFinanceiro\ControleFinanceiro.API\bin\Debug\net8.0\FluentValidation.dll
+C:\Projects\controle-financeiro-web\api\ControleFinanceiro\ControleFinanceiro.API\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll

@@ -1,19 +1,21 @@
 using ControleFinanceiro.Application.Dtos;
 using ControleFinanceiro.Application.Interfaces;
+using ControleFinanceiro.Application.Interfaces.Token;
+using ControleFinanceiro.Application.Interfaces.Usuarios;
 using ControleFinanceiro.Domain.Interfaces;
 using FluentValidation;
 
-namespace ControleFinanceiro.Application.UseCases;
+namespace ControleFinanceiro.Application.UseCases.Usuarios;
 
-public class LoginUsuarioUseCase(IValidator<LoginRequest> loginValidator,
+public class LoginUsuario(IValidator<LoginRequest> loginValidator,
     IUsuarioRepository repository,
-    IGerarTokenUseCase geraToken,
-    IGerarRefreshTokenUseCase geraRefreshToken
-    ) : ILoginUsuarioUseCase
+    IGerarToken token,
+    IGerarRefreshToken refreshToken
+    ) : ILoginUsuario
 {
     private const int RefreshTokenExpirationDays = 1;
     
-    public async Task<TokenResponse> LoginUsuarioAsync(LoginRequest request)
+    public async Task<TokenResponse> Login(LoginRequest request)
     {
 
         var resultValidation = await loginValidator.ValidateAsync(request);
@@ -25,11 +27,11 @@ public class LoginUsuarioUseCase(IValidator<LoginRequest> loginValidator,
         if (usuario == null)
             throw new ArgumentException("Usuário não encontrado.");
 
-        var token = geraToken.GerarToken(usuario);
-        var refreshToken = geraRefreshToken.GerarRefreshToken();
+        var jwtToken = token.GeraToken(usuario);
+        var refresh = refreshToken.GeraRefreshToken();
         var expiration = DateTime.Now.AddDays(RefreshTokenExpirationDays);
 
-        await repository.AtualizarRefreshTokenAsync(usuario, refreshToken, expiration);
-        return new TokenResponse() { Token = token, RefreshToken = refreshToken };
+        await repository.AtualizarRefreshTokenAsync(usuario, refresh, expiration);
+        return new TokenResponse() { Token = jwtToken, RefreshToken = refresh };
     }
 }

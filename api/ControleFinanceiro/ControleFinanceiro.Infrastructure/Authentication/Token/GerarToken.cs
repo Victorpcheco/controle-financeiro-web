@@ -1,31 +1,31 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using ControleFinanceiro.Application.Interfaces;
+using ControleFinanceiro.Application.Interfaces.Token;
 using ControleFinanceiro.Domain.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
 namespace ControleFinanceiro.Infrastructure.Authentication.Token;
 
-public class GerarTokenUseCase : IGerarTokenUseCase
+public class GerarToken : IGerarToken
 {
     private readonly string? _secretKey;
         private readonly string? _issuer;
         private readonly string? _audience;
         private readonly int _tokenExpirationInMinutes;
         
-        public GerarTokenUseCase(IConfiguration configuration)
+        public GerarToken(IConfiguration configuration)
         {
-            var jwtSettings = configuration.GetSection("JwtSettings");
-            _secretKey = jwtSettings["SecretKey"] ?? throw new ArgumentNullException("SecretKey não configurada.");
+            var jwtSettings = configuration.GetSection("JWT");
+            _secretKey = jwtSettings["Key"] ?? throw new ArgumentNullException("SecretKey não configurada.");
             _issuer = jwtSettings["Issuer"] ?? throw new ArgumentNullException("Issuer não configurado.");
             _audience = jwtSettings["Audience"] ?? throw new ArgumentNullException("Audience não configurado.");
             if (!int.TryParse(jwtSettings["TokenExpirationInMinutes"], out _tokenExpirationInMinutes))
                 throw new ArgumentException("TokenExpirationInMinutes inválido ou não configurado.");
         }
 
-        public string GerarToken(Usuario usuario)
+        public string GeraToken(Usuario usuario)
         {
             // Busca as inormações do usuário no banco de dados
             var claims = new List<Claim> 

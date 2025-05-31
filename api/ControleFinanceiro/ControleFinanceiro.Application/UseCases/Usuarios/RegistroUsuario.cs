@@ -1,21 +1,23 @@
 using ControleFinanceiro.Application.Dtos;
 using ControleFinanceiro.Application.Interfaces;
+using ControleFinanceiro.Application.Interfaces.Token;
+using ControleFinanceiro.Application.Interfaces.Usuarios;
 using ControleFinanceiro.Domain.Interfaces;
 using FluentValidation;
 using ControleFinanceiro.Domain.Models;
 
-namespace ControleFinanceiro.Application.UseCases;
+namespace ControleFinanceiro.Application.UseCases.Usuarios;
 
-public class RegistrarUsuarioUseCase(
+public class RegistroUsuario(
     IUsuarioRepository repository,
     IValidator<RegisterRequest> registerValidator,
-    IGerarRefreshTokenUseCase gerarRefreshToken,
-    IGerarTokenUseCase gerarToken ) : IRegistrarUsuarioUseCase
+    IGerarRefreshToken refreshToken,
+    IGerarToken token ) : IRegistroUsuario
 {
     
     private const int RefreshTokenExpirationDays = 1;
     
-    public async Task<TokenResponse> RegistrarUsuarioAsync(RegisterRequest request)
+    public async Task<TokenResponse> RegistrarUsuario(RegisterRequest request)
     {
         var resultValidation = await registerValidator.ValidateAsync(request);
         if (!resultValidation.IsValid)
@@ -25,14 +27,14 @@ public class RegistrarUsuarioUseCase(
         if (usuarioExiste != null)
             throw new ArgumentException("Usuário já cadastrado no sistema.");
 
-        var refreshToken = gerarRefreshToken.GerarRefreshToken();
+        var refresh = refreshToken.GeraRefreshToken();
         var expiration = DateTime.Now.AddDays(RefreshTokenExpirationDays);
             
-        var usuario = new Usuario(request.NomeCompleto,request.Email,request.SenhaHash,refreshToken,expiration);
+        var usuario = new Usuario(request.NomeCompleto,request.Email,request.SenhaHash,refresh,expiration);
         await repository.CriarUsuarioAsync(usuario);
 
-        var jwtToken = gerarToken.GerarToken(usuario);
+        var jwtToken = token.GeraToken(usuario);
 
-        return new  TokenResponse() { Token = jwtToken, RefreshToken = refreshToken };
+        return new  TokenResponse() { Token = jwtToken, RefreshToken = refresh };
     }
 }

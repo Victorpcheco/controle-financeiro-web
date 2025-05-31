@@ -1,6 +1,13 @@
+using System.Text;
 using ControleFinanceiro.Application.Dtos;
 using ControleFinanceiro.Application.Interfaces;
+using ControleFinanceiro.Application.Interfaces.Contas;
+using ControleFinanceiro.Application.Interfaces.Token;
+using ControleFinanceiro.Application.Interfaces.Usuarios;
+using ControleFinanceiro.Application.Mapping;
 using ControleFinanceiro.Application.UseCases;
+using ControleFinanceiro.Application.UseCases.Contas;
+using ControleFinanceiro.Application.UseCases.Usuarios;
 using ControleFinanceiro.Application.Validators;
 using ControleFinanceiro.Domain.Interfaces;
 using ControleFinanceiro.Infrastructure.Authentication;
@@ -8,7 +15,9 @@ using ControleFinanceiro.Infrastructure.Authentication.Token;
 using ControleFinanceiro.Infrastructure.Data;
 using ControleFinanceiro.Infrastructure.Repositories;
 using FluentValidation;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,15 +25,52 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
-builder.Services.AddScoped<ILoginUsuarioUseCase, LoginUsuarioUseCase>();
-builder.Services.AddScoped<IRegistrarUsuarioUseCase, RegistrarUsuarioUseCase>();
+builder.Services.AddScoped<ILoginUsuario, LoginUsuario>();
+builder.Services.AddScoped<IRegistroUsuario, RegistroUsuario>();
 builder.Services.AddScoped<IValidator<LoginRequest>, LoginRequestValidator>();
 builder.Services.AddScoped<IValidator<RegisterRequest>, RegisterRequestValidator>();
-builder.Services.AddScoped<IGerarTokenUseCase, GerarTokenUseCase>();
-builder.Services.AddScoped<IGerarRefreshTokenUseCase, GerarRefreshTokenUseCase>();
+builder.Services.AddScoped<IGerarToken, GerarToken>();
+builder.Services.AddScoped<IGerarRefreshToken, GerarRefreshToken>();
+
+builder.Services.AddScoped<IContaBancariaRepository, ContaBancariaRepository>();
+builder.Services.AddScoped<IListarContasBancarias, ListarContasBancarias>();
+builder.Services.AddScoped<IObterContaBancaria, ObterContaBancaria>();
+builder.Services.AddScoped<ICriarContaBancaria, CriarContaBancaria>();
+builder.Services.AddScoped<IAtualizarContaBancaria, AtualizarContaBancaria>();
+builder.Services.AddScoped<IDeletarContaBancaria, DeletarContaBancaria>();
+builder.Services.AddScoped<IValidator<ContaRequest>, ContaRequestValidator>();
+builder.Services.AddScoped<IValidator<ContaAtualizarRequest>, ContaAtualizarRequestValidator>();
+
+builder.Services.AddAutoMapper(typeof(Program)); 
+builder.Services.AddAutoMapper(typeof(ContaProfile));
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IUserContext, UserContext>();
+
+builder.Services.AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(options =>
+    {
+        options.SaveToken = true;
+        options.RequireHttpsMetadata = false; // Para desenvolvimento
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["JWT:Issuer"], 
+            ValidAudience = builder.Configuration["JWT:Audience"], 
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"]!) 
+            ),
+            ClockSkew = TimeSpan.Zero // Remove delay padrão de 5 minutos
+        };
+    });
 
 // Configura os controllers e a serialização de enums como string no JSON
 builder.Services.AddControllers()
@@ -48,6 +94,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseMiddleware<ControleFinanceiro.API.Middlewares.ExceptionMiddleware>();
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
