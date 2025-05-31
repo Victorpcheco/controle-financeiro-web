@@ -1,8 +1,9 @@
 using System.Security.Cryptography;
+using ControleFinanceiro.Application.Interfaces;
 
 namespace ControleFinanceiro.Infrastructure.Authentication.Token;
 
-public class GerarRefreshTokenUseCase
+public class GerarRefreshTokenUseCase : IGerarRefreshTokenUseCase
 {
     // Gera um refresh token seguro usando um gerador de números aleatórios criptograficamente seguro
     public string GerarRefreshToken()

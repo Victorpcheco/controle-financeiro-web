@@ -175,3 +175,6 @@ C:\Projects\controle-financeiro-web\api\ControleFinanceiro\ControleFinanceiro.AP
 C:\Projects\controle-financeiro-web\api\ControleFinanceiro\ControleFinanceiro.API\obj\Debug\net8.0\ControleFinanceiro.API.pdb
 C:\Projects\controle-financeiro-web\api\ControleFinanceiro\ControleFinanceiro.API\obj\Debug\net8.0\ControleFinanceiro.API.genruntimeconfig.cache
 C:\Projects\controle-financeiro-web\api\ControleFinanceiro\ControleFinanceiro.API\obj\Debug\net8.0\ref\ControleFinanceiro.API.dll
+C:\Projects\controle-financeiro-web\api\ControleFinanceiro\ControleFinanceiro.API\bin\Debug\net8.0\AutoMapper.dll
+C:\Projects\controle-financeiro-web\api\ControleFinanceiro\ControleFinanceiro.API\bin\Debug\net8.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
+C:\Projects\controle-financeiro-web\api\ControleFinanceiro\ControleFinanceiro.API\bin\Debug\net8.0\FluentValidation.dll

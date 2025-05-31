@@ -11,8 +11,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Interfaces\Usuario\" />
-      <Folder Include="UseCases\Usuario\" />
+      <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+      <PackageReference Include="FluentValidation" Version="12.0.0" />
     </ItemGroup>
 
 </Project>
