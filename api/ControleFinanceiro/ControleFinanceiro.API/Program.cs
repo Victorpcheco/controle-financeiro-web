@@ -1,12 +1,14 @@
 using System.Text;
 using ControleFinanceiro.Application.Dtos;
 using ControleFinanceiro.Application.Interfaces;
+using ControleFinanceiro.Application.Interfaces.Cartao;
 using ControleFinanceiro.Application.Interfaces.Categorias;
 using ControleFinanceiro.Application.Interfaces.Contas;
 using ControleFinanceiro.Application.Interfaces.Token;
 using ControleFinanceiro.Application.Interfaces.Usuarios;
 using ControleFinanceiro.Application.Mapping;
 using ControleFinanceiro.Application.UseCases;
+using ControleFinanceiro.Application.UseCases.Cartao;
 using ControleFinanceiro.Application.UseCases.Categorias;
 using ControleFinanceiro.Application.UseCases.Contas;
 using ControleFinanceiro.Application.UseCases.Usuarios;
@@ -49,11 +51,20 @@ builder.Services.AddScoped<IObterCategoria, ObterCategoria>();
 builder.Services.AddScoped<ICriarCategoria, CriarCategoria>();
 builder.Services.AddScoped<IAtualizarCategoria, AtualizarCategoria>();
 builder.Services.AddScoped<IDeletarCategoria, DeletarCategoria>();
-builder.Services.AddScoped<IValidator<CategoriaRequest>, CategoriaRequestValidator>();
+builder.Services.AddScoped<IValidator<CategoriaCriarRequest>, CategoriaRequestValidator>();
+
+builder.Services.AddScoped<ICartaoRepository, CartaoRepository>();
+builder.Services.AddScoped<IListarCartaoPaginadoUseCase, ListarCartaoPaginadoUseCase>();
+builder.Services.AddScoped<IBuscarCartaoPorIdUseCase, BuscarCartaoPorIdUseCase>();
+builder.Services.AddScoped<ICriarCartaoUseCase, CriarCartaoUseCase>();
+builder.Services.AddScoped<IAtualizarCartaoUseCase, AtualizarCartaoUseCase>();
+builder.Services.AddScoped<IDeletarCartaoUseCase, DeletarCartaoUseCase>();
+builder.Services.AddScoped<IValidator<CartaoCriarDto>, CartaoCriarDtoValidator>();
 
 builder.Services.AddAutoMapper(typeof(Program)); 
 builder.Services.AddAutoMapper(typeof(ContaProfile));
 builder.Services.AddAutoMapper(typeof(CategoriaProfile));
+builder.Services.AddAutoMapper(typeof(CartaoMappingProfile));
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IUserContext, UserContext>();

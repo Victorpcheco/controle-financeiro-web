@@ -8,7 +8,7 @@ public class CategoriaProfile : Profile
 {
     public CategoriaProfile()
     {
-        CreateMap<CategoriaRequest, Categoria>();
+        CreateMap<CategoriaCriarRequest, Categoria>();
         CreateMap<Categoria, CategoriaResponse>();
     }
 }

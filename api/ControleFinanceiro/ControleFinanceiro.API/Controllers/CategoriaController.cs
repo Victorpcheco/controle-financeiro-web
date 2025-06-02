@@ -30,16 +30,16 @@ public class CategoriaController(IListarCategorias listar,
     }
 
     [HttpPost("criar")]
-    public async Task<ActionResult> CriarCategoria([FromBody] CategoriaRequest request)
+    public async Task<ActionResult> CriarCategoria([FromBody] CategoriaCriarRequest criarRequest)
     {
-        await criar.CriarNovaCategoria(request);
+        await criar.CriarNovaCategoria(criarRequest);
         return NoContent();
     }
         
     [HttpPut("atualizar/{id:int}")]
-    public async Task<ActionResult> AtualizarCategoria(int id, [FromBody] CategoriaRequest request)
+    public async Task<ActionResult> AtualizarCategoria(int id, [FromBody] CategoriaCriarRequest criarRequest)
     {
-        await atualizar.AtualizarCategoriaExistente(id, request);
+        await atualizar.AtualizarCategoriaExistente(id, criarRequest);
         return NoContent();
     }
         

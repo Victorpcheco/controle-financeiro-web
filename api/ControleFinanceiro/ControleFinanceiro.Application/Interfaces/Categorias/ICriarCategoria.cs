@@ -4,5 +4,5 @@ namespace ControleFinanceiro.Application.Interfaces.Categorias;
 
 public interface ICriarCategoria
 {
-    Task<bool> CriarNovaCategoria(CategoriaRequest request);
+    Task<bool> CriarNovaCategoria(CategoriaCriarRequest criarRequest);
 }

@@ -7,12 +7,12 @@ namespace ControleFinanceiro.Application.UseCases.Categorias;
 
 public class AtualizarCategoria(
     ICategoriaRepository repository,
-    IValidator<CategoriaRequest> validator
+    IValidator<CategoriaCriarRequest> validator
 ) : IAtualizarCategoria
 {
-    public async Task<bool> AtualizarCategoriaExistente(int id, CategoriaRequest request)
+    public async Task<bool> AtualizarCategoriaExistente(int id, CategoriaCriarRequest criarRequest)
     {
-        var validationResult = await validator.ValidateAsync(request);
+        var validationResult = await validator.ValidateAsync(criarRequest);
         if (!validationResult.IsValid)
         {
             throw new ValidationException(validationResult.Errors);
@@ -22,7 +22,7 @@ public class AtualizarCategoria(
         if (categoria == null)
             throw new KeyNotFoundException("Categoria não encontrada.");
             
-        categoria.AtualizarCategoria(request.NomeCategoria, request.Tipo);
+        categoria.AtualizarCategoria(criarRequest.NomeCategoria, criarRequest.Tipo);
             
         await repository.AtualizarCategoriaAsync(categoria);
         return true;

@@ -8,23 +8,23 @@ namespace ControleFinanceiro.Application.UseCases.Categorias;
 
 public class CriarCategoria(
     ICategoriaRepository repository,
-    IValidator<CategoriaRequest> validator,
+    IValidator<CategoriaCriarRequest> validator,
     IUserContext userContext
 ) : ICriarCategoria
 {
-    public async Task<bool> CriarNovaCategoria(CategoriaRequest request)
+    public async Task<bool> CriarNovaCategoria(CategoriaCriarRequest criarRequest)
     {
-        var validationResult = await validator.ValidateAsync(request);
+        var validationResult = await validator.ValidateAsync(criarRequest);
         if (!validationResult.IsValid)
             throw new ValidationException(validationResult.Errors);
             
-        var categoriaExiste = await repository.BuscarCategoriaPorNomeAsync(request.NomeCategoria);
+        var categoriaExiste = await repository.BuscarCategoriaPorNomeAsync(criarRequest.NomeCategoria);
         if (categoriaExiste != null)
             throw new InvalidOperationException("Categoria já cadastrada.");
 
         var usuarioId = userContext.UsuarioId;
             
-        var categoria = new Categoria(request.NomeCategoria, request.Tipo, usuarioId);
+        var categoria = new Categoria(criarRequest.NomeCategoria, criarRequest.Tipo, usuarioId);
         categoria.AtualizarUsuarioId(usuarioId);
             
         await repository.CriarCategoriaAsync(categoria);
