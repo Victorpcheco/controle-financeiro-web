@@ -47,7 +47,7 @@ public class CartaoController (
     public async Task<ActionResult<bool>> CriarCartaoAsync([FromBody] CartaoCriarDto dto)
     {
         var resultado = await criarCartaoUseCase.ExecuteAsync(dto);
-        return CreatedAtAction(nameof(BuscarCartaoAsync), new { id = 0 }, resultado);
+        return Ok(resultado);
     }
 
     [HttpPut("{id:int}")]
@@ -61,6 +61,6 @@ public class CartaoController (
     public async Task<ActionResult<bool>> DeletarCartaoAsync(int id)
     {
         var resultado = await deletarCartaoUseCase.ExecuteAsync(id);
-        return Ok(resultado);
+        return NoContent();
     }
 }

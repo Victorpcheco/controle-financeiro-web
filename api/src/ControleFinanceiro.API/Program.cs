@@ -17,6 +17,11 @@ using ControleFinanceiro.Application.UseCases.Contas.BuscarContaBancaria;
 using ControleFinanceiro.Application.UseCases.Contas.CriarContaBancaria;
 using ControleFinanceiro.Application.UseCases.Contas.DeletarContaBancaria;
 using ControleFinanceiro.Application.UseCases.Contas.ListarContaBancaria;
+using ControleFinanceiro.Application.UseCases.Despesas.AtualizarDespesa;
+using ControleFinanceiro.Application.UseCases.Despesas.BuscarDespesa;
+using ControleFinanceiro.Application.UseCases.Despesas.CriarDespesa;
+using ControleFinanceiro.Application.UseCases.Despesas.DeletarDespesa;
+using ControleFinanceiro.Application.UseCases.Despesas.ListarDespesa;
 using ControleFinanceiro.Application.UseCases.MesDeReferencia.AtualizarMesReferencia;
 using ControleFinanceiro.Application.UseCases.MesDeReferencia.BuscarMesReferencia;
 using ControleFinanceiro.Application.UseCases.MesDeReferencia.CriarMesReferencia;
@@ -82,6 +87,15 @@ builder.Services.AddScoped<IDeletarMesReferenciaUseCase, DeletarMesReferenciaUse
 builder.Services.AddScoped<IBuscarMesReferenciaUseCase, BuscarMesReferenciaUseCase>();
 builder.Services.AddScoped<IListarMesReferenciaUseCase, ListarMesReferenciaUseCase>();
 builder.Services.AddScoped<IValidator<MesReferenciaCriarDto>, MesReferenciaCriarDtoValidator>();
+
+builder.Services.AddScoped<IListarDespesasUseCase, ListarDespesasUseCase>();
+builder.Services.AddScoped<IValidator<DespesaCriarDto>, DespesaCriaDtoValidtor>();
+builder.Services.AddScoped<ICriarDespesaUseCase, CriarDespesaUseCase>();
+builder.Services.AddScoped<IDespesaRepository, DespesaRepository>();
+builder.Services.AddScoped<IAtualizarDespesaUseCase, AtualizarDespesaUseCase>();
+builder.Services.AddScoped<IBuscarDespesaUseCase, BuscarDespesaUseCase>();
+builder.Services.AddScoped<IDeletarDespesaUseCase, DeletarDespesaUseCase>();
+
 
 builder.Services.AddAutoMapper(typeof(Program)); 
 builder.Services.AddAutoMapper(typeof(ContaBancariaMapper));

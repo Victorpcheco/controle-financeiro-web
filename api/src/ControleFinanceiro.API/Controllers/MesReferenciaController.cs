@@ -43,10 +43,10 @@ public class MesReferenciaController(
     }
 
     [HttpPost]
-    public async Task<ActionResult<int>> CriarMesReferenciaAsync([FromBody] MesReferenciaCriarDto dto)
+    public async Task<ActionResult<bool>> CriarMesReferenciaAsync([FromBody] MesReferenciaCriarDto dto)
     {
-        var idCriado = await criarMesReferenciaUseCase.ExecuteAsync(dto);
-        return CreatedAtAction(nameof(BuscarMesReferenciaAsync), new { id = idCriado }, idCriado);
+        var resultado = await criarMesReferenciaUseCase.ExecuteAsync(dto);
+        return Ok(resultado);
     }
 
     [HttpPut("{id:int}")]
@@ -60,6 +60,6 @@ public class MesReferenciaController(
     public async Task<ActionResult<bool>> DeletarMesReferenciaAsync(int id)
     {
         var resultado = await deletarMesReferenciaUseCase.ExecuteAsync(id);
-        return Ok(resultado);
+        return NoContent();
     }
 }

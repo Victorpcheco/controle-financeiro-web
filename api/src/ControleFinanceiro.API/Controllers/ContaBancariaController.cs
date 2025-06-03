@@ -46,7 +46,7 @@ public class ContaBancariaController (
     public async Task<ActionResult<bool>> CriarContaAsync([FromBody] ContaBancariaCriarDto dto)
     {
         var resultado = await criarContaBancariaUseCase.ExecuteAsync(dto);
-        return CreatedAtAction(nameof(BuscarContaBancariaAsync), new { id = 0 }, resultado);
+        return Ok(resultado);
     }
 
     [HttpPut("{id:int}")]
@@ -60,6 +60,6 @@ public class ContaBancariaController (
     public async Task<ActionResult<bool>> DeletarContaAsync(int id)
     {
         var resultado = await deletarContaBancariaUseCase.ExecuteAsync(id);
-        return Ok(resultado);
+        return NoContent();
     }
 }

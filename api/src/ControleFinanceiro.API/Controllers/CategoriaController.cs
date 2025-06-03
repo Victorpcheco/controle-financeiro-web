@@ -45,7 +45,7 @@ public class CategoriaController(
     public async Task<ActionResult<bool>> CriarCategoriaAsync([FromBody] CategoriaCriarDto dto)
     {
         var resultado = await criarCategoriaUseCase.ExecuteAsync(dto);
-        return CreatedAtAction(nameof(BuscarCategoriaAsync), new { id = 0 }, resultado);
+        return Ok(resultado);
     }
 
     [HttpPut("{id:int}")]
@@ -59,6 +59,6 @@ public class CategoriaController(
     public async Task<ActionResult<bool>> DeletarCategoriaAsync(int id)
     {
         var resultado = await deletarCategoriaUseCase.ExecuteAsync(id);
-        return Ok(resultado);
+        return NoContent();
     }
 }

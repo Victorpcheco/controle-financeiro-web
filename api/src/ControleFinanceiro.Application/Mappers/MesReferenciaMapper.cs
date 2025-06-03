@@ -8,6 +8,6 @@ public class MesReferenciaMapper : Profile
 {
     public MesReferenciaMapper()
     {
-        CreateMap<MesReferenciaResponseDto, MesReferencia>();
+        CreateMap<MesReferencia, MesReferenciaResponseDto>();
     }
 }
