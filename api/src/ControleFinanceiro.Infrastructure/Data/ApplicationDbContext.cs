@@ -1,4 +1,4 @@
-using ControleFinanceiro.Domain.Models;
+using ControleFinanceiro.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace ControleFinanceiro.Infrastructure.Data;
@@ -25,7 +25,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             .HasForeignKey(c => c.UsuarioId)
             .OnDelete(DeleteBehavior.Restrict);
             
-        modelBuilder.Entity<CartaoCredito>()
+        modelBuilder.Entity<Cartao>()
             .HasOne(c => c.Usuario)
             .WithMany(u => u.Cartoes)
             .HasForeignKey(c => c.UsuarioId)
@@ -61,7 +61,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Usuario> Usuarios { get; set;}
     public DbSet<Categoria> Categorias { get; set;}
     public DbSet<ContaBancaria> ContasBancarias { get; set;}
-    public DbSet<CartaoCredito> Cartoes { get; set;}
+    public DbSet<Cartao> Cartoes { get; set;}
     public DbSet<MesReferencia> MesesReferencia { get; set; }
     public DbSet<PlanejamentoCategoria> PlanejamentosCategorias { get; set; }
     public DbSet<Despesa> Despesas { get; set;}

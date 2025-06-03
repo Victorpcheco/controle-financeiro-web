@@ -1,5 +1,5 @@
 using ControleFinanceiro.Domain.Interfaces;
-using ControleFinanceiro.Domain.Models;
+using ControleFinanceiro.Domain.Entities;
 using ControleFinanceiro.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,9 +18,11 @@ public class CategoriaRepository(ApplicationDbContext context) : ICategoriaRepos
             .ToListAsync();
     }
         
-    public async Task<int> ContarTotalAsync()
+    public async Task<int> ContarTotalAsync(int usuarioId)
     {
-        return await context.Categorias.CountAsync();
+        return await context.Categorias
+            .Where(c => c.UsuarioId == usuarioId)
+            .CountAsync();
     }
         
     public async Task<Categoria?> BuscarCategoriaPorIdAsync(int id)

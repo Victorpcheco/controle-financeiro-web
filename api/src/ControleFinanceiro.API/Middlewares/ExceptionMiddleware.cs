@@ -36,7 +36,7 @@ public class ExceptionMiddleware(
         };
 
         // Monta o objeto de resposta de erro
-        var response = new ErrorResponse
+        var response = new ErrorResponseDto
         {
             StatusCode = context.Response.StatusCode,
             Mensagem = exception.Message,

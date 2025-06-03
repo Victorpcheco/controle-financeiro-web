@@ -1,8 +1,8 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using ControleFinanceiro.Application.Interfaces.Token;
-using ControleFinanceiro.Domain.Models;
+using ControleFinanceiro.Application.Interfaces;
+using ControleFinanceiro.Domain.Entities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 

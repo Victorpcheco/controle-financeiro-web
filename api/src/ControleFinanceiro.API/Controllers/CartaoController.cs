@@ -1,5 +1,10 @@
 using ControleFinanceiro.Application.Dtos;
-using ControleFinanceiro.Application.Interfaces.Cartao;
+using ControleFinanceiro.Application.UseCases.Cartoes;
+using ControleFinanceiro.Application.UseCases.Cartoes.AtualizarCartao;
+using ControleFinanceiro.Application.UseCases.Cartoes.BuscarCartao;
+using ControleFinanceiro.Application.UseCases.Cartoes.CriarCartao;
+using ControleFinanceiro.Application.UseCases.Cartoes.DeletarCartao;
+using ControleFinanceiro.Application.UseCases.Cartoes.ListarCartao;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,69 +13,54 @@ namespace ControleFinanceiro.API.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [Authorize]
-public class CartaoController : ControllerBase
+public class CartaoController (
+    IListarCartaoPaginadoUseCase listarCartaoPaginadoUseCase,
+    IBuscarCartaoUseCase buscarCartaoUseCase,
+    ICriarCartaoUseCase criarCartaoUseCase,
+    IAtualizarCartaoUseCase atualizarCartaoUseCase,
+    IDeletarCartaoUseCase deletarCartaoUseCase) : ControllerBase
 {
-    private readonly IListarCartaoPaginadoUseCase _listarCartaoPaginadoUseCase;
-    private readonly IBuscarCartaoPorIdUseCase _buscarCartaoPorIdUseCase;
-    private readonly ICriarCartaoUseCase _criarCartaoUseCase;
-    private readonly IAtualizarCartaoUseCase _atualizarCartaoUseCase;
-    private readonly IDeletarCartaoUseCase _deletarCartaoUseCase;
-
-    public CartaoController(
-        IListarCartaoPaginadoUseCase listarCartaoPaginadoUseCase,
-        IBuscarCartaoPorIdUseCase buscarCartaoPorIdUseCase,
-        ICriarCartaoUseCase criarCartaoUseCase,
-        IAtualizarCartaoUseCase atualizarCartaoUseCase,
-        IDeletarCartaoUseCase deletarCartaoUseCase)
-    {
-        _listarCartaoPaginadoUseCase = listarCartaoPaginadoUseCase;
-        _buscarCartaoPorIdUseCase = buscarCartaoPorIdUseCase;
-        _criarCartaoUseCase = criarCartaoUseCase;
-        _atualizarCartaoUseCase = atualizarCartaoUseCase;
-        _deletarCartaoUseCase = deletarCartaoUseCase;
-    }
-
     [HttpGet]
-    public async Task<ActionResult<CartaoResponsePaginadoDto>> ListarCartaoPaginado(
+    public async Task<ActionResult<CartaoResponsePaginadoDto>> ListarCartaoAsync(
         [FromQuery] int usuarioId,
         [FromQuery] int pagina = 1,
         [FromQuery] int quantidade = 10)
     {
-        var request = new ListarCartaoPaginadoRequest
+        var request = new PaginadoRequestDto
         {
             Pagina = pagina,
             Quantidade = quantidade
         };
 
-        var resultado = await _listarCartaoPaginadoUseCase.ExecuteAsync(request);
+        var resultado = await listarCartaoPaginadoUseCase.ExecuteAsync(request);
         return Ok(resultado);
     }
 
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<CartaoResponseDto>> BuscarCartaoPorId(int id)
+    public async Task<ActionResult<CartaoResponseDto>> BuscarCartaoAsync(int id)
     {
-        var resultado = await _buscarCartaoPorIdUseCase.ExecuteAsync(id);
+        var resultado = await buscarCartaoUseCase.ExecuteAsync(id);
         return Ok(resultado);
     }
 
     [HttpPost]
-    public async Task<ActionResult<bool>> CriarCartao([FromBody] CartaoCriarDto dto)
+    public async Task<ActionResult<bool>> CriarCartaoAsync([FromBody] CartaoCriarDto dto)
     {
-        var resultado = await _criarCartaoUseCase.ExecuteAsync(dto);
-        return CreatedAtAction(nameof(BuscarCartaoPorId), new { id = 0 }, resultado);
+        var resultado = await criarCartaoUseCase.ExecuteAsync(dto);
+        return CreatedAtAction(nameof(BuscarCartaoAsync), new { id = 0 }, resultado);
     }
 
     [HttpPut("{id:int}")]
-    public async Task<ActionResult<bool>> AtualizarCartao(int id, [FromBody] CartaoCriarDto dto)
+    public async Task<ActionResult<bool>> AtualizarCartaoAsync(int id, [FromBody] CartaoCriarDto dto)
     {
-        var resultado = await _atualizarCartaoUseCase.ExecuteAsync(id, dto);
+        var resultado = await atualizarCartaoUseCase.ExecuteAsync(id, dto);
         return Ok(resultado);
     }
 
     [HttpDelete("{id:int}")]
-    public async Task<ActionResult<bool>> DeletarCartao(int id)
+    public async Task<ActionResult<bool>> DeletarCartaoAsync(int id)
     {
-        var resultado = await _deletarCartaoUseCase.ExecuteAsync(id);
+        var resultado = await deletarCartaoUseCase.ExecuteAsync(id);
         return Ok(resultado);
     }
 }

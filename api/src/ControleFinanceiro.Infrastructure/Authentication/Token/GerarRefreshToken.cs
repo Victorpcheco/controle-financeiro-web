@@ -1,5 +1,5 @@
 using System.Security.Cryptography;
-using ControleFinanceiro.Application.Interfaces.Token;
+using ControleFinanceiro.Application.Interfaces;
 
 namespace ControleFinanceiro.Infrastructure.Authentication.Token;
 

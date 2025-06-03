@@ -1,13 +1,13 @@
-using ControleFinanceiro.Domain.Models;
+using ControleFinanceiro.Domain.Entities;
 
 namespace ControleFinanceiro.Domain.Interfaces;
 
 public interface ICartaoRepository
 {
-    Task <IReadOnlyList<CartaoCredito>> ListarCartaoPaginadoAsync (int usuarioId, int pagina, int quantidade);
+    Task <IReadOnlyList<Cartao>> ListarCartaoPaginadoAsync (int usuarioId, int pagina, int quantidade);
     Task <int> ContarTotalAsync(int usuarioId);
-    Task <CartaoCredito?> BuscarCartaoPorId (int id);
-    Task AdicionarCartaoAsync(CartaoCredito cartao);
-    Task AtualizarCartaoAsync(CartaoCredito cartao);
-    Task DeletarCartaoAsync(CartaoCredito cartao);
+    Task <Cartao?> BuscarCartaoPorId (int id);
+    Task AdicionarCartaoAsync(Cartao cartao);
+    Task AtualizarCartaoAsync(Cartao cartao);
+    Task DeletarCartaoAsync(Cartao cartao);
 }

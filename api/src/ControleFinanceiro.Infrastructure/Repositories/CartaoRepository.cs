@@ -1,5 +1,5 @@
 using ControleFinanceiro.Domain.Interfaces;
-using ControleFinanceiro.Domain.Models;
+using ControleFinanceiro.Domain.Entities;
 using ControleFinanceiro.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,7 +7,7 @@ namespace ControleFinanceiro.Infrastructure.Repositories;
 
 public class CartaoRepository(ApplicationDbContext context) : ICartaoRepository
 {
-    public async Task<IReadOnlyList<CartaoCredito>> ListarCartaoPaginadoAsync(int usuarioId, int pagina, int quantidade)
+    public async Task<IReadOnlyList<Cartao>> ListarCartaoPaginadoAsync(int usuarioId, int pagina, int quantidade)
     {
         return await context.Cartoes
             .Where(c => c.UsuarioId == usuarioId)
@@ -24,28 +24,28 @@ public class CartaoRepository(ApplicationDbContext context) : ICartaoRepository
             .CountAsync(c => c.UsuarioId == usuarioId);
     }
     
-    public async Task<CartaoCredito?> BuscarCartaoPorId(int id)
+    public async Task<Cartao?> BuscarCartaoPorId(int id)
     {
         return await context.Cartoes
             .AsNoTracking()
             .FirstOrDefaultAsync(c => c.Id == id);
     }
     
-    public async Task AdicionarCartaoAsync(CartaoCredito CartaoCredito)
+    public async Task AdicionarCartaoAsync(Cartao cartao)
     {
-        await context.Cartoes.AddAsync(CartaoCredito);
+        await context.Cartoes.AddAsync(cartao);
         await context.SaveChangesAsync();
     }
     
-    public async Task AtualizarCartaoAsync(CartaoCredito CartaoCredito)
+    public async Task AtualizarCartaoAsync(Cartao cartao)
     {
-        context.Cartoes.Update(CartaoCredito);
+        context.Cartoes.Update(cartao);
         await context.SaveChangesAsync();
     }
     
-    public async Task DeletarCartaoAsync(CartaoCredito CartaoCredito)
+    public async Task DeletarCartaoAsync(Cartao cartao)
     {
-        context.Cartoes.Remove(CartaoCredito);
+        context.Cartoes.Remove(cartao);
         await context.SaveChangesAsync();
     }
     

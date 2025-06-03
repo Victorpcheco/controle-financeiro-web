@@ -1,5 +1,5 @@
+using ControleFinanceiro.Domain.Entities;
 using ControleFinanceiro.Domain.Interfaces;
-using ControleFinanceiro.Domain.Models;
 using ControleFinanceiro.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,9 +17,11 @@ public class ContaBancariaRepository(ApplicationDbContext context) : IContaBanca
             .ToListAsync();
     }
     
-    public async Task<int> ContarTotalAsync()
+    public async Task<int> ContarTotalAsync(int usuarioId)
     {
-        return await context.ContasBancarias.CountAsync();
+        return await context.ContasBancarias
+            .Where(c => c.UsuarioId == usuarioId)
+            .CountAsync();
     }
     
     public async Task<ContaBancaria?> BuscarContaPorIdAsync(int id)

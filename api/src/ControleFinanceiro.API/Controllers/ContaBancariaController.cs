@@ -1,52 +1,65 @@
 using ControleFinanceiro.Application.Dtos;
-using ControleFinanceiro.Application.Interfaces.Contas;
+using ControleFinanceiro.Application.UseCases.Contas.AtualizarContaBancaria;
+using ControleFinanceiro.Application.UseCases.Contas.BuscarContaBancaria;
+using ControleFinanceiro.Application.UseCases.Contas.CriarContaBancaria;
+using ControleFinanceiro.Application.UseCases.Contas.DeletarContaBancaria;
+using ControleFinanceiro.Application.UseCases.Contas.ListarContaBancaria;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ControleFinanceiro.API.Controllers;
 
 [ApiController]
-[Route("api/contas-bancarias")]
+[Route("api/[controller]")]
 [Authorize]
-public class ContaBancariaController(IListarContasBancarias listar,
-    IObterContaBancaria obter,
-    ICriarContaBancaria criar,
-    IAtualizarContaBancaria atualizar,
-    IDeletarContaBancaria deletar) : ControllerBase
+public class ContaBancariaController (
+    IListarContasBancariasUseCase listarContasBancariasUseCase,
+    IBuscarContaBancariaUseCase buscarContaBancaria,
+    ICriarContaBancariaUseCase criarContaBancariaUseCase,
+    IAtualizarContaBancariaUseCase atualizarContaBancariaUseCase,
+    IDeletarContaBancariaUseCase deletarContaBancariaUseCase) : ControllerBase
 {
-    
-    [HttpGet("listarPaginado")]
-    public async Task<IActionResult> ListarContas([FromQuery] int pagina = 1, [FromQuery] int quantidadePorPagina = 15)
+    [HttpGet]
+    public async Task<ActionResult<ContaBancariaPaginadoResponseDto>> ListarContasAsync(
+        [FromQuery] int usuarioId,
+        [FromQuery] int pagina = 1,
+        [FromQuery] int quantidade = 10)
     {
-        var contas = await listar.ListarContasPaginado(pagina, quantidadePorPagina);
-        return Ok(contas);
+        var request = new PaginadoRequestDto
+        {
+            Pagina = pagina,
+            Quantidade = quantidade
+        };
+
+        var resultado = await listarContasBancariasUseCase.ExecuteAsync(request);
+        return Ok(resultado);
     }
-    
-    [HttpGet("listar/{id:int}")]
-    public async Task<IActionResult> ObterConta(int id)
+
+    [HttpGet("{id:int}")]
+    public async Task<ActionResult<ContaBancariaResponseDto>> BuscarContaBancariaAsync(int id)
     {
-        var conta = await obter.ObterContaPorId(id);
-        return Ok(conta);
+        var resultado = await buscarContaBancaria.ExecuteAsync(id);
+        return Ok(resultado);
     }
-    
-    [HttpPost("criar")]
-    public async Task<IActionResult> CriarConta([FromBody] ContaRequest request)
+
+    [HttpPost]
+    public async Task<ActionResult<bool>> CriarContaAsync([FromBody] ContaBancariaCriarDto dto)
     {
-        await criar.CriarConta(request);
-        return NoContent();
+        var resultado = await criarContaBancariaUseCase.ExecuteAsync(dto);
+        return CreatedAtAction(nameof(BuscarContaBancariaAsync), new { id = 0 }, resultado);
     }
-    
-    [HttpPut("atualizar/{id:int}")]
-    public async Task<IActionResult> AtualizarConta(int id, [FromBody] ContaAtualizarRequest request)
+
+    [HttpPut("{id:int}")]
+    public async Task<ActionResult<bool>> AtualizarContaAsync(int id, [FromBody] ContaBancariaAtualizarDto dto)
     {
-        await atualizar.AtualizarConta(id, request);
-        return NoContent();
+        var resultado = await atualizarContaBancariaUseCase.ExecuteAsync(id, dto);
+        return Ok(resultado);
     }
-    
-    [HttpDelete("deletar/{id:int}")]
-    public async Task<IActionResult> DeletarConta(int id)
+
+    [HttpDelete("{id:int}")]
+    public async Task<ActionResult<bool>> DeletarContaAsync(int id)
     {
-        await deletar.DeletarConta(id);
-        return NoContent();
+        var resultado = await deletarContaBancariaUseCase.ExecuteAsync(id);
+        return Ok(resultado);
     }
 }

@@ -1,5 +1,5 @@
+using ControleFinanceiro.Domain.Entities;
 using ControleFinanceiro.Domain.Interfaces;
-using ControleFinanceiro.Domain.Models;
 using ControleFinanceiro.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 

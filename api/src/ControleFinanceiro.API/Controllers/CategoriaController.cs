@@ -1,52 +1,64 @@
 using ControleFinanceiro.Application.Dtos;
-using ControleFinanceiro.Application.Interfaces.Categorias;
+using ControleFinanceiro.Application.UseCases.Categorias.AtualizarCategoria;
+using ControleFinanceiro.Application.UseCases.Categorias.BuscarCategoria;
+using ControleFinanceiro.Application.UseCases.Categorias.CriarCategoria;
+using ControleFinanceiro.Application.UseCases.Categorias.DeletarCategoria;
+using ControleFinanceiro.Application.UseCases.Categorias.ListarCategorias;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ControleFinanceiro.API.Controllers;
 
 [ApiController]
-[Route("api/categorias")]
+[Route("api/[controller]")]
 [Authorize]
-public class CategoriaController(IListarCategorias listar,
-    IObterCategoria obter,
-    ICriarCategoria criar,
-    IAtualizarCategoria atualizar,
-    IDeletarCategoria deletar) : ControllerBase
+public class CategoriaController(
+    IListarCategoriasUseCase listarCategoriasUseCase,
+    IBuscarCategoriaUseCase buscarCategoriaUseCase,
+    ICriarCategoriaUseCase criarCategoriaUseCase,
+    IAtualizarCategoriaUseCase atualizarCategoriaUseCase,
+    IDeletarCategoriaUseCase deletarCategoriaUseCase) : ControllerBase
 {
+    [HttpGet]
+    public async Task<ActionResult<CategoriaPaginadoResponseDto>> ListarCategoriasAsync(
+        [FromQuery] int pagina = 1,
+        [FromQuery] int quantidade = 10)
+    {
+        var request = new PaginadoRequestDto
+        {
+            Pagina = pagina,
+            Quantidade = quantidade
+        };
 
-    [HttpGet("listarPaginado")]
-    public async Task<IActionResult> ListarCategorias([FromQuery] int pagina = 1, [FromQuery] int quantidade = 15)
-    {
-        var categorias = await listar.ListarCategoriaPaginado(pagina, quantidade);
-        return Ok(categorias);
+        var resultado = await listarCategoriasUseCase.ExecuteAsync(request);
+        return Ok(resultado);
     }
 
-    [HttpGet("listar/{id:int}")]
-    public async Task<IActionResult> ObterCategoria(int id)
+    [HttpGet("{id:int}")]
+    public async Task<ActionResult<CategoriaResponseDto>> BuscarCategoriaAsync(int id)
     {
-        var categoria = await obter.ObterCategoriaPorId(id);
-        return Ok(categoria);
+        var resultado = await buscarCategoriaUseCase.ExecuteAsync(id);
+        return Ok(resultado);
     }
 
-    [HttpPost("criar")]
-    public async Task<ActionResult> CriarCategoria([FromBody] CategoriaCriarRequest criarRequest)
+    [HttpPost]
+    public async Task<ActionResult<bool>> CriarCategoriaAsync([FromBody] CategoriaCriarDto dto)
     {
-        await criar.CriarNovaCategoria(criarRequest);
-        return NoContent();
+        var resultado = await criarCategoriaUseCase.ExecuteAsync(dto);
+        return CreatedAtAction(nameof(BuscarCategoriaAsync), new { id = 0 }, resultado);
     }
-        
-    [HttpPut("atualizar/{id:int}")]
-    public async Task<ActionResult> AtualizarCategoria(int id, [FromBody] CategoriaCriarRequest criarRequest)
+
+    [HttpPut("{id:int}")]
+    public async Task<ActionResult<bool>> AtualizarCategoriaAsync(int id, [FromBody] CategoriaCriarDto dto)
     {
-        await atualizar.AtualizarCategoriaExistente(id, criarRequest);
-        return NoContent();
+        var resultado = await atualizarCategoriaUseCase.ExecuteAsync(id, dto);
+        return Ok(resultado);
     }
-        
-    [HttpDelete("deletar/{id:int}")]
-    public async Task<ActionResult> DeletarCategoria(int id)
+
+    [HttpDelete("{id:int}")]
+    public async Task<ActionResult<bool>> DeletarCategoriaAsync(int id)
     {
-        await deletar.DeletarCategoriaExistente(id);
-        return NoContent();
+        var resultado = await deletarCategoriaUseCase.ExecuteAsync(id);
+        return Ok(resultado);
     }
 }

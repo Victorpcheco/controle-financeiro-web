@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace ControleFinanceiro.Application.Validators;
 
-public class CategoriaRequestValidator : AbstractValidator<CategoriaCriarRequest>
+public class CategoriaRequestValidator : AbstractValidator<CategoriaCriarDto>
 {
     public CategoriaRequestValidator()
     {

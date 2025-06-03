@@ -17,6 +17,15 @@
 
     <ItemGroup>
       <Compile Remove="Dtos\CartaoAtualizarDto.cs" />
+      <Compile Remove="Interfaces\Token\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Remove="Interfaces\Token\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Interfaces\Token\**" />
     </ItemGroup>
 
 </Project>

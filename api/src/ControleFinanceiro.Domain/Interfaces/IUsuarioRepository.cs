@@ -1,4 +1,4 @@
-using ControleFinanceiro.Domain.Models;
+using ControleFinanceiro.Domain.Entities;
 
 namespace ControleFinanceiro.Domain.Interfaces;
 
