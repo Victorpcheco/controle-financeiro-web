@@ -22,11 +22,29 @@ using ControleFinanceiro.Application.UseCases.Despesas.BuscarDespesa;
 using ControleFinanceiro.Application.UseCases.Despesas.CriarDespesa;
 using ControleFinanceiro.Application.UseCases.Despesas.DeletarDespesa;
 using ControleFinanceiro.Application.UseCases.Despesas.ListarDespesa;
+using ControleFinanceiro.Application.UseCases.Despesas.ListarDespesaPorCartao;
+using ControleFinanceiro.Application.UseCases.Despesas.ListarDespesaPorCategoria;
+using ControleFinanceiro.Application.UseCases.Despesas.ListarDespesaPorContaBancaria;
+using ControleFinanceiro.Application.UseCases.Despesas.ListarDespesaPorData;
+using ControleFinanceiro.Application.UseCases.Despesas.ListarDespesaPorTitulo;
+using ControleFinanceiro.Application.UseCases.Financeiro.ListarSaldosContas;
+using ControleFinanceiro.Application.UseCases.Financeiro.ObterDespesasEmAberto;
+using ControleFinanceiro.Application.UseCases.Financeiro.ObterReceitasEmAberto;
+using ControleFinanceiro.Application.UseCases.Financeiro.ObterSaldoTotal;
 using ControleFinanceiro.Application.UseCases.MesDeReferencia.AtualizarMesReferencia;
 using ControleFinanceiro.Application.UseCases.MesDeReferencia.BuscarMesReferencia;
 using ControleFinanceiro.Application.UseCases.MesDeReferencia.CriarMesReferencia;
 using ControleFinanceiro.Application.UseCases.MesDeReferencia.DeletarMesReferencia;
 using ControleFinanceiro.Application.UseCases.MesDeReferencia.ListarMesReferencia;
+using ControleFinanceiro.Application.UseCases.Receitas.AtualizarReceita;
+using ControleFinanceiro.Application.UseCases.Receitas.BuscarReceita;
+using ControleFinanceiro.Application.UseCases.Receitas.CriarReceita;
+using ControleFinanceiro.Application.UseCases.Receitas.DeletarReceita;
+using ControleFinanceiro.Application.UseCases.Receitas.ListarReceitaPorCategoria;
+using ControleFinanceiro.Application.UseCases.Receitas.ListarReceitaPorContaBancaria;
+using ControleFinanceiro.Application.UseCases.Receitas.ListarReceitaPorData;
+using ControleFinanceiro.Application.UseCases.Receitas.ListarReceitaPorTitulo;
+using ControleFinanceiro.Application.UseCases.Receitas.ListarReceitas;
 using ControleFinanceiro.Application.UseCases.Usuarios.LoginUsuario;
 using ControleFinanceiro.Application.UseCases.Usuarios.RegistroUsuario;
 using ControleFinanceiro.Application.Validators;
@@ -38,15 +56,22 @@ using ControleFinanceiro.Infrastructure.Repositories;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// config string conexão
+// Configura o Entity Framework com SQL Server
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// useCases / repositories / validators / mappers
+// Registra os repositórios usando método de extensão personalizado
+builder.Services.AddRepositories(
+    builder.Configuration.GetConnectionString("DefaultConnection")!,
+    builder.Services.BuildServiceProvider().GetRequiredService<ApplicationDbContext>()
+);
+
+// Registra serviços relacionados ao gerenciamento de usuários
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<ILoginUsuarioUseCase, LoginUsuarioUseCase>();
 builder.Services.AddScoped<IRegistroUsuarioUseCase, RegistroUsuarioUseCase>();
@@ -55,6 +80,7 @@ builder.Services.AddScoped<IValidator<RegisterRequestDto>, RegisterRequestDtoVal
 builder.Services.AddScoped<IGerarToken, GerarToken>();
 builder.Services.AddScoped<IGerarRefreshToken, GerarRefreshToken>();
 
+// Registra todos os use cases e validadores para contas bancárias
 builder.Services.AddScoped<IContaBancariaRepository, ContaBancariaRepository>();
 builder.Services.AddScoped<IListarContasBancariasUseCase, ListarContasBancariasUseCase>();
 builder.Services.AddScoped<IBuscarContaBancariaUseCase, BuscarContaBancariaUseCase>();
@@ -64,6 +90,7 @@ builder.Services.AddScoped<IDeletarContaBancariaUseCase, DeletarContaBancariaUse
 builder.Services.AddScoped<IValidator<ContaBancariaCriarDto>, ContaBancariaCriarDtoValidator>();
 builder.Services.AddScoped<IValidator<ContaBancariaAtualizarDto>, ContaBancariaAtualizarDtoValidator>();
 
+// Registra serviços para gerenciamento de categorias de receitas/despesas
 builder.Services.AddScoped<ICategoriaRepository, CategoriaRepository>();
 builder.Services.AddScoped<IListarCategoriasUseCase, ListarCategoriasUseCase>();
 builder.Services.AddScoped<IBuscarCategoriaUseCase, BuscarCategoriaUseCase>();
@@ -72,6 +99,7 @@ builder.Services.AddScoped<IAtualizarCategoriaUseCase, AtualizarCategoriaUseCase
 builder.Services.AddScoped<IDeletarCategoriaUseCase, DeletarCategoriaUseCase>();
 builder.Services.AddScoped<IValidator<CategoriaCriarDto>, CategoriaRequestValidator>();
 
+// Registra serviços para gerenciamento de cartões de crédito/débito
 builder.Services.AddScoped<ICartaoRepository, CartaoRepository>();
 builder.Services.AddScoped<IListarCartaoPaginadoUseCase, ListarCartaoPaginadoUseCase>();
 builder.Services.AddScoped<IBuscarCartaoUseCase, BuscarCartaoUseCase>();
@@ -80,6 +108,7 @@ builder.Services.AddScoped<IAtualizarCartaoUseCase, AtualizarCartaoUseCase>();
 builder.Services.AddScoped<IDeletarCartaoUseCase, DeletarCartaoUseCase>();
 builder.Services.AddScoped<IValidator<CartaoCriarDto>, CartaoCriarDtoValidator>();
 
+// Registra serviços para controle de períodos/meses de referência
 builder.Services.AddScoped<IMesReferenciaRepository, MesReferenciaRepository>();
 builder.Services.AddScoped<IAtualizarMesReferenciaUseCase, AtualizarMesReferenciaUseCase>();
 builder.Services.AddScoped<ICriarMesReferenciaUseCase, CriarMesReferenciaUseCase>();
@@ -88,75 +117,201 @@ builder.Services.AddScoped<IBuscarMesReferenciaUseCase, BuscarMesReferenciaUseCa
 builder.Services.AddScoped<IListarMesReferenciaUseCase, ListarMesReferenciaUseCase>();
 builder.Services.AddScoped<IValidator<MesReferenciaCriarDto>, MesReferenciaCriarDtoValidator>();
 
+// Registra todos os use cases para gerenciamento de despesas
 builder.Services.AddScoped<IListarDespesasUseCase, ListarDespesasUseCase>();
-builder.Services.AddScoped<IValidator<DespesaCriarDto>, DespesaCriaDtoValidtor>();
+builder.Services.AddScoped<IValidator<DespesaCriarDto>, DespesaCriarDtoValidtor>();
 builder.Services.AddScoped<ICriarDespesaUseCase, CriarDespesaUseCase>();
 builder.Services.AddScoped<IDespesaRepository, DespesaRepository>();
 builder.Services.AddScoped<IAtualizarDespesaUseCase, AtualizarDespesaUseCase>();
 builder.Services.AddScoped<IBuscarDespesaUseCase, BuscarDespesaUseCase>();
 builder.Services.AddScoped<IDeletarDespesaUseCase, DeletarDespesaUseCase>();
 
+// Use cases para filtros específicos de despesas
+builder.Services.AddScoped<IListarDespesaPorDataUseCase, ListarDespesaPorDataUseCase>();
+builder.Services.AddScoped<IListarDespesaPorContaBancariaUseCase, ListarDespesaPorContaBancariaUseCase>();
+builder.Services.AddScoped<IListarDespesaPorCategoriaUseCase, ListarDespesaPorCategoriaUseCase>();
+builder.Services.AddScoped<IListarDespesaPorTituloUseCase, ListarDespesaPorTituloUseCase>();
+builder.Services.AddScoped<IListarDespesaPorCartaoUseCase, ListarDespesaPorCartaoUseCase>();
 
-builder.Services.AddAutoMapper(typeof(Program)); 
+// Registra todos os use cases para gerenciamento de receitas
+builder.Services.AddScoped<IListarReceitasUseCase, ListarReceitasUseCase>();
+builder.Services.AddScoped<IValidator<ReceitaCriarDto>, ReceitaCriarDtoValidator>();
+builder.Services.AddScoped<ICriarReceitaUseCase, CriarReceitaUseCase>();
+builder.Services.AddScoped<IReceitaRepository, ReceitaRepository>();
+builder.Services.AddScoped<IAtualizarReceitaUseCase, AtualizarReceitaUseCase>();
+builder.Services.AddScoped<IBuscarReceitaUseCase, BuscarReceitaUseCase>();
+builder.Services.AddScoped<IDeletarReceitaUseCase, DeletarReceitaUseCase>();
+
+// Use cases para filtros específicos de receitas
+builder.Services.AddScoped<IListarReceitaPorDataUseCase, ListarReceitaPorDataUseCase>();
+builder.Services.AddScoped<IListarReceitaPorContaBancariaUseCase, ListarReceitaPorContaBancariaUseCase>();
+builder.Services.AddScoped<IListarReceitaPorCategoriaUseCase, ListarReceitaPorCategoriaUseCase>();
+builder.Services.AddScoped<IListarReceitaPorTituloUseCase, ListarReceitaPorTituloUseCase>();
+
+// Registra use cases para cálculos financeiros e relatórios
+builder.Services.AddScoped<IObterValorEmAbertoDespesasUseCase, ObterValorEmAbertoDespesasUseCase>();
+builder.Services.AddScoped<IObterValorEmAbertoReceitasUseCase, ObterValorEmAbertoReceitasUseCase>();
+builder.Services.AddScoped<IObterSaldoTotalUseCase, ObterSaldoTotalUseCase>();
+builder.Services.AddScoped<IListarContasComSaldoTotalUseCase, ListarContasComSaldoTotalUseCase>();
+
+// Repositório específico para consultas financeiras complexas
+builder.Services.AddScoped<IFinanceiroRepository>(provider =>
+    new FinanceiroRepository(
+        builder.Configuration.GetConnectionString("DefaultConnection")!,
+        provider.GetRequiredService<ApplicationDbContext>()
+    ));
+
+// Configura o AutoMapper para conversão entre DTOs e entidades
+builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddAutoMapper(typeof(ContaBancariaMapper));
 builder.Services.AddAutoMapper(typeof(CategoriaMapper));
 builder.Services.AddAutoMapper(typeof(CartaoMapper));
 builder.Services.AddAutoMapper(typeof(MesReferenciaMapper));
+builder.Services.AddAutoMapper(typeof(ReceitaMapper));
 
 
-// Configurações de validação de usuarios
+// CORS 
+builder.Services.AddCors(options =>
+{
+    // POLÍTICA RESTRITIVA - Para ambiente de PRODUÇÃO
+    // Define exatamente quais origens, métodos e headers são permitidos
+    options.AddPolicy("PoliticaRestritiva", policy =>
+    {
+        policy.WithOrigins(
+                // Adicione aqui os domínios reais do seu frontend
+                "http://localhost:3000",     // React local (HTTP)
+                "https://localhost:3000",    // React local (HTTPS)
+                "http://localhost:4200",     // Angular local (HTTP)
+                "https://localhost:4200",    // Angular local (HTTPS)
+                "https://localhost:5173",    // Vite (React/Vue)
+                "https://meuapp.com.br",     // Seu domínio de produção
+                "https://www.meuapp.com.br"  // Variação com www
+            )
+            .WithMethods("GET", "POST", "PUT", "DELETE", "PATCH") // Métodos HTTP permitidos
+            .WithHeaders("Content-Type", "Authorization", "Accept", "X-Requested-With") // Headers permitidos
+            .AllowCredentials(); // Permite envio de cookies e tokens de autenticação
+    });
+
+    // POLÍTICA PERMISSIVA - Para ambiente de DESENVOLVIMENTO
+    // Permite qualquer origem, método e header (mais flexível para desenvolvimento)
+    options.AddPolicy("PoliticaDesenvolvimento", policy =>
+    {
+        policy.AllowAnyOrigin()   // Qualquer origem pode acessar
+            .AllowAnyMethod()     // Qualquer método HTTP
+            .AllowAnyHeader();    // Qualquer header
+        // IMPORTANTE: AllowCredentials() NÃO pode ser usado com AllowAnyOrigin()
+    });
+
+});
+
+// Permite acessar informações do usuário logado em qualquer parte da aplicação
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IUserContext, UserContext>();
 
+// Configura a autenticação usando JSON Web Tokens
 builder.Services.AddAuthentication(options =>
-    {
-        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-        options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-    })
+{
+    // Define JWT como esquema padrão de autenticação
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+})
     .AddJwtBearer(options =>
     {
-        options.SaveToken = true;
-        options.RequireHttpsMetadata = false; 
+        options.SaveToken = true;            // Salva o token para uso posterior
+        options.RequireHttpsMetadata = false; // Permite HTTP em desenvolvimento (mudar para true em produção)
+
+        // Parâmetros de validação do token JWT
         options.TokenValidationParameters = new TokenValidationParameters
         {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            ValidIssuer = builder.Configuration["JWT:Issuer"], 
-            ValidAudience = builder.Configuration["JWT:Audience"], 
+            ValidateIssuer = true,           // Valida quem emitiu o token
+            ValidateAudience = true,         // Valida para quem o token foi emitido
+            ValidateLifetime = true,         // Valida se o token não expirou
+            ValidateIssuerSigningKey = true, // Valida a assinatura do token
+
+            // Valores obtidos do appsettings.json
+            ValidIssuer = builder.Configuration["JWT:Issuer"],
+            ValidAudience = builder.Configuration["JWT:Audience"],
             IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"]!) 
+                Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"]!)
             ),
-            ClockSkew = TimeSpan.Zero 
+            ClockSkew = TimeSpan.Zero // Remove tolerância de tempo (mais seguro)
         };
     });
 
-// Configura os controllers e a serialização de enums como string no JSON
+// Configura os controllers da API e opções de serialização JSON
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
+        // Converte enums para string no JSON (em vez de números)
         options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
     });
 
-// builder.Services.AddControllers();
-
+// Gera documentação automática da API
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+// Swagger apenas em desenvolvimento
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwagger();         // Gera a especificação OpenAPI
+    app.UseSwaggerUI();       // Interface gráfica do Swagger
 }
 
+// Redireciona HTTP para HTTPS
 app.UseHttpsRedirection();
-app.UseMiddleware<ControleFinanceiro.API.Middlewares.ExceptionMiddleware>(); // uso do middleware de exceção
-app.UseAuthentication(); 
-app.UseAuthorization();
+
+// CORS deve vir CEDO no pipeline, antes da autenticação
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage(); // Página de erro detalhada em desenvolvimento
+    app.UseCors("PoliticaDesenvolvimento"); // Política permissiva para desenvolvimento
+}
+else
+{
+    app.UseCors("PoliticaRestritiva"); // Política restritiva para produção
+}
+
+// middleware customizado para tratamento de erros
+app.UseMiddleware<ControleFinanceiro.API.Middlewares.ExceptionMiddleware>();
+
+// Authentication sempre antes de Authorization
+app.UseAuthentication();
+app.UseAuthorization();  
+
+// Mapeia as rotas dos controllers
 app.MapControllers();
 
 app.Run();
+
+// ===============================================
+// RESUMO DAS CONFIGURAÇÕES CORS:
+// ===============================================
+/*
+ * DESENVOLVIMENTO:
+ * - Permite qualquer origem, método e header
+ * - Mais flexível para testes
+ * - NÃO permite credentials com AllowAnyOrigin
+ * 
+ * PRODUÇÃO:
+ * - Apenas origens específicas são permitidas
+ * - Métodos HTTP limitados
+ * - Headers controlados
+ * - Permite credentials (cookies, tokens)
+ * 
+ * ORDEM NO PIPELINE:
+ * 1. HTTPS Redirection
+ * 2. CORS (deve vir cedo)
+ * 3. Middlewares customizados
+ * 4. Authentication
+ * 5. Authorization
+ * 6. Controllers
+ * 
+ * DICAS IMPORTANTES:
+ * - Sempre teste CORS em diferentes ambientes
+ * - Use políticas restritivas em produção
+ * - AllowCredentials + AllowAnyOrigin = ERRO
+ * - CORS não é segurança, é convenção do browser
+ */

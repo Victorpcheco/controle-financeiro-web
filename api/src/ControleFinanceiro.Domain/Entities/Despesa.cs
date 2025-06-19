@@ -1,10 +1,12 @@
+
+
 namespace ControleFinanceiro.Domain.Entities;
 
 public class Despesa
 {
     public int Id { get; private set; }
     public string TituloDespesa { get; private set; } = null!;
-    public string Data { get; private set; } = null!;
+    public DateOnly Data { get; private set; }
     public int MesReferenciaId { get; private set; }
     public MesReferencia MesReferencia { get; private set; } = null!;
     public int CategoriaId { get; private set; }
@@ -23,7 +25,7 @@ public class Despesa
         
     }
 
-    public Despesa(string tituloDespesa, string data, int mesReferenciaId, int categoriaId, int cartaoId, int contaBancariaId, decimal valor, bool realizado, int usuarioId)
+    public Despesa(string tituloDespesa, DateOnly data, int mesReferenciaId, int categoriaId, int cartaoId, int contaBancariaId, decimal valor, bool realizado, int usuarioId)
     {
 
         ValidarTituloDespesa(tituloDespesa);
@@ -49,16 +51,16 @@ public class Despesa
             throw new ArgumentException("Título da despesa não pode ter mais de 100 caracteres.");
     }
     
-    private static void ValidarData(string data)
+    private void ValidarData(DateOnly data)
     {
-        if (string.IsNullOrWhiteSpace(data))
-            throw new ArgumentException("Data não pode ser vazia ou nula.");
-
-        if (!DateTime.TryParseExact(data, "dd/MM/yyyy", null, System.Globalization.DateTimeStyles.None, out _))
-            throw new ArgumentException("Data deve estar no formato DD/MM/AAAA.");
+        if (data == default)
+            throw new ArgumentException("Data não pode ser vazia.");
+    
+        if (data < DateOnly.FromDateTime(DateTime.Now.AddYears(-100)))
+            throw new ArgumentException("Data muito antiga.");
     }
     
-    public void AtualizarDespesa(string tituloDespesa, string data, int mesReferenciaId, int categoriaId, int cartaoId, int contaBancariaId, decimal valor, bool realizado)
+    public void AtualizarDespesa(string tituloDespesa, DateOnly data, int mesReferenciaId, int categoriaId, int cartaoId, int contaBancariaId, decimal valor, bool realizado)
     {
         ValidarTituloDespesa(tituloDespesa);
         ValidarData(data);

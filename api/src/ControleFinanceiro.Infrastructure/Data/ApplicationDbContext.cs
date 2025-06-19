@@ -1,5 +1,6 @@
 using ControleFinanceiro.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ControleFinanceiro.Infrastructure.Data;
 
@@ -8,10 +9,22 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        var dateOnlyConverter = new ValueConverter<DateOnly, DateTime>(
+            d => d.ToDateTime(TimeOnly.MinValue),
+            d => DateOnly.FromDateTime(d));
+
+        modelBuilder.Entity<Despesa>()
+            .Property(d => d.Data)
+            .HasConversion(dateOnlyConverter);
+        
+        modelBuilder.Entity<Receita>()
+            .Property(d => d.Data)
+            .HasConversion(dateOnlyConverter);
+        
         // chama a configuração da Categoria
         modelBuilder.ApplyConfiguration(new CategoriaConfigurationEnum());
         base.OnModelCreating(modelBuilder);
-
+        
         // Configurações de relacionamento entre entidades
         modelBuilder.Entity<Categoria>()
             .HasOne(c => c.Usuario)

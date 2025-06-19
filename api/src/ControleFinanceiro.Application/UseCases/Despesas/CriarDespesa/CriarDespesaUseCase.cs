@@ -9,6 +9,7 @@ public class CriarDespesaUseCase(IDespesaRepository repository, IUserContext con
 {
     public async Task<bool> ExecuteAsync(DespesaCriarDto request)
     {
+        
         var validationResult = validator.ValidateAsync(request);
         if (!validationResult.Result.IsValid)
             throw new ValidationException(validationResult.Result.Errors);

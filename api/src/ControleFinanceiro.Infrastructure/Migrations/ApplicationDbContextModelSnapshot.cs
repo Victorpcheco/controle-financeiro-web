@@ -22,7 +22,7 @@ namespace ControleFinanceiro.Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("ControleFinanceiro.Domain.Models.CartaoCredito", b =>
+            modelBuilder.Entity("ControleFinanceiro.Domain.Entities.Cartao", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -44,7 +44,7 @@ namespace ControleFinanceiro.Infrastructure.Migrations
                     b.ToTable("Cartoes");
                 });
 
-            modelBuilder.Entity("ControleFinanceiro.Domain.Models.Categoria", b =>
+            modelBuilder.Entity("ControleFinanceiro.Domain.Entities.Categoria", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -70,7 +70,7 @@ namespace ControleFinanceiro.Infrastructure.Migrations
                     b.ToTable("Categorias");
                 });
 
-            modelBuilder.Entity("ControleFinanceiro.Domain.Models.ContaBancaria", b =>
+            modelBuilder.Entity("ControleFinanceiro.Domain.Entities.ContaBancaria", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -95,7 +95,7 @@ namespace ControleFinanceiro.Infrastructure.Migrations
                     b.ToTable("ContasBancarias");
                 });
 
-            modelBuilder.Entity("ControleFinanceiro.Domain.Models.Despesa", b =>
+            modelBuilder.Entity("ControleFinanceiro.Domain.Entities.Despesa", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -112,9 +112,8 @@ namespace ControleFinanceiro.Infrastructure.Migrations
                     b.Property<int>("ContaBancariaId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Data")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("Data")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("MesReferenciaId")
                         .HasColumnType("int");
@@ -147,7 +146,7 @@ namespace ControleFinanceiro.Infrastructure.Migrations
                     b.ToTable("Despesas");
                 });
 
-            modelBuilder.Entity("ControleFinanceiro.Domain.Models.MesReferencia", b =>
+            modelBuilder.Entity("ControleFinanceiro.Domain.Entities.MesReferencia", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -169,7 +168,7 @@ namespace ControleFinanceiro.Infrastructure.Migrations
                     b.ToTable("MesesReferencia");
                 });
 
-            modelBuilder.Entity("ControleFinanceiro.Domain.Models.PlanejamentoCategoria", b =>
+            modelBuilder.Entity("ControleFinanceiro.Domain.Entities.PlanejamentoCategoria", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -200,7 +199,7 @@ namespace ControleFinanceiro.Infrastructure.Migrations
                     b.ToTable("PlanejamentosCategorias");
                 });
 
-            modelBuilder.Entity("ControleFinanceiro.Domain.Models.Receita", b =>
+            modelBuilder.Entity("ControleFinanceiro.Domain.Entities.Receita", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -214,9 +213,8 @@ namespace ControleFinanceiro.Infrastructure.Migrations
                     b.Property<int>("ContaBancariaId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Data")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("Data")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("MesReferenciaId")
                         .HasColumnType("int");
@@ -247,7 +245,7 @@ namespace ControleFinanceiro.Infrastructure.Migrations
                     b.ToTable("Receitas");
                 });
 
-            modelBuilder.Entity("ControleFinanceiro.Domain.Models.Usuario", b =>
+            modelBuilder.Entity("ControleFinanceiro.Domain.Entities.Usuario", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -278,9 +276,9 @@ namespace ControleFinanceiro.Infrastructure.Migrations
                     b.ToTable("Usuarios");
                 });
 
-            modelBuilder.Entity("ControleFinanceiro.Domain.Models.CartaoCredito", b =>
+            modelBuilder.Entity("ControleFinanceiro.Domain.Entities.Cartao", b =>
                 {
-                    b.HasOne("ControleFinanceiro.Domain.Models.Usuario", "Usuario")
+                    b.HasOne("ControleFinanceiro.Domain.Entities.Usuario", "Usuario")
                         .WithMany("Cartoes")
                         .HasForeignKey("UsuarioId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -289,9 +287,9 @@ namespace ControleFinanceiro.Infrastructure.Migrations
                     b.Navigation("Usuario");
                 });
 
-            modelBuilder.Entity("ControleFinanceiro.Domain.Models.Categoria", b =>
+            modelBuilder.Entity("ControleFinanceiro.Domain.Entities.Categoria", b =>
                 {
-                    b.HasOne("ControleFinanceiro.Domain.Models.Usuario", "Usuario")
+                    b.HasOne("ControleFinanceiro.Domain.Entities.Usuario", "Usuario")
                         .WithMany("Categorias")
                         .HasForeignKey("UsuarioId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -300,9 +298,9 @@ namespace ControleFinanceiro.Infrastructure.Migrations
                     b.Navigation("Usuario");
                 });
 
-            modelBuilder.Entity("ControleFinanceiro.Domain.Models.ContaBancaria", b =>
+            modelBuilder.Entity("ControleFinanceiro.Domain.Entities.ContaBancaria", b =>
                 {
-                    b.HasOne("ControleFinanceiro.Domain.Models.Usuario", "Usuario")
+                    b.HasOne("ControleFinanceiro.Domain.Entities.Usuario", "Usuario")
                         .WithMany("ContasBancarias")
                         .HasForeignKey("UsuarioId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -311,33 +309,33 @@ namespace ControleFinanceiro.Infrastructure.Migrations
                     b.Navigation("Usuario");
                 });
 
-            modelBuilder.Entity("ControleFinanceiro.Domain.Models.Despesa", b =>
+            modelBuilder.Entity("ControleFinanceiro.Domain.Entities.Despesa", b =>
                 {
-                    b.HasOne("ControleFinanceiro.Domain.Models.CartaoCredito", "Cartao")
+                    b.HasOne("ControleFinanceiro.Domain.Entities.Cartao", "Cartao")
                         .WithMany()
                         .HasForeignKey("CartaoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ControleFinanceiro.Domain.Models.Categoria", "Categoria")
+                    b.HasOne("ControleFinanceiro.Domain.Entities.Categoria", "Categoria")
                         .WithMany()
                         .HasForeignKey("CategoriaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ControleFinanceiro.Domain.Models.ContaBancaria", "ContaBancaria")
+                    b.HasOne("ControleFinanceiro.Domain.Entities.ContaBancaria", "ContaBancaria")
                         .WithMany()
                         .HasForeignKey("ContaBancariaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ControleFinanceiro.Domain.Models.MesReferencia", "MesReferencia")
+                    b.HasOne("ControleFinanceiro.Domain.Entities.MesReferencia", "MesReferencia")
                         .WithMany()
                         .HasForeignKey("MesReferenciaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ControleFinanceiro.Domain.Models.Usuario", "Usuario")
+                    b.HasOne("ControleFinanceiro.Domain.Entities.Usuario", "Usuario")
                         .WithMany("Despesas")
                         .HasForeignKey("UsuarioId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -354,9 +352,9 @@ namespace ControleFinanceiro.Infrastructure.Migrations
                     b.Navigation("Usuario");
                 });
 
-            modelBuilder.Entity("ControleFinanceiro.Domain.Models.MesReferencia", b =>
+            modelBuilder.Entity("ControleFinanceiro.Domain.Entities.MesReferencia", b =>
                 {
-                    b.HasOne("ControleFinanceiro.Domain.Models.Usuario", "Usuario")
+                    b.HasOne("ControleFinanceiro.Domain.Entities.Usuario", "Usuario")
                         .WithMany("MesesReferencia")
                         .HasForeignKey("UsuarioId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -365,21 +363,21 @@ namespace ControleFinanceiro.Infrastructure.Migrations
                     b.Navigation("Usuario");
                 });
 
-            modelBuilder.Entity("ControleFinanceiro.Domain.Models.PlanejamentoCategoria", b =>
+            modelBuilder.Entity("ControleFinanceiro.Domain.Entities.PlanejamentoCategoria", b =>
                 {
-                    b.HasOne("ControleFinanceiro.Domain.Models.Categoria", "Categoria")
+                    b.HasOne("ControleFinanceiro.Domain.Entities.Categoria", "Categoria")
                         .WithMany()
                         .HasForeignKey("CategoriaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ControleFinanceiro.Domain.Models.MesReferencia", "MesReferencia")
+                    b.HasOne("ControleFinanceiro.Domain.Entities.MesReferencia", "MesReferencia")
                         .WithMany()
                         .HasForeignKey("MesReferenciaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ControleFinanceiro.Domain.Models.Usuario", "Usuario")
+                    b.HasOne("ControleFinanceiro.Domain.Entities.Usuario", "Usuario")
                         .WithMany("PlanejamentosCategorias")
                         .HasForeignKey("UsuarioId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -392,27 +390,27 @@ namespace ControleFinanceiro.Infrastructure.Migrations
                     b.Navigation("Usuario");
                 });
 
-            modelBuilder.Entity("ControleFinanceiro.Domain.Models.Receita", b =>
+            modelBuilder.Entity("ControleFinanceiro.Domain.Entities.Receita", b =>
                 {
-                    b.HasOne("ControleFinanceiro.Domain.Models.Categoria", "Categoria")
+                    b.HasOne("ControleFinanceiro.Domain.Entities.Categoria", "Categoria")
                         .WithMany()
                         .HasForeignKey("CategoriaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ControleFinanceiro.Domain.Models.ContaBancaria", "ContaBancaria")
+                    b.HasOne("ControleFinanceiro.Domain.Entities.ContaBancaria", "ContaBancaria")
                         .WithMany()
                         .HasForeignKey("ContaBancariaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ControleFinanceiro.Domain.Models.MesReferencia", "MesReferencia")
+                    b.HasOne("ControleFinanceiro.Domain.Entities.MesReferencia", "MesReferencia")
                         .WithMany()
                         .HasForeignKey("MesReferenciaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ControleFinanceiro.Domain.Models.Usuario", "Usuario")
+                    b.HasOne("ControleFinanceiro.Domain.Entities.Usuario", "Usuario")
                         .WithMany("Receitas")
                         .HasForeignKey("UsuarioId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -427,7 +425,7 @@ namespace ControleFinanceiro.Infrastructure.Migrations
                     b.Navigation("Usuario");
                 });
 
-            modelBuilder.Entity("ControleFinanceiro.Domain.Models.Usuario", b =>
+            modelBuilder.Entity("ControleFinanceiro.Domain.Entities.Usuario", b =>
                 {
                     b.Navigation("Cartoes");
 

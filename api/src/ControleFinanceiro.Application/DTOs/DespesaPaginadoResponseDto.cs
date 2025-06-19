@@ -1,3 +1,5 @@
+using ControleFinanceiro.Application.DTOs;
+
 namespace ControleFinanceiro.Application.Dtos;
 
 public class DespesaPaginadoResponseDto

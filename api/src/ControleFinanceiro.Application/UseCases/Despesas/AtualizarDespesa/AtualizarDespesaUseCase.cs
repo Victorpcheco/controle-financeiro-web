@@ -1,4 +1,5 @@
 using ControleFinanceiro.Application.Dtos;
+using ControleFinanceiro.Domain.Entities;
 using ControleFinanceiro.Domain.Interfaces;
 using FluentValidation;
 
@@ -9,6 +10,7 @@ public class AtualizarDespesaUseCase(IDespesaRepository repository, IValidator<D
 {
     public async Task<bool> ExecuteAsync(int id, DespesaCriarDto request)
     {
+        
         var validationResult = await validator.ValidateAsync(request);
         if (!validationResult.IsValid)
             throw new ValidationException(validationResult.Errors);

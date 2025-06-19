@@ -306,9 +306,17 @@
               "target": "Package",
               "version": "[4.0.3, )"
             },
+            "Dapper": {
+              "target": "Package",
+              "version": "[2.1.66, )"
+            },
             "Microsoft.AspNetCore.Http.Abstractions": {
               "target": "Package",
               "version": "[2.3.0, )"
+            },
+            "Microsoft.Data.SqlClient": {
+              "target": "Package",
+              "version": "[6.0.2, )"
             },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",

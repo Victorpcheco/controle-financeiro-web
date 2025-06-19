@@ -1,0 +1,186 @@
+:root {
+  /* Variáveis referente as cores */
+  --primary: #19234d;
+  --primary-hover: #566088;
+  --text-primary: #1A1F2C;
+  --text-secondary: #8E9196;
+  --background: #ffffff;
+  --card-background: #ffffff;
+  --border: #e4e4e7;
+  --error: #ef4444;
+  --success: #10b981;
+  --border-radius: 0.5rem;
+  --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(to bottom right, #ffffff, #f5f3ff);
+  color: var(--text-primary);
+  line-height: 1.5;
+  min-height: 100vh;
+}
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+/* Welcome screen */
+.welcome-screen {
+  text-align: center;             /* Centraliza o texto horizontalmente */
+  padding: 3rem 1rem;             /* Espaçamento interno: 3rem vertical, 1rem horizontal */
+  display: flex;                  /* Ativa o Flexbox para o layout interno */
+  flex-direction: column;         /* Organiza os elementos em coluna (vertical) */
+  align-items: center;            /* Centraliza os filhos horizontalmente */
+  justify-content: center;        /* Centraliza os filhos verticalmente */
+  min-height: 90vh;               /* Altura mínima de 90% da tela do navegador */
+}
+
+.title {
+  color: var(--primary);
+  font-size: 2.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.description {
+  color: var(--text-secondary);
+  font-size: 1.25rem;
+  max-width: 600px;
+  margin-bottom: 2rem;
+}
+
+.buttons {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.buttons .button {
+  min-width: 150px;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  font-weight: 500;
+  text-align: center;
+  text-decoration: none;
+  border-radius: var(--border-radius);
+  transition: all 0.2s ease;
+  cursor: pointer;
+  border: none;
+  height: 2.5rem;
+}
+
+.button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.button.primary {
+  background-color: var(--primary);
+  color: white;
+}
+
+.button.primary:hover:not(:disabled) {
+  background-color: var(--primary-hover);
+}
+
+.button.outline {
+  background-color: transparent;
+  border: 1px solid var(--primary);
+  color: var(--primary);
+}
+
+.button.outline:hover:not(:disabled) {
+  background-color: rgba(12, 20, 56, 0.1);
+}
+
+.button.full-width {
+  width: 100%;
+}
+
+.footer-text {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+.footer-text p {
+  margin-bottom: 0.5rem;
+}
+
+/* Aplica os estilos abaixo apenas em telas com largura máxima de 640px (dispositivos móveis, como celulares) */
+@media (max-width: 640px) {
+
+  /* Altera a direção do layout flex do container de botões para vertical (coluna) */
+  .buttons {
+    flex-direction: column;
+  }
+
+  /* Reduz o tamanho da fonte do título para 2rem (~32px) para melhor adaptação à tela menor */
+  .title {
+    font-size: 2rem;
+  }
+
+  /* Reduz o tamanho da fonte da descrição para 1rem (~16px), garantindo legibilidade em dispositivos menores */
+  .description {
+    font-size: 1rem;
+  }
+}
+
+
+
+.link {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+/* Toast notification */
+.toast {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  max-width: 350px;
+  background: var(--card-background);
+  color: var(--text-primary);
+  padding: 1rem;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  z-index: 1000;
+  opacity: 0;
+  transform: translateY(1rem);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  pointer-events: none;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.toast.success {
+  border-left: 4px solid var(--success);
+}
+
+.toast.error {
+  border-left: 4px solid var(--error);
+}
+
