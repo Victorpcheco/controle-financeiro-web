@@ -3,13 +3,14 @@ using ControleFinanceiro.Application.UseCases.Financeiro.ListarSaldosContas;
 using ControleFinanceiro.Application.UseCases.Financeiro.ObterDespesasEmAberto;
 using ControleFinanceiro.Application.UseCases.Financeiro.ObterReceitasEmAberto;
 using ControleFinanceiro.Application.UseCases.Financeiro.ObterSaldoTotal;
+using ControleFinanceiro.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ControleFinanceiro.API.Controllers
 {
     [ApiController]
-    [Route("api/financeiro")]
+    [Route("api/dashboard")]
     [Authorize]
     public class FinanceiroController(IObterSaldoTotalUseCase obterSaldoTotal,
         IListarContasComSaldoTotalUseCase obterSaldoConta,
@@ -24,9 +25,12 @@ namespace ControleFinanceiro.API.Controllers
         }
 
         [HttpGet("saldo-contas")]
-        public async Task<ActionResult<SaldoContaDto>> ObterSaldoConta()
+        [ProducesResponseType(typeof(List<SaldoConta>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult> ObterSaldoPorConta()
         {
-            var saldoConta = await obterSaldoConta.ExecutarAsync();
+            var saldoConta = await obterSaldoConta.ExecuteAsync();
             return Ok(saldoConta);
 
         }

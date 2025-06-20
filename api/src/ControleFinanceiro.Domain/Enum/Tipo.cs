@@ -1,6 +1,6 @@
 namespace ControleFinanceiro.Domain.Enum;
 
-public enum TipoCategoria
+public enum Tipo
 {
     Receita,
     Despesa

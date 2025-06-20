@@ -13,4 +13,5 @@ public class CategoriaConfigurationEnum: IEntityTypeConfiguration<Categoria>
             .Property(c => c.Tipo)
             .HasConversion<string>(); 
     }
+
 }

@@ -7,13 +7,13 @@ public class Categoria
 {
     public int Id { get; private set; }
     public string NomeCategoria { get; private set; } = null!;
-    public TipoCategoria Tipo { get; private set; }
+    public Tipo Tipo { get; private set; }
     public int UsuarioId { get; private set; }
     public Usuario Usuario { get; private set; } = null!;
     
     public Categoria() {}
 
-    public Categoria(string nome, TipoCategoria tipo, int usuarioId)
+    public Categoria(string nome, Tipo tipo, int usuarioId)
     {
         ValidarNome(nome);
         // ValidarTipo(tipo);
@@ -50,7 +50,7 @@ public class Categoria
         UsuarioId = usuarioId;
     }
 
-    public void AtualizarCategoria(string nome, TipoCategoria tipo)
+    public void AtualizarCategoria(string nome, Tipo tipo)
     {
         ValidarNome(nome);
         // ValidarTipo(tipo);

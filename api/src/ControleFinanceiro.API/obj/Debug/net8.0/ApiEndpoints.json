@@ -430,6 +430,80 @@
     ]
   },
   {
+    "ContainingType": "ControleFinanceiro.API.Controllers.FinanceiroController",
+    "Method": "ObterSaldoPorConta",
+    "RelativePath": "api/dashboard/saldo-contas",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[ControleFinanceiro.Domain.Entities.SaldoConta, ControleFinanceiro.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 401
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 500
+      }
+    ]
+  },
+  {
+    "ContainingType": "ControleFinanceiro.API.Controllers.FinanceiroController",
+    "Method": "ObterSaldoTotal",
+    "RelativePath": "api/dashboard/saldo-total",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Decimal",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ControleFinanceiro.API.Controllers.FinanceiroController",
+    "Method": "ValorDespesasEmAberto",
+    "RelativePath": "api/dashboard/valor-em-aberto-despesas",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ControleFinanceiro.API.Controllers.FinanceiroController",
+    "Method": "ValorReceitasEmAberto",
+    "RelativePath": "api/dashboard/valor-em-aberto-receitas",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "ControleFinanceiro.API.Controllers.DespesaController",
     "Method": "ListarDespesas",
     "RelativePath": "api/Despesa",
@@ -647,66 +721,6 @@
         "IsRequired": false
       }
     ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "ControleFinanceiro.API.Controllers.FinanceiroController",
-    "Method": "ObterSaldoConta",
-    "RelativePath": "api/financeiro/saldo-contas",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": [
-      {
-        "Type": "ControleFinanceiro.Application.DTOs.SaldoContaDto",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
-  },
-  {
-    "ContainingType": "ControleFinanceiro.API.Controllers.FinanceiroController",
-    "Method": "ObterSaldoTotal",
-    "RelativePath": "api/financeiro/saldo-total",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": [
-      {
-        "Type": "System.Decimal",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
-  },
-  {
-    "ContainingType": "ControleFinanceiro.API.Controllers.FinanceiroController",
-    "Method": "ValorDespesasEmAberto",
-    "RelativePath": "api/financeiro/valor-em-aberto-despesas",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "ControleFinanceiro.API.Controllers.FinanceiroController",
-    "Method": "ValorReceitasEmAberto",
-    "RelativePath": "api/financeiro/valor-em-aberto-receitas",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
     "ReturnTypes": []
   },
   {

@@ -8,6 +8,11 @@ namespace ControleFinanceiro.Domain.Entities
         public int Id { get; set; }
         public string NomeConta { get; set; } = string.Empty;
         public decimal SaldoAtual { get; set; }
+
+        public SaldoConta()
+        {
+            
+        }
         public SaldoConta(string nomeConta, decimal saldo)
         {
             NomeConta = nomeConta;

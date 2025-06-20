@@ -1054,7 +1054,7 @@
         }
       }
     },
-    "/api/financeiro/saldo-total": {
+    "/api/dashboard/saldo-total": {
       "get": {
         "tags": [
           "Financeiro"
@@ -1086,7 +1086,7 @@
         }
       }
     },
-    "/api/financeiro/saldo-contas": {
+    "/api/dashboard/saldo-contas": {
       "get": {
         "tags": [
           "Financeiro"
@@ -1097,25 +1097,57 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/SaldoContaDto"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SaldoConta"
+                  }
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SaldoContaDto"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SaldoConta"
+                  }
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SaldoContaDto"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SaldoConta"
+                  }
                 }
               }
             }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }
     },
-    "/api/financeiro/valor-em-aberto-despesas": {
+    "/api/dashboard/valor-em-aberto-despesas": {
       "get": {
         "tags": [
           "Financeiro"
@@ -1127,7 +1159,7 @@
         }
       }
     },
-    "/api/financeiro/valor-em-aberto-receitas": {
+    "/api/dashboard/valor-em-aberto-receitas": {
       "get": {
         "tags": [
           "Financeiro"
@@ -1811,7 +1843,7 @@
             "nullable": true
           },
           "tipo": {
-            "$ref": "#/components/schemas/TipoCategoria"
+            "$ref": "#/components/schemas/Tipo"
           }
         },
         "additionalProperties": false
@@ -1853,7 +1885,7 @@
             "nullable": true
           },
           "tipo": {
-            "$ref": "#/components/schemas/TipoCategoria"
+            "$ref": "#/components/schemas/Tipo"
           },
           "usuarioId": {
             "type": "integer",
@@ -2041,6 +2073,33 @@
         },
         "additionalProperties": false
       },
+      "ProblemDetails": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "detail": {
+            "type": "string",
+            "nullable": true
+          },
+          "instance": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": { }
+      },
       "ReceitaCriarDto": {
         "type": "object",
         "properties": {
@@ -2092,7 +2151,7 @@
         },
         "additionalProperties": false
       },
-      "SaldoContaDto": {
+      "SaldoConta": {
         "type": "object",
         "properties": {
           "id": {
@@ -2110,7 +2169,7 @@
         },
         "additionalProperties": false
       },
-      "TipoCategoria": {
+      "Tipo": {
         "enum": [
           "Receita",
           "Despesa"

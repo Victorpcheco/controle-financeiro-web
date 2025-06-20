@@ -1,3 +1,4 @@
+using System;
 using System.Text;
 using ControleFinanceiro.Application.Dtos;
 using ControleFinanceiro.Application.Interfaces;
@@ -64,12 +65,6 @@ var builder = WebApplication.CreateBuilder(args);
 // Configura o Entity Framework com SQL Server
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-// Registra os repositórios usando método de extensão personalizado
-builder.Services.AddRepositories(
-    builder.Configuration.GetConnectionString("DefaultConnection")!,
-    builder.Services.BuildServiceProvider().GetRequiredService<ApplicationDbContext>()
-);
 
 // Registra serviços relacionados ao gerenciamento de usuários
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
@@ -153,13 +148,9 @@ builder.Services.AddScoped<IObterValorEmAbertoDespesasUseCase, ObterValorEmAbert
 builder.Services.AddScoped<IObterValorEmAbertoReceitasUseCase, ObterValorEmAbertoReceitasUseCase>();
 builder.Services.AddScoped<IObterSaldoTotalUseCase, ObterSaldoTotalUseCase>();
 builder.Services.AddScoped<IListarContasComSaldoTotalUseCase, ListarContasComSaldoTotalUseCase>();
+builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
 
-// Repositório específico para consultas financeiras complexas
-builder.Services.AddScoped<IFinanceiroRepository>(provider =>
-    new FinanceiroRepository(
-        builder.Configuration.GetConnectionString("DefaultConnection")!,
-        provider.GetRequiredService<ApplicationDbContext>()
-    ));
+
 
 // Configura o AutoMapper para conversão entre DTOs e entidades
 builder.Services.AddAutoMapper(typeof(Program));

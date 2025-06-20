@@ -2,7 +2,7 @@
 
 namespace ControleFinanceiro.Application.UseCases.Financeiro.ObterSaldoTotal
 {
-    public class ObterSaldoTotalUseCase(IFinanceiroRepository repository, IUserContext userContext) : IObterSaldoTotalUseCase
+    public class ObterSaldoTotalUseCase(IDashboardRepository repository, IUserContext userContext) : IObterSaldoTotalUseCase
     {
 
         public async Task<decimal> ExecuteAsync()

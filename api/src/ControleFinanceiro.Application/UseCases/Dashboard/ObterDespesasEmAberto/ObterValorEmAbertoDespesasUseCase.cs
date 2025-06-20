@@ -2,7 +2,7 @@
 
 namespace ControleFinanceiro.Application.UseCases.Financeiro.ObterDespesasEmAberto
 {
-    public class ObterValorEmAbertoDespesasUseCase(IFinanceiroRepository repository, IUserContext userContext) : IObterValorEmAbertoDespesasUseCase
+    public class ObterValorEmAbertoDespesasUseCase(IDashboardRepository repository, IUserContext userContext) : IObterValorEmAbertoDespesasUseCase
     {
         public async Task<decimal> ExecuteAsync()
         {

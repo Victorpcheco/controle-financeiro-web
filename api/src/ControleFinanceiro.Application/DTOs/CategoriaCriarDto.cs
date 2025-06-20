@@ -5,5 +5,5 @@ namespace ControleFinanceiro.Application.Dtos;
 public class CategoriaCriarDto
 {
     public string NomeCategoria { get; set; } = null!;
-    public TipoCategoria Tipo { get; set; }
+    public Tipo Tipo { get; set; }
 }

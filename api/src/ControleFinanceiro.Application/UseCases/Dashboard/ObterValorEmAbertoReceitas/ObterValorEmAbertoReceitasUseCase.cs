@@ -3,7 +3,7 @@ using ControleFinanceiro.Domain.Interfaces;
 
 namespace ControleFinanceiro.Application.UseCases.Financeiro.ObterReceitasEmAberto
 {
-    public class ObterValorEmAbertoReceitasUseCase(IFinanceiroRepository repository, IUserContext context, IMapper mapper) : IObterValorEmAbertoReceitasUseCase
+    public class ObterValorEmAbertoReceitasUseCase(IDashboardRepository repository, IUserContext context, IMapper mapper) : IObterValorEmAbertoReceitasUseCase
     {
 
         public async Task<decimal> ExecuteAsync()

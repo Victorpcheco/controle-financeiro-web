@@ -2,7 +2,7 @@
 
 namespace ControleFinanceiro.Domain.Interfaces
 {
-    public interface IFinanceiroRepository
+    public interface IDashboardRepository
     {
         Task<decimal> ObterSaldoTotalAsync(int usuarioId);
         Task<List<SaldoContasPorUsuario>> ListarContasComSaldoTotalAsync(int usuarioId);

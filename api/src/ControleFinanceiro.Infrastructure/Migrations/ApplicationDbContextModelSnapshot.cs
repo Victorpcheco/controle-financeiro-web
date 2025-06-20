@@ -112,8 +112,8 @@ namespace ControleFinanceiro.Infrastructure.Migrations
                     b.Property<int>("ContaBancariaId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("Data")
-                        .HasColumnType("datetime2");
+                    b.Property<DateOnly>("Data")
+                        .HasColumnType("date");
 
                     b.Property<int>("MesReferenciaId")
                         .HasColumnType("int");
@@ -168,6 +168,61 @@ namespace ControleFinanceiro.Infrastructure.Migrations
                     b.ToTable("MesesReferencia");
                 });
 
+            modelBuilder.Entity("ControleFinanceiro.Domain.Entities.Movimentacoes", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("CartaoId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CategoriaId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ContaBancariaId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("DataVencimento")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("MesReferenciaId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("Realizado")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Tipo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Titulo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UsuarioId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Valor")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CartaoId");
+
+                    b.HasIndex("CategoriaId");
+
+                    b.HasIndex("ContaBancariaId");
+
+                    b.HasIndex("MesReferenciaId");
+
+                    b.HasIndex("UsuarioId");
+
+                    b.ToTable("Movimentacoes");
+                });
+
             modelBuilder.Entity("ControleFinanceiro.Domain.Entities.PlanejamentoCategoria", b =>
                 {
                     b.Property<int>("Id")
@@ -213,8 +268,8 @@ namespace ControleFinanceiro.Infrastructure.Migrations
                     b.Property<int>("ContaBancariaId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("Data")
-                        .HasColumnType("datetime2");
+                    b.Property<DateOnly>("Data")
+                        .HasColumnType("date");
 
                     b.Property<int>("MesReferenciaId")
                         .HasColumnType("int");
@@ -336,9 +391,9 @@ namespace ControleFinanceiro.Infrastructure.Migrations
                         .IsRequired();
 
                     b.HasOne("ControleFinanceiro.Domain.Entities.Usuario", "Usuario")
-                        .WithMany("Despesas")
+                        .WithMany()
                         .HasForeignKey("UsuarioId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Cartao");
@@ -359,6 +414,47 @@ namespace ControleFinanceiro.Infrastructure.Migrations
                         .HasForeignKey("UsuarioId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("ControleFinanceiro.Domain.Entities.Movimentacoes", b =>
+                {
+                    b.HasOne("ControleFinanceiro.Domain.Entities.Cartao", "Cartao")
+                        .WithMany()
+                        .HasForeignKey("CartaoId");
+
+                    b.HasOne("ControleFinanceiro.Domain.Entities.Categoria", "Categoria")
+                        .WithMany()
+                        .HasForeignKey("CategoriaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ControleFinanceiro.Domain.Entities.ContaBancaria", "ContaBancaria")
+                        .WithMany()
+                        .HasForeignKey("ContaBancariaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ControleFinanceiro.Domain.Entities.MesReferencia", "MesReferencia")
+                        .WithMany()
+                        .HasForeignKey("MesReferenciaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ControleFinanceiro.Domain.Entities.Usuario", "Usuario")
+                        .WithMany("Movimentacoes")
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Cartao");
+
+                    b.Navigation("Categoria");
+
+                    b.Navigation("ContaBancaria");
+
+                    b.Navigation("MesReferencia");
 
                     b.Navigation("Usuario");
                 });
@@ -411,9 +507,9 @@ namespace ControleFinanceiro.Infrastructure.Migrations
                         .IsRequired();
 
                     b.HasOne("ControleFinanceiro.Domain.Entities.Usuario", "Usuario")
-                        .WithMany("Receitas")
+                        .WithMany()
                         .HasForeignKey("UsuarioId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Categoria");
@@ -433,13 +529,11 @@ namespace ControleFinanceiro.Infrastructure.Migrations
 
                     b.Navigation("ContasBancarias");
 
-                    b.Navigation("Despesas");
-
                     b.Navigation("MesesReferencia");
 
-                    b.Navigation("PlanejamentosCategorias");
+                    b.Navigation("Movimentacoes");
 
-                    b.Navigation("Receitas");
+                    b.Navigation("PlanejamentosCategorias");
                 });
 #pragma warning restore 612, 618
         }
