@@ -41,6 +41,7 @@ let transactions = [
 let apiAccountsData = null;
 let apiTotalBalance = 0;
 let apiPendingIncomes = 0;
+let apiPendingExpenses = 0;
 
 // Configurações da API
 const API_CONFIG = {
@@ -48,7 +49,8 @@ const API_CONFIG = {
   endpoints: {
     totalBalance: '/financeiro/saldo-total',
     accountsBalance: '/financeiro/saldo-contas',
-    pendingIncomes: '/financeiro/valor-em-aberto-receitas'
+    pendingIncomes: '/financeiro/valor-em-aberto-receitas',
+    pendingExpenses: '/financeiro/valor-em-aberto-despesas'
   }
 };
 
@@ -151,6 +153,52 @@ async function fetchPendingIncomes() {
     return apiPendingIncomes;
   } catch (error) {
     console.error('❌ Erro ao buscar receitas pendentes da API:', error.message);
+    return null;
+  }
+}
+
+// Busca despesas pendentes da API
+async function fetchPendingExpenses() {
+  try {
+    const token = getAuthToken();
+    
+    if (!token) {
+      console.warn('❌ Token de autenticação não encontrado');
+      return null;
+    }
+    
+    const headers = {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    };
+
+    console.log('🔄 Buscando despesas pendentes da API...');
+    const response = await fetch(`${API_CONFIG.baseUrl}${API_CONFIG.endpoints.pendingExpenses}`, {
+      method: 'GET',
+      headers: headers
+    });
+
+    if (!response.ok) {
+      let errorDetails = '';
+      try {
+        const errorBody = await response.text();
+        errorDetails = errorBody;
+        console.error('❌ Corpo da resposta de erro (despesas pendentes):', errorBody);
+      } catch (e) {
+        console.error('❌ Não foi possível ler o corpo da resposta de erro das despesas pendentes');
+      }
+      console.error(`❌ Erro na API (despesas pendentes): ${response.status} - ${response.statusText}`);
+      throw new Error(`Erro na API: ${response.status} - ${response.statusText}${errorDetails ? '. Detalhes: ' + errorDetails : ''}`);
+    }
+
+    const data = await response.json();
+    console.log('✅ Despesas pendentes recebidas da API:', data);
+    
+    apiPendingExpenses = typeof data === 'number' ? data : data.despesas || data.pendingExpenses || data.total || 0;
+    console.log('💰 Despesas pendentes processadas:', apiPendingExpenses);
+    return apiPendingExpenses;
+  } catch (error) {
+    console.error('❌ Erro ao buscar despesas pendentes da API:', error.message);
     return null;
   }
 }
@@ -310,8 +358,15 @@ document.addEventListener('DOMContentLoaded', function() {
       .reduce((total, t) => total + t.amount, 0);
   }
   
-  // Calcular despesas pendentes
-  function getPendingExpenses() {
+  // Calcular despesas pendentes - Usa a API primeiro, fallback para dados locais
+  async function getPendingExpenses() {
+    const apiExpenses = await fetchPendingExpenses();
+    
+    if (apiExpenses !== null) {
+      return apiExpenses;
+    }
+    
+    console.warn('⚠️ Não foi possível obter despesas pendentes da API. Usando dados locais.');
     return transactions
       .filter(t => t.type === 'expense' && !t.completed)
       .reduce((total, t) => total + t.amount, 0);
@@ -378,8 +433,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const pendingIncomes = await getPendingIncomes();
     updateValueDisplay(pendingIncomesEl, pendingIncomes);
     
-    // Manter despesas pendentes com dados locais
-    updateValueDisplay(pendingExpensesEl, getPendingExpenses());
+    // Atualizar despesas pendentes (vem da API)
+    const pendingExpenses = await getPendingExpenses();
+    updateValueDisplay(pendingExpensesEl, pendingExpenses);
     
     // Atualizar detalhes das contas
     renderAccountDetails();
