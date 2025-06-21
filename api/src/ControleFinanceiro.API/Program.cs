@@ -152,9 +152,6 @@ builder.Services.AddScoped<IListarContasComSaldoTotalUseCase, ListarContasComSal
 builder.Services.AddScoped<IListarMovimentacoesEmAbertoUseCase, ListarMovimentacoesEmAbertoUseCase>();
 builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
 
-
-
-
 // Configura o AutoMapper para conversão entre DTOs e entidades
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddAutoMapper(typeof(ContaBancariaMapper));

@@ -47,10 +47,11 @@ let apiPendingExpenses = 0;
 const API_CONFIG = {
   baseUrl: 'https://localhost:7101/api',
   endpoints: {
-    totalBalance: '/financeiro/saldo-total',
-    accountsBalance: '/financeiro/saldo-contas',
-    pendingIncomes: '/financeiro/valor-em-aberto-receitas',
-    pendingExpenses: '/financeiro/valor-em-aberto-despesas'
+    totalBalance: '/dashboard/saldo-total',
+    accountsBalance: '/dashboard/saldo-contas',
+    pendingIncomes: '/dashboard/valor-em-aberto-receitas',
+    pendingExpenses: '/dashboard/valor-em-aberto-despesas',
+    transactions: '/dashboard/movimentacoes-em-aberto' // <-- Adicione esta linha
   }
 };
 
@@ -240,6 +241,7 @@ async function fetchAccountsBalance() {
     const data = await response.json();
     console.log('✅ Dados das contas recebidos da API:', data);
     
+    // Armazenar os dados das contas globalmente
     apiAccountsData = data;
     return data;
   } catch (error) {
@@ -248,9 +250,60 @@ async function fetchAccountsBalance() {
   }
 }
 
+// Função para buscar transações da API e converter para o formato do front
+async function fetchTransactionsFromApi() {
+  try {
+    const token = getAuthToken();
+    if (!token) {
+      console.warn('❌ Token de autenticação não encontrado');
+      return [];
+    }
+    const headers = {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    };
+    console.log('🔄 Buscando transações da API...');
+    const response = await fetch(`${API_CONFIG.baseUrl}${API_CONFIG.endpoints.transactions}`, {
+      method: 'GET',
+      headers: headers
+    });
+    if (!response.ok) {
+      let errorDetails = '';
+      try {
+        const errorBody = await response.text();
+        errorDetails = errorBody;
+        console.error('❌ Corpo da resposta de erro (transações):', errorBody);
+      } catch (e) {
+        console.error('❌ Não foi possível ler o corpo da resposta de erro das transações');
+      }
+      throw new Error(`Erro na API: ${response.status} - ${response.statusText}${errorDetails ? '. Detalhes: ' + errorDetails : ''}`);
+    }
+    const data = await response.json();
+    // Se vier um array, converte cada item
+    const apiTransactions = Array.isArray(data) ? data : [data];
+    // Mapeia para o formato esperado pelo front
+    return apiTransactions.map(apiT => ({
+      id: apiT.id,
+      name: apiT.titulo,
+      description: '', // Se não vier descrição, pode deixar vazio ou adaptar
+      amount: apiT.valor,
+      date: apiT.dataVencimento, // Ou outro campo de data de criação se houver
+      dueDate: apiT.dataVencimento,
+      categoryId: apiT.categoriaId,
+      accountId: apiT.contaBancariaId,
+      paymentMethodId: apiT.cartaoId || null,
+      type: apiT.tipo && apiT.tipo.toLowerCase() === 'despesa' ? 'expense' : 'income',
+      completed: !!apiT.realizado
+    }));
+  } catch (error) {
+    console.error('❌ Erro ao buscar transações da API:', error.message);
+    return [];
+  }
+}
+
 // Elementos do DOM
 // ---------------------------------
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
   // Mobile menu toggle
   const mobileMenuToggle = document.getElementById('mobileMenuToggle');
   const mobileMenu = document.getElementById('mobileMenu');
@@ -286,7 +339,7 @@ document.addEventListener('DOMContentLoaded', function() {
   let showValues = true;
   let showAccountDetails = false;
   let expandedTransaction = null;
-  let filteredTransactions = [...transactions];
+  let filteredTransactions = [];
   let activeFilters = {
     startDate: '',
     endDate: '',
@@ -317,11 +370,11 @@ document.addEventListener('DOMContentLoaded', function() {
     return category ? category.name : 'N/A';
   }
   
-  // Obter nome da conta pelo ID - Agora usa dados da API
+  // Obter nome da conta pelo ID - CORRIGIDO para novo formato da API
   function getAccountName(accountId) {
-    if (apiAccountsData && apiAccountsData.sucesso && Array.isArray(apiAccountsData.dados)) {
-      const account = apiAccountsData.dados.find(a => a.id === accountId || a.contaId === accountId);
-      return account ? (account.nomeConta || account.name) : 'Conta não encontrada';
+    if (apiAccountsData && Array.isArray(apiAccountsData)) {
+      const account = apiAccountsData.find(a => a.id === accountId);
+      return account ? account.nomeConta : 'Conta não encontrada';
     }
     return 'Dados não disponíveis';
   }
@@ -415,10 +468,14 @@ document.addEventListener('DOMContentLoaded', function() {
   // ---------------------------------
   
   // Inicializar a interface
-  function initApp() {
+  async function initApp() {
+    // Buscar transações da API
+    transactions = await fetchTransactionsFromApi();
+    filteredTransactions = [...transactions];
+
     populateCategoryFilter();
-    populateAccountFilter();
-    updateDashboard();
+    await populateAccountFilter();
+    await updateDashboard();
     renderTransactions();
     setupEventListeners();
   }
@@ -450,20 +507,20 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
   
-  // Renderizar detalhes das contas - Usa apenas dados da API
+  // Renderizar detalhes das contas - CORRIGIDO para novo formato da API
   async function renderAccountDetails() {
     if (!showAccountDetails) return;
     
     console.log('🔄 Renderizando detalhes das contas...');
     
     // Buscar dados da API
-    const apiAccountsData = await fetchAccountsBalance();
+    const accountsData = await fetchAccountsBalance();
     
     let html = '';
     
-    if (apiAccountsData && apiAccountsData.sucesso && Array.isArray(apiAccountsData.dados)) {
+    if (accountsData && Array.isArray(accountsData)) {
       console.log('✅ Usando dados das contas da API');
-      apiAccountsData.dados.forEach(account => {
+      accountsData.forEach(account => {
         html += `
           <div class="account-item">
             <span>${account.nomeConta}</span>
@@ -508,16 +565,16 @@ document.addEventListener('DOMContentLoaded', function() {
     categoryFilterEl.innerHTML = html;
   }
   
-  // Preencher filtro de contas - Usa dados da API
+  // Preencher filtro de contas - CORRIGIDO para novo formato da API
   async function populateAccountFilter() {
     let html = '<option value="">Todas as contas</option>';
     
     // Buscar contas da API
-    const apiAccountsData = await fetchAccountsBalance();
+    const accountsData = await fetchAccountsBalance();
     
-    if (apiAccountsData && apiAccountsData.sucesso && Array.isArray(apiAccountsData.dados)) {
-      apiAccountsData.dados.forEach(account => {
-        html += `<option value="${account.id || account.contaId}">${account.nomeConta}</option>`;
+    if (accountsData && Array.isArray(accountsData)) {
+      accountsData.forEach(account => {
+        html += `<option value="${account.id}">${account.nomeConta}</option>`;
       });
     } else {
       console.warn('⚠️ Não foi possível carregar contas para o filtro');
