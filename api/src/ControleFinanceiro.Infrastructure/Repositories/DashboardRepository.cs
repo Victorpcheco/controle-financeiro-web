@@ -83,5 +83,13 @@ namespace ControleFinanceiro.Infrastructure.Repositories
                 .Where(m => m.UsuarioId == usuarioId && m.Realizado == false && m.Tipo == Tipo.Receita)
                 .SumAsync(m => m.Valor);
         }
+
+        public async Task<List<Movimentacoes>> ListarMovimentacoesEmAbertoAsync(int usuarioId)
+        {
+            return await context.Movimentacoes
+                .Where(m => m.UsuarioId == usuarioId && m.Realizado == false)
+                .OrderByDescending(m => m.DataVencimento)
+                .ToListAsync();
+        }
     }
 }

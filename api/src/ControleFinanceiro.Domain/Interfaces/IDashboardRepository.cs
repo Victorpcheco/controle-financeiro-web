@@ -8,5 +8,6 @@ namespace ControleFinanceiro.Domain.Interfaces
         Task<List<SaldoContasPorUsuario>> ListarContasComSaldoTotalAsync(int usuarioId);
         Task<decimal> ObterValorEmAbertoDespesasAsync(int usuarioId);
         Task<decimal> ObterValorEmAbertoReceitasAsync(int usuarioId);
+        Task<List<Movimentacoes>> ListarMovimentacoesEmAbertoAsync(int usuarioId);
     }
 }

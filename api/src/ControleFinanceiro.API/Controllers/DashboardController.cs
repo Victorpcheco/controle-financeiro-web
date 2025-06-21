@@ -1,4 +1,5 @@
 ﻿using ControleFinanceiro.Application.DTOs;
+using ControleFinanceiro.Application.UseCases.Dashboard.ListarMovimentacoesEmAberto;
 using ControleFinanceiro.Application.UseCases.Financeiro.ListarSaldosContas;
 using ControleFinanceiro.Application.UseCases.Financeiro.ObterDespesasEmAberto;
 using ControleFinanceiro.Application.UseCases.Financeiro.ObterReceitasEmAberto;
@@ -15,7 +16,8 @@ namespace ControleFinanceiro.API.Controllers
     public class FinanceiroController(IObterSaldoTotalUseCase obterSaldoTotal,
         IListarContasComSaldoTotalUseCase obterSaldoConta,
         IObterValorEmAbertoDespesasUseCase obterDespesasEmAberto,
-        IObterValorEmAbertoReceitasUseCase obterReceitasEmAberto) : ControllerBase
+        IObterValorEmAbertoReceitasUseCase obterReceitasEmAberto,
+        IListarMovimentacoesEmAbertoUseCase movimentacoesEmAberto) : ControllerBase
     {
         [HttpGet("saldo-total")]
         public async Task<ActionResult<decimal>> ObterSaldoTotal()
@@ -46,6 +48,13 @@ namespace ControleFinanceiro.API.Controllers
         public async Task<ActionResult> ValorReceitasEmAberto()
         {
             var response = await obterReceitasEmAberto.ExecuteAsync();
+            return Ok(response);
+        }
+
+        [HttpGet("movimentacoes-em-aberto")]
+        public async Task<ActionResult> MovimentacoesEmAberto()
+        {
+            var response = await movimentacoesEmAberto.ExecuteAsync();
             return Ok(response);
         }
     }

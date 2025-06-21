@@ -18,6 +18,7 @@ using ControleFinanceiro.Application.UseCases.Contas.BuscarContaBancaria;
 using ControleFinanceiro.Application.UseCases.Contas.CriarContaBancaria;
 using ControleFinanceiro.Application.UseCases.Contas.DeletarContaBancaria;
 using ControleFinanceiro.Application.UseCases.Contas.ListarContaBancaria;
+using ControleFinanceiro.Application.UseCases.Dashboard.ListarMovimentacoesEmAberto;
 using ControleFinanceiro.Application.UseCases.Despesas.AtualizarDespesa;
 using ControleFinanceiro.Application.UseCases.Despesas.BuscarDespesa;
 using ControleFinanceiro.Application.UseCases.Despesas.CriarDespesa;
@@ -143,12 +144,14 @@ builder.Services.AddScoped<IListarReceitaPorContaBancariaUseCase, ListarReceitaP
 builder.Services.AddScoped<IListarReceitaPorCategoriaUseCase, ListarReceitaPorCategoriaUseCase>();
 builder.Services.AddScoped<IListarReceitaPorTituloUseCase, ListarReceitaPorTituloUseCase>();
 
-// Registra use cases para cálculos financeiros e relatórios
+// Registra use cases da tela de dashboard
 builder.Services.AddScoped<IObterValorEmAbertoDespesasUseCase, ObterValorEmAbertoDespesasUseCase>();
 builder.Services.AddScoped<IObterValorEmAbertoReceitasUseCase, ObterValorEmAbertoReceitasUseCase>();
 builder.Services.AddScoped<IObterSaldoTotalUseCase, ObterSaldoTotalUseCase>();
 builder.Services.AddScoped<IListarContasComSaldoTotalUseCase, ListarContasComSaldoTotalUseCase>();
+builder.Services.AddScoped<IListarMovimentacoesEmAbertoUseCase, ListarMovimentacoesEmAbertoUseCase>();
 builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
+
 
 
 

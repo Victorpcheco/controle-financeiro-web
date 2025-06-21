@@ -1171,6 +1171,18 @@
         }
       }
     },
+    "/api/dashboard/movimentacoes-em-aberto": {
+      "get": {
+        "tags": [
+          "Financeiro"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/MesReferencia": {
       "get": {
         "tags": [

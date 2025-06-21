@@ -11,16 +11,12 @@
       "RelativeMoniker": "D:0:0:{DEEACBFC-618D-4EEE-AE8C-5DC8B7949F66}|ControleFinanceiro.API\\ControleFinanceiro.API.csproj|solutionrelative:controlefinanceiro.api\\controllers\\dashboardcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{3F79A41A-A156-4809-BF9E-D9AD10F4D0B9}|ControleFinanceiro.Application\\ControleFinanceiro.Application.csproj|c:\\projects\\controle-financeiro-web\\api\\src\\controlefinanceiro.application\\usecases\\dashboard\\listarcontascomsaldototal\\ilistarcontascomsaldototalusecase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{3F79A41A-A156-4809-BF9E-D9AD10F4D0B9}|ControleFinanceiro.Application\\ControleFinanceiro.Application.csproj|solutionrelative:controlefinanceiro.application\\usecases\\dashboard\\listarcontascomsaldototal\\ilistarcontascomsaldototalusecase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{3F79A41A-A156-4809-BF9E-D9AD10F4D0B9}|ControleFinanceiro.Application\\ControleFinanceiro.Application.csproj|c:\\projects\\controle-financeiro-web\\api\\src\\controlefinanceiro.application\\usecases\\dashboard\\listarmovimentacoesemaberto\\listarmovimentacoesemabertousecase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3F79A41A-A156-4809-BF9E-D9AD10F4D0B9}|ControleFinanceiro.Application\\ControleFinanceiro.Application.csproj|solutionrelative:controlefinanceiro.application\\usecases\\dashboard\\listarmovimentacoesemaberto\\listarmovimentacoesemabertousecase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{3F79A41A-A156-4809-BF9E-D9AD10F4D0B9}|ControleFinanceiro.Application\\ControleFinanceiro.Application.csproj|c:\\projects\\controle-financeiro-web\\api\\src\\controlefinanceiro.application\\usecases\\dashboard\\listarcontascomsaldototal\\listarcontascomsaldototalusecase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{3F79A41A-A156-4809-BF9E-D9AD10F4D0B9}|ControleFinanceiro.Application\\ControleFinanceiro.Application.csproj|solutionrelative:controlefinanceiro.application\\usecases\\dashboard\\listarcontascomsaldototal\\listarcontascomsaldototalusecase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{5F16E059-E468-42C5-8249-A219E30E035B}|ControleFinanceiro.Domain\\ControleFinanceiro.Domain.csproj|c:\\projects\\controle-financeiro-web\\api\\src\\controlefinanceiro.domain\\entities\\saldoconta.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5F16E059-E468-42C5-8249-A219E30E035B}|ControleFinanceiro.Domain\\ControleFinanceiro.Domain.csproj|solutionrelative:controlefinanceiro.domain\\entities\\saldoconta.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{3F79A41A-A156-4809-BF9E-D9AD10F4D0B9}|ControleFinanceiro.Application\\ControleFinanceiro.Application.csproj|c:\\projects\\controle-financeiro-web\\api\\src\\controlefinanceiro.application\\usecases\\dashboard\\listarmovimentacoesemaberto\\ilistarmovimentacoesemabertousecase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3F79A41A-A156-4809-BF9E-D9AD10F4D0B9}|ControleFinanceiro.Application\\ControleFinanceiro.Application.csproj|solutionrelative:controlefinanceiro.application\\usecases\\dashboard\\listarmovimentacoesemaberto\\ilistarmovimentacoesemabertousecase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -40,10 +36,36 @@
               "RelativeDocumentMoniker": "ControleFinanceiro.API\\Program.cs",
               "ToolTip": "C:\\Projects\\controle-financeiro-web\\api\\src\\ControleFinanceiro.API\\Program.cs",
               "RelativeToolTip": "ControleFinanceiro.API\\Program.cs",
-              "ViewState": "AgIAAGwAAAAAAAAAAAAhwPQAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAIIAAAAAAAAAAAAhwJcAAABiAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-06-20T21:41:28.905Z",
               "IsPinned": true,
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "ListarMovimentacoesEmAbertoUseCase.cs",
+              "DocumentMoniker": "C:\\Projects\\controle-financeiro-web\\api\\src\\ControleFinanceiro.Application\\UseCases\\Dashboard\\ListarMovimentacoesEmAberto\\ListarMovimentacoesEmAbertoUseCase.cs",
+              "RelativeDocumentMoniker": "ControleFinanceiro.Application\\UseCases\\Dashboard\\ListarMovimentacoesEmAberto\\ListarMovimentacoesEmAbertoUseCase.cs",
+              "ToolTip": "C:\\Projects\\controle-financeiro-web\\api\\src\\ControleFinanceiro.Application\\UseCases\\Dashboard\\ListarMovimentacoesEmAberto\\ListarMovimentacoesEmAbertoUseCase.cs",
+              "RelativeToolTip": "ControleFinanceiro.Application\\UseCases\\Dashboard\\ListarMovimentacoesEmAberto\\ListarMovimentacoesEmAbertoUseCase.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-21T13:57:09.971Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "IListarMovimentacoesEmAbertoUseCase.cs",
+              "DocumentMoniker": "C:\\Projects\\controle-financeiro-web\\api\\src\\ControleFinanceiro.Application\\UseCases\\Dashboard\\ListarMovimentacoesEmAberto\\IListarMovimentacoesEmAbertoUseCase.cs",
+              "RelativeDocumentMoniker": "ControleFinanceiro.Application\\UseCases\\Dashboard\\ListarMovimentacoesEmAberto\\IListarMovimentacoesEmAbertoUseCase.cs",
+              "ToolTip": "C:\\Projects\\controle-financeiro-web\\api\\src\\ControleFinanceiro.Application\\UseCases\\Dashboard\\ListarMovimentacoesEmAberto\\IListarMovimentacoesEmAbertoUseCase.cs",
+              "RelativeToolTip": "ControleFinanceiro.Application\\UseCases\\Dashboard\\ListarMovimentacoesEmAberto\\IListarMovimentacoesEmAbertoUseCase.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAvAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-21T13:57:01.077Z",
               "EditorCaption": ""
             },
             {
@@ -54,48 +76,9 @@
               "RelativeDocumentMoniker": "ControleFinanceiro.API\\Controllers\\DashboardController.cs",
               "ToolTip": "C:\\Projects\\controle-financeiro-web\\api\\src\\ControleFinanceiro.API\\Controllers\\DashboardController.cs",
               "RelativeToolTip": "ControleFinanceiro.API\\Controllers\\DashboardController.cs",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAAACgAAABGAAAAAAAAAA==",
+              "ViewState": "AgIAACEAAAAAAAAAAAAYwDgAAAA2AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-06-20T21:39:07.661Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "SaldoConta.cs",
-              "DocumentMoniker": "C:\\Projects\\controle-financeiro-web\\api\\src\\ControleFinanceiro.Domain\\Entities\\SaldoConta.cs",
-              "RelativeDocumentMoniker": "ControleFinanceiro.Domain\\Entities\\SaldoConta.cs",
-              "ToolTip": "C:\\Projects\\controle-financeiro-web\\api\\src\\ControleFinanceiro.Domain\\Entities\\SaldoConta.cs",
-              "RelativeToolTip": "ControleFinanceiro.Domain\\Entities\\SaldoConta.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAMAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-20T21:38:21.654Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "ListarContasComSaldoTotalUseCase.cs",
-              "DocumentMoniker": "C:\\Projects\\controle-financeiro-web\\api\\src\\ControleFinanceiro.Application\\UseCases\\Dashboard\\ListarContasComSaldoTotal\\ListarContasComSaldoTotalUseCase.cs",
-              "RelativeDocumentMoniker": "ControleFinanceiro.Application\\UseCases\\Dashboard\\ListarContasComSaldoTotal\\ListarContasComSaldoTotalUseCase.cs",
-              "ToolTip": "C:\\Projects\\controle-financeiro-web\\api\\src\\ControleFinanceiro.Application\\UseCases\\Dashboard\\ListarContasComSaldoTotal\\ListarContasComSaldoTotalUseCase.cs",
-              "RelativeToolTip": "ControleFinanceiro.Application\\UseCases\\Dashboard\\ListarContasComSaldoTotal\\ListarContasComSaldoTotalUseCase.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-20T21:27:17.049Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "IListarContasComSaldoTotalUseCase.cs",
-              "DocumentMoniker": "C:\\Projects\\controle-financeiro-web\\api\\src\\ControleFinanceiro.Application\\UseCases\\Dashboard\\ListarContasComSaldoTotal\\IListarContasComSaldoTotalUseCase.cs",
-              "RelativeDocumentMoniker": "ControleFinanceiro.Application\\UseCases\\Dashboard\\ListarContasComSaldoTotal\\IListarContasComSaldoTotalUseCase.cs",
-              "ToolTip": "C:\\Projects\\controle-financeiro-web\\api\\src\\ControleFinanceiro.Application\\UseCases\\Dashboard\\ListarContasComSaldoTotal\\IListarContasComSaldoTotalUseCase.cs",
-              "RelativeToolTip": "ControleFinanceiro.Application\\UseCases\\Dashboard\\ListarContasComSaldoTotal\\IListarContasComSaldoTotalUseCase.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-20T21:25:45.481Z",
               "EditorCaption": ""
             }
           ]

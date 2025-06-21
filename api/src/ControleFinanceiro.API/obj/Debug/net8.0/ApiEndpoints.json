@@ -431,6 +431,16 @@
   },
   {
     "ContainingType": "ControleFinanceiro.API.Controllers.FinanceiroController",
+    "Method": "MovimentacoesEmAberto",
+    "RelativePath": "api/dashboard/movimentacoes-em-aberto",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ControleFinanceiro.API.Controllers.FinanceiroController",
     "Method": "ObterSaldoPorConta",
     "RelativePath": "api/dashboard/saldo-contas",
     "HttpMethod": "GET",
