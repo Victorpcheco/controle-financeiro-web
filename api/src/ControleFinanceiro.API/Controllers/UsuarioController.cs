@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ControleFinanceiro.API.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/usuarios")]
 public class UsuarioController(ILoginUsuarioUseCase login,
     IRegistroUsuarioUseCase register
     ) : ControllerBase

@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
+
   const loginForm = document.getElementById('login-form');
   const submitButton = document.getElementById('submit-button');
   const emailInput = document.getElementById('email');
@@ -10,13 +11,11 @@ document.addEventListener('DOMContentLoaded', () => {
   loginForm.addEventListener('submit', async function(e) {
     e.preventDefault();
     
-    // Reset error messages
     emailError.textContent = '';
     passwordError.textContent = '';
     emailInput.classList.remove('error');
     passwordInput.classList.remove('error');
-    
-    // Validate form
+
     let isValid = true;
     
     if (!emailInput.value) {
@@ -46,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
     submitButton.disabled = true;
     
     try {
-      const response = await fetch('https://localhost:7101/api/usuario/login', {
+      const response = await fetch('https://localhost:7101/api/usuarios/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -63,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
         throw new Error(data.message || 'Erro durante o login');
       }
       
-      // Store tokens in localStorage
+      // armazena o token de autenticação e refresh token no localStorage
       localStorage.setItem('authToken', data.token);
       localStorage.setItem('refreshToken', data.refreshToken);
       

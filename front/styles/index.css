@@ -1,5 +1,4 @@
 :root {
-  /* Variáveis referente as cores */
   --primary: #19234d;
   --primary-hover: #566088;
   --text-primary: #1A1F2C;
@@ -34,15 +33,15 @@ body {
   padding: 1.5rem;
 }
 
-/* Welcome screen */
+/* Tela de boas vindas  */
 .welcome-screen {
-  text-align: center;             /* Centraliza o texto horizontalmente */
-  padding: 3rem 1rem;             /* Espaçamento interno: 3rem vertical, 1rem horizontal */
-  display: flex;                  /* Ativa o Flexbox para o layout interno */
-  flex-direction: column;         /* Organiza os elementos em coluna (vertical) */
-  align-items: center;            /* Centraliza os filhos horizontalmente */
-  justify-content: center;        /* Centraliza os filhos verticalmente */
-  min-height: 90vh;               /* Altura mínima de 90% da tela do navegador */
+  text-align: center;     
+  padding: 3rem 1rem;       
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 90vh;               
 }
 
 .title {
@@ -121,26 +120,18 @@ body {
   margin-bottom: 0.5rem;
 }
 
-/* Aplica os estilos abaixo apenas em telas com largura máxima de 640px (dispositivos móveis, como celulares) */
+/* Configurações de responsividade */
 @media (max-width: 640px) {
-
-  /* Altera a direção do layout flex do container de botões para vertical (coluna) */
   .buttons {
     flex-direction: column;
   }
-
-  /* Reduz o tamanho da fonte do título para 2rem (~32px) para melhor adaptação à tela menor */
   .title {
     font-size: 2rem;
   }
-
-  /* Reduz o tamanho da fonte da descrição para 1rem (~16px), garantindo legibilidade em dispositivos menores */
   .description {
     font-size: 1rem;
   }
 }
-
-
 
 .link {
   color: var(--primary);
@@ -152,35 +143,5 @@ body {
   text-decoration: underline;
 }
 
-/* Toast notification */
-.toast {
-  position: fixed;
-  bottom: 1rem;
-  right: 1rem;
-  max-width: 350px;
-  background: var(--card-background);
-  color: var(--text-primary);
-  padding: 1rem;
-  border-radius: var(--border-radius);
-  box-shadow: var(--shadow);
-  z-index: 1000;
-  opacity: 0;
-  transform: translateY(1rem);
-  transition: opacity 0.3s ease, transform 0.3s ease;
-  pointer-events: none;
-}
 
-.toast.show {
-  opacity: 1;
-  transform: translateY(0);
-  pointer-events: auto;
-}
-
-.toast.success {
-  border-left: 4px solid var(--success);
-}
-
-.toast.error {
-  border-left: 4px solid var(--error);
-}
 

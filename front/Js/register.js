@@ -8,15 +8,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const emailError = document.getElementById('email-error');
   const passwordError = document.getElementById('password-error');
   
-  // // Check if user is already logged in
-  // if (localStorage.getItem('authToken')) {
-  //   window.location.href = './dashboard.html';
-  // }
-  
   registerForm.addEventListener('submit', async function(e) {
     e.preventDefault();
-    
-    // Reset error messages
+  
     nameError.textContent = '';
     emailError.textContent = '';
     passwordError.textContent = '';
@@ -24,7 +18,6 @@ document.addEventListener('DOMContentLoaded', () => {
     emailInput.classList.remove('error');
     passwordInput.classList.remove('error');
     
-    // Validate form
     let isValid = true;
     
     if (!nameInput.value) {
@@ -60,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
     submitButton.disabled = true;
     
     try {
-      const response = await fetch('https://localhost:7184/api/v1/users/register', {
+      const response = await fetch('https://localhost:7101/api/usuarios/registrar', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

@@ -1075,7 +1075,7 @@
   {
     "ContainingType": "ControleFinanceiro.API.Controllers.UsuarioController",
     "Method": "LoginUsuario",
-    "RelativePath": "api/Usuario/login",
+    "RelativePath": "api/usuarios/login",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -1091,7 +1091,7 @@
   {
     "ContainingType": "ControleFinanceiro.API.Controllers.UsuarioController",
     "Method": "RegistrarUsuario",
-    "RelativePath": "api/Usuario/registrar",
+    "RelativePath": "api/usuarios/registrar",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,

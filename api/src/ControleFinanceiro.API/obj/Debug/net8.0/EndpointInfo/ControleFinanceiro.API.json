@@ -1725,7 +1725,7 @@
         }
       }
     },
-    "/api/Usuario/registrar": {
+    "/api/usuarios/registrar": {
       "post": {
         "tags": [
           "Usuario"
@@ -1756,7 +1756,7 @@
         }
       }
     },
-    "/api/Usuario/login": {
+    "/api/usuarios/login": {
       "post": {
         "tags": [
           "Usuario"
