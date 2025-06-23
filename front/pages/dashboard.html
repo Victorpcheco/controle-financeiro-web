@@ -4,30 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Financeiro</title>
-    <meta name="description" content="Dashboard para controle financeiro pessoal">
-    <meta name="author" content="FinDash">
-    
-    <meta property="og:title" content="Dashboard Financeiro">
-    <meta property="og:description" content="Dashboard para controle financeiro pessoal">
-    <meta property="og:type" content="website">
-    <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png">
-    
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:site" content="@lovable_dev">
-    <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png">
-    
     <link rel="stylesheet" href="../styles/dashboard.css">
   </head>
   <body>
-    <!-- Navbar -->
+    <!-- Nav -->
     <nav class="navbar">
         <div class="container navbar-container">
-            <!-- Logo -->
-            <div class="navbar-logo">Meu Controle Financeiro</div>
-            
-            <!-- Menu horizontal com logout e menu vertical -->
+            <div class="navbar-logo">Logo</div>
             <div class="navbar-actions">
-                <!-- Botão de logout -->
                 <button class="logout-btn">
                     <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
@@ -35,7 +19,7 @@
                     Sair
                 </button>
                 
-                <!-- Botão do menu vertical -->
+                <!-- Botão menu -->
                 <div class="vertical-menu-container">
                     <button class="vertical-menu-toggle" id="verticalMenuToggle">
                         <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
@@ -45,7 +29,7 @@
                         </svg>
                     </button>
                     
-                    <!-- Menu vertical dropdown -->
+                    <!-- Menu vertical -->
                     <div class="vertical-menu" id="verticalMenu">
                         <div class="vertical-menu-item">
                             <a href="#" class="vertical-menu-link">
@@ -64,6 +48,7 @@
                                 </svg>
                                 Financeiro
                             </div>
+                            
                             <div class="vertical-submenu">
                                 <a href="#" class="vertical-submenu-link">Despesas</a>
                                 <a href="#" class="vertical-submenu-link">Receitas</a>
@@ -78,6 +63,7 @@
                                 </svg>
                                 Mais
                             </div>
+                            
                             <div class="vertical-submenu">
                                 <a href="#" class="vertical-submenu-link">Categorias</a>
                                 <a href="#" class="vertical-submenu-link">Contas Bancárias</a>
@@ -92,16 +78,15 @@
 
     <div class="overlay" id="overlay"></div>
     
-    <!-- Content -->
     <div class="container" id="mainContent">
       <div class="page-header">
-        <h1 class="page-title">Dashboard Financeiro</h1>
+        <h1 class="page-title">Meu Controle Financeiro</h1>
         <p class="page-subtitle">Acompanhe suas finanças em um só lugar</p>
       </div>
       
-      <!-- Summary Cards -->
+      <!-- Cards -->
       <div class="cards-grid">
-        <!-- Saldo Total Card -->
+        <!-- Saldo Total -->
         <div class="card">
           <div class="card-header">
             <h2 class="card-title">Saldo Total</h2>
@@ -124,7 +109,6 @@
           </div>
           
           <div id="accountDetails" class="account-list hidden">
-            <!-- Account details will be populated by JS -->
           </div>
           
           <button class="toggle-details" id="toggleAccountDetails">
@@ -132,7 +116,7 @@
           </button>
         </div>
         
-        <!-- Receitas a Vencer Card -->
+        <!-- Receitas a Vencer -->
         <div class="card">
           <div class="card-header">
             <h2 class="card-title">Receitas a Vencer</h2>
@@ -152,7 +136,7 @@
           <div class="card-value value-success" id="pendingIncomes">R$ 0,00</div>
         </div>
         
-        <!-- Despesas a Vencer Card -->
+        <!-- Despesas a Vencer -->
         <div class="card">
           <div class="card-header">
             <h2 class="card-title">Despesas a Vencer</h2>
@@ -173,75 +157,147 @@
         </div>
       </div>
       
-      <!-- Filter Section -->
-      <div class="filter-section">
-        <div class="filter-header">
-          <h2 class="filter-title">Transações</h2>
-          <button class="filter-toggle" id="toggleFilters">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path>
-            </svg>
-            Filtros
-          </button>
+      <!-- Bloco Unificado: Filtros + Movimentações -->
+<div class="movements-section">
+  <!-- Cabeçalho com Título e Botão de Filtros -->
+  <div class="movements-header">
+    <h2 class="movements-title">Movimentações</h2>
+    <button class="filter-toggle" id="toggleFilters">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path>
+      </svg>
+      Filtros
+    </button>
+  </div>
+  
+  <!-- Área de Filtros (Expansível) -->
+  <div class="filter-panel" id="filterPanel">
+    <!-- Caixa de Pesquisa (Sempre Visível) -->
+    <div class="search-container">
+      <div class="search-box">
+        <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <path d="m21 21-4.35-4.35"></path>
+        </svg>
+        <input type="text" class="search-input" id="searchInput" placeholder="Pesquisar por descrição, valor ou categoria...">
+        <button class="search-clear" id="searchClear" style="display: none;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+    
+    <!-- Filtros Avançados (Expansível) -->
+    <div class="advanced-filters" id="advancedFilters">
+      <div class="filters-grid">
+        <div class="filter-group">
+          <label class="filter-label">Data Inicial</label>
+          <input type="date" class="filter-input" id="startDate">
         </div>
         
-        <div class="filter-body" id="filterBody">
-          <div class="filter-group">
-            <label class="filter-label">Data Inicial</label>
-            <input type="date" class="filter-input" id="startDate">
-          </div>
-          
-          <div class="filter-group">
-            <label class="filter-label">Data Final</label>
-            <input type="date" class="filter-input" id="endDate">
-          </div>
-          
-          <div class="filter-group">
-            <label class="filter-label">Categoria</label>
-            <select class="filter-select" id="categoryFilter">
-              <option value="">Todas as categorias</option>
-              <!-- Categories will be populated by JS -->
-            </select>
-          </div>
-          
-          <div class="filter-group">
-            <label class="filter-label">Conta</label>
-            <select class="filter-select" id="accountFilter">
-              <option value="">Todas as contas</option>
-              <!-- Accounts will be populated by JS -->
-            </select>
-          </div>
-          
-          <div class="filter-actions">
-            <button id="applyFilters" class="button button-primary">Aplicar Filtros</button>
-            <button id="clearFilters" class="button button-secondary">Limpar Filtros</button>
-          </div>
+        <div class="filter-group">
+          <label class="filter-label">Data Final</label>
+          <input type="date" class="filter-input" id="endDate">
+        </div>
+        
+        <div class="filter-group">
+          <label class="filter-label">Categoria</label>
+          <select class="filter-select" id="categoryFilter">
+            <option value="">Todas as categorias</option>
+          </select>
+        </div>
+        
+        <div class="filter-group">
+          <label class="filter-label">Conta</label>
+          <select class="filter-select" id="accountFilter">
+            <option value="">Todas as contas</option>
+          </select>
+        </div>
+        
+        <div class="filter-group">
+          <label class="filter-label">Tipo</label>
+          <select class="filter-select" id="typeFilter">
+            <option value="">Todos os tipos</option>
+            <option value="receita">Receita</option>
+            <option value="despesa">Despesa</option>
+          </select>
+        </div>
+        
+        <div class="filter-group">
+          <label class="filter-label">Status</label>
+          <select class="filter-select" id="statusFilter">
+            <option value="">Todos os status</option>
+            <option value="pago">Pago</option>
+            <option value="pendente">Pendente</option>
+            <option value="vencido">Vencido</option>
+          </select>
         </div>
       </div>
       
-      <!-- Transactions Table -->
-      <div class="transactions-container" id="transactionsContainer">
-        <table class="transactions-table" id="transactionsTable">
-          <thead>
-            <tr>
-              <th>Descrição</th>
-              <th>Valor</th>
-              <th>Tipo</th>
-              <th>Vencimento</th>
-              <th>Status</th>
-              <th>Ações</th>
-            </tr>
-          </thead>
-          <tbody id="transactionsBody">
-            <!-- Transactions will be populated by JS -->
-          </tbody>
-        </table>
-        
-        <div id="emptyState" class="card empty-state hidden">
-          <p>Nenhuma transação encontrada com os filtros selecionados.</p>
-        </div>
+      <!-- Ações dos Filtros -->
+      <div class="filter-actions">
+        <button id="applyFilters" class="button button-primary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20,6 9,17 4,12"></polyline>
+          </svg>
+          Aplicar Filtros
+        </button>
+        <button id="clearFilters" class="button button-secondary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 6h18l-2 13H5L3 6z"></path>
+            <path d="M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2"></path>
+          </svg>
+          Limpar Filtros
+        </button>
       </div>
     </div>
+  </div>
+  
+  <!-- Indicadores de Filtros Ativos -->
+  <div class="active-filters" id="activeFilters" style="display: none;">
+    <span class="active-filters-label">Filtros ativos:</span>
+    <div class="active-filters-list" id="activeFiltersList"></div>
+  </div>
+  
+  <!-- Tabela de Movimentações -->
+  <div class="transactions-container">
+    <div class="transactions-wrapper">
+      <table class="transactions-table" id="transactionsTable">
+        <thead>
+          <tr>
+            <th>Descrição</th>
+            <th>Valor</th>
+            <th>Tipo</th>
+            <th>Vencimento</th>
+            <th>Status</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody id="transactionsBody">
+          <!-- Dados serão inseridos aqui via JavaScript -->
+        </tbody>
+      </table>
+      
+      <!-- Estado Vazio -->
+      <div id="emptyState" class="empty-state hidden">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <path d="m21 21-4.35-4.35"></path>
+        </svg>
+        <h3>Nenhuma movimentação encontrada</h3>
+        <p>Tente ajustar os filtros ou adicionar novas movimentações.</p>
+      </div>
+      
+      <!-- Loading State -->
+      <div id="loadingState" class="loading-state hidden">
+        <div class="loading-spinner"></div>
+        <p>Carregando movimentações...</p>
+      </div>
+    </div>
+  </div>
+</div>
     
     <script src="../Js/dashboard.js"></script>
   </body>
