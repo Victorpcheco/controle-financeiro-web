@@ -1,47 +1,36 @@
-// ===== CONFIGURAÇÕES E DADOS EXISTENTES =====
+// ===== CONFIGURAÇÕES E DADOS =====
 const categories = [
   { id: 1, name: 'Salário', type: 'income' },
+  { id: 2, name: 'Freelance', type: 'income' },
+  { id: 3, name: 'Investimentos', type: 'income' },
+  { id: 4, name: 'Alimentação', type: 'expense' },
+  { id: 5, name: 'Transporte', type: 'expense' },
+  { id: 6, name: 'Moradia', type: 'expense' },
+  { id: 7, name: 'Saúde', type: 'expense' },
+  { id: 8, name: 'Educação', type: 'expense' },
+  { id: 9, name: 'Lazer', type: 'expense' },
+  { id: 10, name: 'Outros', type: 'expense' }
 ];
 
 const paymentMethods = [
   { id: 1, name: 'Cartão de Crédito' },
   { id: 2, name: 'Débito' },
+  { id: 3, name: 'Dinheiro' },
+  { id: 4, name: 'PIX' },
+  { id: 5, name: 'Transferência' }
 ];
 
-let transactions = [
-  {
-    id: 8,
-    name: 'Consulta Médica',
-    description: 'Consulta de rotina',
-    amount: 200,
-    date: '2025-05-25',
-    dueDate: '2025-05-25',
-    categoryId: 7,
-    accountId: 2,
-    paymentMethodId: 4,
-    type: 'expense',
-    completed: false,
-  },
-  {
-    id: 9,
-    name: 'Freelance Programação',
-    description: 'Desenvolvimento de site',
-    amount: 3000,
-    date: '2025-05-30',
-    dueDate: '2025-05-30',
-    categoryId: 2,
-    accountId: 3,
-    paymentMethodId: 4,
-    type: 'income',
-    completed: false,
-  },
-];
+let transactions = [];
 
+// ===== VARIÁVEIS GLOBAIS =====
 let apiAccountsData = null;
 let apiSaldoTotal = 0;
 let apiPendingIncomes = 0;
 let apiPendingExpenses = 0;
+let showValues = true;
+let showAccountDetails = false;
 
+// ===== CONFIGURAÇÃO DA API =====
 const API_CONFIG = {
   baseUrl: 'https://localhost:7101/api',
   endpoints: {
@@ -53,13 +42,13 @@ const API_CONFIG = {
   }
 };
 
-// ===== SUAS FUNÇÕES DE API EXISTENTES =====
+// ===== FUNÇÕES DE AUTENTICAÇÃO =====
 function verificaAutenticacao() {
   const token = buscaTokenJwt();
   
   if (!token) {
-    console.warn(" Usuário não autenticado, redirecionando para login");
-    window.location.replace('/.login.html');
+    console.warn("Usuário não autenticado, redirecionando para login");
+    window.location.replace('/login.html');
     return false;
   }
   
@@ -67,14 +56,15 @@ function verificaAutenticacao() {
 }
 
 function buscaTokenJwt() {
-  const Key = ['authToken'];
-  for (const key of Key) {
+  const keys = ['authToken', 'token', 'jwt'];
+  for (const key of keys) {
     const token = localStorage.getItem(key);
-    return token;
+    if (token) return token;
   }
   return null;
 }
 
+// ===== FUNÇÕES DE API =====
 async function buscaApiSaldoTotal() {
   try {
     const token = buscaTokenJwt();
@@ -83,6 +73,7 @@ async function buscaApiSaldoTotal() {
       console.warn('Usuário não autenticado, token não encontrado');
       return null;
     }
+    
     const headers = {
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json'
@@ -94,9 +85,8 @@ async function buscaApiSaldoTotal() {
     });
     
     if (!response.ok) {
-      let errorDetails = '';
       console.error(`Erro na API (saldo total): ${response.status} - ${response.statusText}`);
-      throw new Error(`Erro na API: ${response.status} - ${response.statusText}${errorDetails ? '. Detalhes: ' + errorDetails : ''}`);
+      throw new Error(`Erro na API: ${response.status} - ${response.statusText}`);
     }
     
     const data = await response.json();
@@ -129,10 +119,8 @@ async function buscaAPiReceitasPendentes() {
     });
 
     if (!response.ok) {
-      let errorDetails = '';
       const errorBody = await response.text();
-      errorDetails = errorBody;
-      throw new Error(`Erro na API: ${response.status} - ${response.statusText}${errorDetails ? '. Detalhes: ' + errorDetails : ''}`);
+      throw new Error(`Erro na API: ${response.status} - ${response.statusText}. Detalhes: ${errorBody}`);
     }
     
     const data = await response.json();
@@ -164,10 +152,8 @@ async function fetchPendingExpenses() {
     });
 
     if (!response.ok) {
-      let errorDetails = '';
       const errorBody = await response.text();
-      errorDetails = errorBody;
-      throw new Error(`Erro na API (despesas Total): ${response.status} - ${response.statusText}${errorDetails ? '. Detalhes: ' + errorDetails : ''}`);
+      throw new Error(`Erro na API (despesas): ${response.status} - ${response.statusText}. Detalhes: ${errorBody}`);
     }
 
     const data = await response.json();
@@ -199,10 +185,8 @@ async function fetchAccountsBalance() {
     });
 
     if (!response.ok) {
-      let errorDetails = '';
       const errorBody = await response.text();
-      errorDetails = errorBody;
-      throw new Error(`Erro na API: ${response.status} - ${response.statusText}${errorDetails ? '. Detalhes: ' + errorDetails : ''}`);
+      throw new Error(`Erro na API: ${response.status} - ${response.statusText}. Detalhes: ${errorBody}`);
     }
 
     const data = await response.json();
@@ -233,10 +217,8 @@ async function fetchTransactionsFromApi() {
     });
     
     if (!response.ok) {
-      let errorDetails = '';
       const errorBody = await response.text();
-      errorDetails = errorBody;
-      throw new Error(`Erro na API: ${response.status} - ${response.statusText}${errorDetails ? '. Detalhes: ' + errorDetails : ''}`);
+      throw new Error(`Erro na API: ${response.status} - ${response.statusText}. Detalhes: ${errorBody}`);
     }
 
     const data = await response.json();
@@ -244,9 +226,9 @@ async function fetchTransactionsFromApi() {
 
     return apiTransactions.map(apiT => ({
       id: apiT.id,
-      name: apiT.titulo,
+      name: apiT.titulo || 'Sem título',
       description: apiT.descricao || '',
-      amount: apiT.valor,
+      amount: apiT.valor || 0,
       date: apiT.dataVencimento,
       dueDate: apiT.dataVencimento,
       categoryId: apiT.categoriaId,
@@ -263,7 +245,130 @@ async function fetchTransactionsFromApi() {
   }
 }
 
-// ===== NOVO SISTEMA DE FILTROS INTEGRADO =====
+// ===== FUNÇÕES AUXILIARES =====
+function formatCurrency(value) {
+  return new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL'
+  }).format(value);
+}
+
+function formatDate(dateString) {
+  if (!dateString) return 'Data inválida';
+  return new Date(dateString).toLocaleDateString('pt-BR');
+}
+
+function updateValueDisplay(element, value) {
+  if (element) {
+    if (showValues) {
+      element.textContent = formatCurrency(value);
+    } else {
+      element.textContent = '••••••';
+    }
+  }
+}
+
+// ===== FUNÇÃO PARA RENDERIZAR DETALHES DAS CONTAS =====
+async function renderAccountDetails() {
+  const accountDetailsEl = document.getElementById('accountDetails');
+  
+  if (!showAccountDetails || !accountDetailsEl) return;
+  
+  console.log('Renderizando detalhes das contas...'); // Debug
+  
+  const accountsData = await fetchAccountsBalance();
+  let html = '';
+  
+  if (accountsData && Array.isArray(accountsData)) {
+    console.log('Dados das contas:', accountsData); // Debug
+    
+    accountsData.forEach(account => {
+      html += `
+        <div class="account-item">
+          <div class="account-info">
+            <span class="account-name">${account.nomeConta || account.name || 'Conta sem nome'}</span>
+            <span class="account-type">${account.tipoConta || account.type || ''}</span>
+          </div>
+          <div class="account-balance">
+            <span class="balance-value ${(account.saldoAtual || account.balance || 0) >= 0 ? 'positive' : 'negative'}">
+              ${showValues ? formatCurrency(account.saldoAtual || account.balance || 0) : '••••••'}
+            </span>
+          </div>
+        </div>
+      `;
+    });
+  } else {
+    console.error('Falha ao carregar dados das contas da API');
+    html = `
+      <div class="account-item error">
+        <div class="account-info">
+          <span class="account-name">Erro ao carregar contas</span>
+          <span class="account-type">Verifique sua conexão</span>
+        </div>
+        <div class="account-balance">
+          <span class="balance-value">-</span>
+        </div>
+      </div>
+    `;
+  }
+  
+  // Adicionar total geral
+  const totalBalance = await buscaApiSaldoTotal();
+  html += `
+    <div class="account-total">
+      <div class="account-info">
+        <span class="account-name">Total Geral</span>
+      </div>
+      <div class="account-balance">
+        <span class="balance-value total ${totalBalance >= 0 ? 'positive' : 'negative'}">
+          ${showValues ? formatCurrency(totalBalance) : '••••••'}
+        </span>
+      </div>
+    </div>
+  `;
+  
+  accountDetailsEl.innerHTML = html;
+}
+
+// ===== FUNÇÃO PARA ATUALIZAR DASHBOARD =====
+async function updateDashboard() {
+  console.log('Atualizando dashboard...'); // Debug
+  
+  const totalBalanceEl = document.getElementById('totalBalance');
+  const pendingIncomesEl = document.getElementById('pendingIncomes');
+  const pendingExpensesEl = document.getElementById('pendingExpenses');
+  
+  try {
+    // Buscar saldo total
+    const totalBalance = await buscaApiSaldoTotal();
+    if (totalBalance !== null) {
+      updateValueDisplay(totalBalanceEl, totalBalance);
+    }
+    
+    // Buscar receitas pendentes
+    const pendingIncomes = await buscaAPiReceitasPendentes();
+    if (pendingIncomes !== null) {
+      updateValueDisplay(pendingIncomesEl, pendingIncomes);
+    }
+    
+    // Buscar despesas pendentes
+    const pendingExpenses = await fetchPendingExpenses();
+    if (pendingExpenses !== null) {
+      updateValueDisplay(pendingExpensesEl, pendingExpenses);
+    }
+    
+    // Atualizar detalhes das contas se estiver visível
+    if (showAccountDetails) {
+      await renderAccountDetails();
+    }
+    
+    console.log('Dashboard atualizado com sucesso'); // Debug
+  } catch (error) {
+    console.error('Erro ao atualizar dashboard:', error);
+  }
+}
+
+// ===== CLASSE PARA GERENCIAR FILTROS E MOVIMENTAÇÕES =====
 class MovementsManager {
     constructor() {
         this.filters = {
@@ -285,9 +390,8 @@ class MovementsManager {
         this.bindEvents();
     }
     
-    // 🎯 INICIALIZAR ELEMENTOS
     initializeElements() {
-        // Elementos do novo sistema de filtros
+        // Elementos do sistema de filtros
         this.filterToggle = document.getElementById('toggleFilters');
         this.advancedFilters = document.getElementById('advancedFilters');
         this.searchInput = document.getElementById('searchInput');
@@ -313,7 +417,6 @@ class MovementsManager {
         this.loadingState = document.getElementById('loadingState');
     }
     
-    // 🎮 VINCULAR EVENTOS
     bindEvents() {
         // Toggle dos filtros avançados
         if (this.filterToggle) {
@@ -364,7 +467,6 @@ class MovementsManager {
         });
     }
     
-    // 🔄 TOGGLE FILTROS AVANÇADOS
     toggleAdvancedFilters() {
         this.isFiltersExpanded = !this.isFiltersExpanded;
         
@@ -379,7 +481,6 @@ class MovementsManager {
         }
     }
     
-    // 🔍 GERENCIAR PESQUISA
     handleSearchInput(value) {
         if (this.searchClear) {
             if (value.length > 0) {
@@ -396,7 +497,6 @@ class MovementsManager {
         }, 300);
     }
     
-    // 🧹 LIMPAR PESQUISA
     clearSearch() {
         if (this.searchInput) {
             this.searchInput.value = '';
@@ -408,7 +508,6 @@ class MovementsManager {
         this.applyFilters();
     }
     
-    // 🎯 ATUALIZAR FILTRO INDIVIDUAL
     updateFilterFromElement(element) {
         if (!element) return;
         
@@ -427,7 +526,6 @@ class MovementsManager {
         }
     }
     
-    // ✅ APLICAR FILTROS
     applyFilters() {
         console.log('Aplicando filtros:', this.filters);
         
@@ -440,7 +538,6 @@ class MovementsManager {
         }, 200);
     }
     
-    // 🔍 FILTRAR TRANSAÇÕES
     filterTransactions() {
         this.filteredTransactions = this.allTransactions.filter(transaction => {
             // Filtro de pesquisa
@@ -493,7 +590,6 @@ class MovementsManager {
         this.renderTransactions();
     }
     
-    // 🎨 RENDERIZAR TRANSAÇÕES
     renderTransactions() {
         if (!this.transactionsBody || !this.emptyState) return;
         
@@ -510,14 +606,14 @@ class MovementsManager {
                 <td class="transaction-name">${transaction.name}</td>
                 <td>
                     <span class="transaction-amount transaction-amount-${transaction.type}">
-                        ${transaction.type === 'expense' ? '-' : '+'} ${this.formatCurrency(transaction.amount)}
+                        ${transaction.type === 'expense' ? '-' : '+'} ${formatCurrency(transaction.amount)}
                     </span>
                 </td>
                 <td class="transaction-type">
                     ${transaction.type === 'expense' ? 'Despesa' : 'Receita'}
                 </td>
                 <td class="transaction-date">
-                    ${this.formatDate(transaction.dueDate)}
+                    ${formatDate(transaction.dueDate)}
                 </td>
                 <td>
                     ${transaction.completed 
@@ -530,13 +626,13 @@ class MovementsManager {
                     }
                 </td>
                 <td>
-                    <button class="btn-action" onclick="editTransaction(${transaction.id})">
+                    <button class="btn-action" onclick="editTransaction(${transaction.id})" title="Editar">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
                             <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
                         </svg>
                     </button>
-                    <button class="btn-action btn-danger" onclick="deleteTransaction(${transaction.id})">
+                    <button class="btn-action btn-danger" onclick="deleteTransaction(${transaction.id})" title="Excluir">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <polyline points="3,6 5,6 21,6"></polyline>
                             <path d="M19,6v14a2,2,0,0,1-2,2H7a2,2,0,0,1-2-2V6m3,0V4a2,2,0,0,1,2-2h4a2,2,0,0,1,2,2V6"></path>
@@ -547,7 +643,6 @@ class MovementsManager {
         `).join('');
     }
     
-    // 🏷️ ATUALIZAR DISPLAY DE FILTROS ATIVOS
     updateActiveFiltersDisplay() {
         if (!this.activeFilters || !this.activeFiltersList) return;
         
@@ -558,11 +653,11 @@ class MovementsManager {
         }
         
         if (this.filters.startDate) {
-            activeFilters.push({ key: 'startDate', label: `De: ${this.formatDate(this.filters.startDate)}` });
+            activeFilters.push({ key: 'startDate', label: `De: ${formatDate(this.filters.startDate)}` });
         }
         
         if (this.filters.endDate) {
-            activeFilters.push({ key: 'endDate', label: `Até: ${this.formatDate(this.filters.endDate)}` });
+            activeFilters.push({ key: 'endDate', label: `Até: ${formatDate(this.filters.endDate)}` });
         }
         
         if (this.filters.category) {
@@ -601,7 +696,6 @@ class MovementsManager {
         }
     }
     
-    // 🗑️ REMOVER FILTRO ESPECÍFICO
     removeFilter(filterKey) {
         this.filters[filterKey] = '';
         
@@ -626,7 +720,6 @@ class MovementsManager {
         this.applyFilters();
     }
     
-    // 🧹 LIMPAR TODOS OS FILTROS
     clearAllFilters() {
         Object.keys(this.filters).forEach(key => {
             this.filters[key] = '';
@@ -648,7 +741,6 @@ class MovementsManager {
         this.applyFilters();
     }
     
-    // ⏳ MOSTRAR/ESCONDER LOADING
     showLoading() {
         if (this.loadingState) this.loadingState.classList.remove('hidden');
         if (this.emptyState) this.emptyState.classList.add('hidden');
@@ -656,18 +748,6 @@ class MovementsManager {
     
     hideLoading() {
         if (this.loadingState) this.loadingState.classList.add('hidden');
-    }
-    
-    // 🛠️ FUNÇÕES AUXILIARES
-    formatCurrency(value) {
-        return new Intl.NumberFormat('pt-BR', {
-            style: 'currency',
-            currency: 'BRL'
-        }).format(value);
-    }
-    
-    formatDate(dateString) {
-        return new Date(dateString).toLocaleDateString('pt-BR');
     }
     
     getCategoryName(categoryId) {
@@ -678,26 +758,26 @@ class MovementsManager {
     getAccountName(accountId) {
         if (apiAccountsData && Array.isArray(apiAccountsData)) {
             const account = apiAccountsData.find(a => a.id === accountId);
-            return account ? account.nomeConta : 'Conta não encontrada';
+            return account ? account.nomeConta || account.name : 'Conta não encontrada';
         }
         return 'Dados não disponíveis';
     }
     
-    // 📊 CARREGAR DADOS
     async loadTransactions() {
         try {
+            console.log('Carregando transações...');
             this.showLoading();
             this.allTransactions = await fetchTransactionsFromApi();
             this.filteredTransactions = [...this.allTransactions];
             await this.loadFilterOptions();
             this.applyFilters();
+            console.log('Transações carregadas:', this.allTransactions.length);
         } catch (error) {
             console.error('Erro ao carregar transações:', error);
             this.hideLoading();
         }
     }
     
-    // 📋 CARREGAR OPÇÕES DOS FILTROS
     async loadFilterOptions() {
         // Carregar categorias
         if (this.categorySelect) {
@@ -715,7 +795,7 @@ class MovementsManager {
             
             if (accountsData && Array.isArray(accountsData)) {
                 accountsData.forEach(account => {
-                    accountHtml += `<option value="${account.id}">${account.nomeConta}</option>`;
+                    accountHtml += `<option value="${account.id}">${account.nomeConta || account.name}</option>`;
                 });
             }
             this.accountSelect.innerHTML = accountHtml;
@@ -725,6 +805,8 @@ class MovementsManager {
 
 // ===== INICIALIZAÇÃO PRINCIPAL =====
 document.addEventListener('DOMContentLoaded', async function() {
+    console.log('Inicializando aplicação...');
+    
     // Verificar autenticação
     const token = buscaTokenJwt();
     if (!token) {
@@ -733,7 +815,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         return; 
     }
 
-    // ===== MENU VERTICAL (SEU CÓDIGO EXISTENTE) =====
+    // ===== CONFIGURAR MENU VERTICAL =====
     const verticalMenuToggle = document.getElementById("verticalMenuToggle");
     const verticalMenu = document.getElementById("verticalMenu");
     const overlay = document.getElementById("overlay");
@@ -788,7 +870,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
     });
 
-    // ===== LOGOUT (SEU CÓDIGO EXISTENTE) =====
+    // ===== CONFIGURAR LOGOUT =====
     const logoutBtn = document.querySelector(".logout-btn");
     if (logoutBtn) {
         logoutBtn.addEventListener("click", () => {
@@ -798,48 +880,9 @@ document.addEventListener('DOMContentLoaded', async function() {
         });
     }
 
-    // ===== DASHBOARD (SEU CÓDIGO EXISTENTE) =====
-    const totalBalanceEl = document.getElementById('totalBalance');
-    const pendingIncomesEl = document.getElementById('pendingIncomes');
-    const pendingExpensesEl = document.getElementById('pendingExpenses');
+    // ===== CONFIGURAR TOGGLES DE VISIBILIDADE =====
     
-    let showValues = true;
-    
-    function formatCurrency(value) {
-        return new Intl.NumberFormat('pt-BR', {
-            style: 'currency',
-            currency: 'BRL'
-        }).format(value);
-    }
-    
-    function updateValueDisplay(element, value) {
-        if (element) {
-            if (showValues) {
-                element.textContent = formatCurrency(value);
-            } else {
-                element.textContent = '••••••';
-            }
-        }
-    }
-    
-    async function updateDashboard() {
-        const totalBalance = await buscaApiSaldoTotal();
-        if (totalBalance !== null) {
-            updateValueDisplay(totalBalanceEl, totalBalance);
-        }
-        
-        const pendingIncomes = await buscaAPiReceitasPendentes();
-        if (pendingIncomes !== null) {
-            updateValueDisplay(pendingIncomesEl, pendingIncomes);
-        }
-        
-        const pendingExpenses = await fetchPendingExpenses();
-        if (pendingExpenses !== null) {
-            updateValueDisplay(pendingExpensesEl, pendingExpenses);
-        }
-    }
-    
-    // Toggle de visibilidade dos valores
+    // Toggle principal de visibilidade dos valores
     const toggleValuesButton = document.getElementById('toggleValues');
     if (toggleValuesButton) {
         toggleValuesButton.addEventListener('click', function() {
@@ -852,27 +895,102 @@ document.addEventListener('DOMContentLoaded', async function() {
         });
     }
 
-    // ===== INICIALIZAR NOVO SISTEMA DE FILTROS =====
+    // Outros botões de toggle de visibilidade
+    const toggleEyeButtons = document.querySelectorAll('.toggle-eye');
+    toggleEyeButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const icons = this.querySelectorAll('.eye-icon');
+            icons.forEach(icon => icon.classList.toggle('hidden'));
+            showValues = !showValues;
+            updateDashboard();
+        });
+    });
+
+    // ===== CONFIGURAR BOTÃO "MOSTRAR POR CONTA" =====
+    const toggleAccountDetailsBtn = document.getElementById('toggleAccountDetails');
+    const accountSummaryEl = document.getElementById('accountSummary');
+    const accountDetailsEl = document.getElementById('accountDetails');
+    
+    if (toggleAccountDetailsBtn) {
+        toggleAccountDetailsBtn.addEventListener('click', async function() {
+            showAccountDetails = !showAccountDetails;
+            
+            console.log('Toggle account details:', showAccountDetails);
+            
+            if (showAccountDetails) {
+                // Mostrar detalhes das contas
+                if (accountSummaryEl) accountSummaryEl.classList.add('hidden');
+                if (accountDetailsEl) accountDetailsEl.classList.remove('hidden');
+                this.textContent = 'Ocultar detalhes';
+                await renderAccountDetails();
+            } else {
+                // Mostrar resumo
+                if (accountSummaryEl) accountSummaryEl.classList.remove('hidden');
+                if (accountDetailsEl) accountDetailsEl.classList.add('hidden');
+                this.textContent = 'Mostrar por conta';
+            }
+        });
+    }
+
+    // ===== INICIALIZAR SISTEMA DE FILTROS =====
     window.movementsManager = new MovementsManager();
     
-    // Carregar dados iniciais
-    await updateDashboard();
-    await movementsManager.loadTransactions();
+    // ===== CARREGAR DADOS INICIAIS =====
+    try {
+        console.log('Carregando dados iniciais...');
+        await updateDashboard();
+        await movementsManager.loadTransactions();
+        console.log('Aplicação inicializada com sucesso!');
+    } catch (error) {
+        console.error('Erro ao inicializar aplicação:', error);
+    }
 });
 
-// ===== FUNÇÕES GLOBAIS PARA OS BOTÕES DE AÇÃO =====
+// ===== FUNÇÕES GLOBAIS PARA AÇÕES =====
 function editTransaction(id) {
     console.log('Editar transação:', id);
-    // Implementar lógica de edição
+    // TODO: Implementar modal de edição
+    alert(`Funcionalidade de edição será implementada para a transação ${id}`);
 }
 
 function deleteTransaction(id) {
     if (confirm('Tem certeza que deseja excluir esta transação?')) {
         console.log('Excluir transação:', id);
-        // Implementar lógica de exclusão
+        // TODO: Implementar chamada para API de exclusão
+        alert(`Funcionalidade de exclusão será implementada para a transação ${id}`);
+        
         // Após excluir, recarregar as transações
         if (window.movementsManager) {
             window.movementsManager.loadTransactions();
         }
     }
 }
+
+function completeTransaction(id) {
+    console.log('Marcar transação como concluída:', id);
+    // TODO: Implementar chamada para API de atualização
+    alert(`Funcionalidade de conclusão será implementada para a transação ${id}`);
+    
+    // Após completar, recarregar as transações
+    if (window.movementsManager) {
+        window.movementsManager.loadTransactions();
+    }
+}
+
+// ===== FUNÇÕES DE UTILIDADE =====
+function refreshDashboard() {
+    console.log('Atualizando dashboard...');
+    updateDashboard();
+    if (window.movementsManager) {
+        window.movementsManager.loadTransactions();
+    }
+}
+
+function exportTransactions() {
+    console.log('Exportar transações...');
+    // TODO: Implementar funcionalidade de exportação
+    alert('Funcionalidade de exportação será implementada');
+}
+
+// ===== LOG DE INICIALIZAÇÃO =====
+console.log('Dashboard JavaScript carregado com sucesso! 🚀');
