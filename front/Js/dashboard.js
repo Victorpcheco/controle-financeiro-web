@@ -51,17 +51,28 @@ const API_CONFIG = {
     accountsBalance: '/dashboard/saldo-contas',
     pendingIncomes: '/dashboard/valor-em-aberto-receitas',
     pendingExpenses: '/dashboard/valor-em-aberto-despesas',
-    transactions: '/dashboard/movimentacoes-em-aberto' // <-- Adicione esta linha
+    transactions: '/dashboard/movimentacoes-em-aberto'
   }
 };
+
+function checkAuthentication() {
+  const token = getAuthToken();
+  
+  if (!token) {
+    console.warn(" Usuário não autenticado, redirecionando para login");
+    window.location.replace('/.login.html');
+    return false;
+  }
+  
+  return true;
+}
 
 // Busca o token de autenticação do localStorage
 function getAuthToken() {
   const Key = ['authToken'];
-
   for (const key of Key) {
     const token = localStorage.getItem(key);
-      return token;
+    return token;
   }
   return null;
 }
@@ -241,7 +252,6 @@ async function fetchAccountsBalance() {
     const data = await response.json();
     console.log('✅ Dados das contas recebidos da API:', data);
     
-    // Armazenar os dados das contas globalmente
     apiAccountsData = data;
     return data;
   } catch (error) {
@@ -279,15 +289,13 @@ async function fetchTransactionsFromApi() {
       throw new Error(`Erro na API: ${response.status} - ${response.statusText}${errorDetails ? '. Detalhes: ' + errorDetails : ''}`);
     }
     const data = await response.json();
-    // Se vier um array, converte cada item
     const apiTransactions = Array.isArray(data) ? data : [data];
-    // Mapeia para o formato esperado pelo front
     return apiTransactions.map(apiT => ({
       id: apiT.id,
       name: apiT.titulo,
-      description: '', // Se não vier descrição, pode deixar vazio ou adaptar
+      description: '',
       amount: apiT.valor,
-      date: apiT.dataVencimento, // Ou outro campo de data de criação se houver
+      date: apiT.dataVencimento,
       dueDate: apiT.dataVencimento,
       categoryId: apiT.categoriaId,
       accountId: apiT.contaBancariaId,
@@ -301,9 +309,116 @@ async function fetchTransactionsFromApi() {
   }
 }
 
-// Elementos do DOM
-// ---------------------------------
+// Elementos do DOM e inicialização
 document.addEventListener('DOMContentLoaded', async function() {
+
+  // ✅ ADICIONE ESTAS LINHAS NO INÍCIO
+  // Verificar se o usuário está autenticado
+  const token = getAuthToken();
+  if (!token) {
+    console.warn("⚠️ Usuário não autenticado, redirecionando para login");
+    window.location.replace('login.html'); // MUDE PARA O NOME DA SUA PÁGINA DE LOGIN
+    return; // Para a execução
+  }
+
+  // ELEMENTOS DO MENU VERTICAL
+  const verticalMenuToggle = document.getElementById("verticalMenuToggle");
+  const verticalMenu = document.getElementById("verticalMenu");
+  const overlay = document.getElementById("overlay");
+  
+  // FUNÇÕES DO MENU VERTICAL (DENTRO DO DOMContentLoaded PARA TER ACESSO AOS ELEMENTOS)
+  function openVerticalMenu() {
+    if (verticalMenu && overlay) {
+      verticalMenu.classList.add("active");
+      overlay.classList.add("active");
+      document.body.style.overflow = "hidden";
+      console.log("Menu vertical aberto");
+    } else {
+      console.error("Elementos do menu vertical não encontrados");
+    }
+  }
+
+  function closeVerticalMenu() {
+    if (verticalMenu && overlay) {
+      verticalMenu.classList.remove("active");
+      overlay.classList.remove("active");
+      document.body.style.overflow = "";
+      console.log("Menu vertical fechado");
+    }
+  }
+
+  // EVENT LISTENERS DO MENU VERTICAL
+  if (verticalMenuToggle) {
+    console.log("✅ Botão do menu vertical encontrado, adicionando event listener");
+    verticalMenuToggle.addEventListener("click", (e) => {
+      console.log("🔄 Clique no botão do menu vertical detectado");
+      e.stopPropagation();
+      
+      if (verticalMenu && verticalMenu.classList.contains("active")) {
+        console.log("Menu está aberto, fechando...");
+        closeVerticalMenu();
+      } else {
+        console.log("Menu está fechado, abrindo...");
+        openVerticalMenu();
+      }
+    });
+  } else {
+    console.error("❌ Botão do menu vertical não encontrado! Verifique se o ID 'verticalMenuToggle' existe no HTML");
+  }
+
+  if (overlay) {
+    overlay.addEventListener("click", () => {
+      console.log("Clique no overlay detectado, fechando menu");
+      closeVerticalMenu();
+    });
+  }
+
+  // Event listener para fechar o menu quando clicar fora dele
+  document.addEventListener("click", (e) => {
+    if (verticalMenuToggle && verticalMenu && 
+        !verticalMenuToggle.contains(e.target) && 
+        !verticalMenu.contains(e.target)) {
+      closeVerticalMenu();
+    }
+  });
+
+  // Fechar menu com a tecla ESC
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      closeVerticalMenu();
+    }
+  });
+
+  // Event listener para o botão de logout
+  const logoutBtn = document.querySelector(".logout-btn");
+    if (logoutBtn) {
+      logoutBtn.addEventListener("click", () => {
+     {
+      // 1. Remover token de autenticação
+      localStorage.removeItem('authToken');
+      
+      // 2. Limpar outros dados se houver
+      sessionStorage.clear();
+      
+      // 3. Redirecionar SEM permitir voltar
+      window.location.replace('login.html'); // ✅ MUDE PARA O NOME DA SUA PÁGINA DE LOGIN
+      
+      console.log("✅ Logout realizado com segurança");
+      }
+    });
+  } 
+
+  // Adicionar efeito hover nos links do menu
+  const menuLinks = document.querySelectorAll(".vertical-menu-link, .vertical-submenu-link");
+  console.log(`✅ Encontrados ${menuLinks.length} links do menu`);
+  menuLinks.forEach((link) => {
+    link.addEventListener("click", function (e) {
+      e.preventDefault();
+      closeVerticalMenu();
+      console.log("Navegando para:", this.textContent.trim());
+    });
+  });
+  
   // Mobile menu toggle
   const mobileMenuToggle = document.getElementById('mobileMenuToggle');
   const mobileMenu = document.getElementById('mobileMenu');
@@ -370,7 +485,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     return category ? category.name : 'N/A';
   }
   
-  // Obter nome da conta pelo ID - CORRIGIDO para novo formato da API
+  // Obter nome da conta pelo ID
   function getAccountName(accountId) {
     if (apiAccountsData && Array.isArray(apiAccountsData)) {
       const account = apiAccountsData.find(a => a.id === accountId);
@@ -385,57 +500,46 @@ document.addEventListener('DOMContentLoaded', async function() {
     return method ? method.name : 'N/A';
   }
   
-  // Calcular saldo total - Usa apenas a API
+  // Calcular saldo total
   async function getTotalBalance() {
     const apiBalance = await fetchTotalBalance();
-    
     if (apiBalance !== null) {
       return apiBalance;
     }
-    
     console.warn('⚠️ Não foi possível obter o saldo total da API. Retornando 0.');
     return 0;
   }
   
-  // Calcular receitas pendentes - Usa a API primeiro, fallback para dados locais
+  // Calcular receitas pendentes
   async function getPendingIncomes() {
     const apiIncomes = await fetchPendingIncomes();
-    
     if (apiIncomes !== null) {
       return apiIncomes;
     }
-    
     console.warn('⚠️ Não foi possível obter receitas pendentes da API. Usando dados locais.');
     return transactions
       .filter(t => t.type === 'income' && !t.completed)
       .reduce((total, t) => total + t.amount, 0);
   }
   
-  // Calcular despesas pendentes - Usa a API primeiro, fallback para dados locais
+  // Calcular despesas pendentes
   async function getPendingExpenses() {
     const apiExpenses = await fetchPendingExpenses();
-    
     if (apiExpenses !== null) {
       return apiExpenses;
     }
-    
     console.warn('⚠️ Não foi possível obter despesas pendentes da API. Usando dados locais.');
     return transactions
       .filter(t => t.type === 'expense' && !t.completed)
       .reduce((total, t) => total + t.amount, 0);
   }
   
-  // Marcar transação como concluída - Removida atualização de saldo local
+  // Marcar transação como concluída
   function completeTransaction(transactionId) {
     const transaction = transactions.find(t => t.id === transactionId);
-    
     if (!transaction || transaction.completed) return;
-  
     transaction.completed = true;
-    
     console.log(`✅ Transação ${transactionId} marcada como concluída`);
-    
-    // Atualizar a interface (o saldo será atualizado na próxima busca da API)
     updateDashboard();
     renderTransactions();
   }
@@ -443,36 +547,27 @@ document.addEventListener('DOMContentLoaded', async function() {
   // Filtrar transações
   function filterTransactions() {
     filteredTransactions = transactions.filter(transaction => {
-      // Filtro por data
       if (activeFilters.startDate && new Date(transaction.dueDate) < new Date(activeFilters.startDate)) {
         return false;
       }
       if (activeFilters.endDate && new Date(transaction.dueDate) > new Date(activeFilters.endDate)) {
         return false;
       }
-      // Filtro por categoria
       if (activeFilters.categoryId && transaction.categoryId !== activeFilters.categoryId) {
         return false;
       }
-      // Filtro por conta
       if (activeFilters.accountId && transaction.accountId !== activeFilters.accountId) {
         return false;
       }
       return true;
     });
-    
     renderTransactions();
   }
   
-  // Iniciar Aplicação
-  // ---------------------------------
-  
   // Inicializar a interface
   async function initApp() {
-    // Buscar transações da API
     transactions = await fetchTransactionsFromApi();
     filteredTransactions = [...transactions];
-
     populateCategoryFilter();
     await populateAccountFilter();
     await updateDashboard();
@@ -482,40 +577,35 @@ document.addEventListener('DOMContentLoaded', async function() {
   
   // Atualizar o dashboard
   async function updateDashboard() {
-    // Atualizar card de saldo total (vem da API)
     const totalBalance = await getTotalBalance();
     updateValueDisplay(totalBalanceEl, totalBalance);
     
-    // Atualizar receitas pendentes (vem da API)
     const pendingIncomes = await getPendingIncomes();
     updateValueDisplay(pendingIncomesEl, pendingIncomes);
     
-    // Atualizar despesas pendentes (vem da API)
     const pendingExpenses = await getPendingExpenses();
     updateValueDisplay(pendingExpensesEl, pendingExpenses);
     
-    // Atualizar detalhes das contas
     renderAccountDetails();
   }
   
   // Atualizar exibição de valores com base na visibilidade
   function updateValueDisplay(element, value) {
-    if (showValues) {
-      element.textContent = formatCurrency(value);
-    } else {
-      element.textContent = '••••••';
+    if (element) {
+      if (showValues) {
+        element.textContent = formatCurrency(value);
+      } else {
+        element.textContent = '••••••';
+      }
     }
   }
   
-  // Renderizar detalhes das contas - CORRIGIDO para novo formato da API
+  // Renderizar detalhes das contas
   async function renderAccountDetails() {
-    if (!showAccountDetails) return;
+    if (!showAccountDetails || !accountDetailsEl) return;
     
     console.log('🔄 Renderizando detalhes das contas...');
-    
-    // Buscar dados da API
     const accountsData = await fetchAccountsBalance();
-    
     let html = '';
     
     if (accountsData && Array.isArray(accountsData)) {
@@ -538,7 +628,6 @@ document.addEventListener('DOMContentLoaded', async function() {
       `;
     }
     
-    // Para o total, usa o saldo total da API
     const totalBalance = await getTotalBalance();
     html += `
       <div class="account-total">
@@ -552,8 +641,9 @@ document.addEventListener('DOMContentLoaded', async function() {
   
   // Preencher filtro de categorias
   function populateCategoryFilter() {
-    let html = '<option value="">Todas as categorias</option>';
+    if (!categoryFilterEl) return;
     
+    let html = '<option value="">Todas as categorias</option>';
     categories.forEach(category => {
       html += `
         <option value="${category.id}">
@@ -561,15 +651,14 @@ document.addEventListener('DOMContentLoaded', async function() {
         </option>
       `;
     });
-    
     categoryFilterEl.innerHTML = html;
   }
   
-  // Preencher filtro de contas - CORRIGIDO para novo formato da API
+  // Preencher filtro de contas
   async function populateAccountFilter() {
-    let html = '<option value="">Todas as contas</option>';
+    if (!accountFilterEl) return;
     
-    // Buscar contas da API
+    let html = '<option value="">Todas as contas</option>';
     const accountsData = await fetchAccountsBalance();
     
     if (accountsData && Array.isArray(accountsData)) {
@@ -586,6 +675,8 @@ document.addEventListener('DOMContentLoaded', async function() {
   
   // Renderizar transações
   function renderTransactions() {
+    if (!transactionsBodyEl || !emptyStateEl) return;
+    
     if (filteredTransactions.length === 0) {
       transactionsBodyEl.innerHTML = '';
       emptyStateEl.classList.remove('hidden');
@@ -712,89 +803,95 @@ document.addEventListener('DOMContentLoaded', async function() {
   // Configurar event listeners
   function setupEventListeners() {
     // Mobile menu
-    mobileMenuToggle.addEventListener('click', function() {
-      mobileMenu.classList.toggle('active');
-      
-      // Mudar o ícone do botão
-      const menuIcon = this.querySelector('.menu-icon');
-      if (mobileMenu.classList.contains('active')) {
-        menuIcon.textContent = '×';
-      } else {
-        menuIcon.textContent = '☰';
-      }
-    });
+    if (mobileMenuToggle && mobileMenu) {
+      mobileMenuToggle.addEventListener('click', function() {
+        mobileMenu.classList.toggle('active');
+        const menuIcon = this.querySelector('.menu-icon');
+        if (mobileMenu.classList.contains('active')) {
+          menuIcon.textContent = '×';
+        } else {
+          menuIcon.textContent = '☰';
+        }
+      });
+    }
     
     // Toggle de visibilidade dos valores
-    toggleValuesButton.addEventListener('click', function() {
-      showValues = !showValues;
-      eyeIcon.classList.toggle('hidden');
-      eyeSlashIcon.classList.toggle('hidden');
-      
-      // Atualizar a dashboard com a nova configuração
-      updateDashboard();
-    });
+    if (toggleValuesButton) {
+      toggleValuesButton.addEventListener('click', function() {
+        showValues = !showValues;
+        if (eyeIcon) eyeIcon.classList.toggle('hidden');
+        if (eyeSlashIcon) eyeSlashIcon.classList.toggle('hidden');
+        updateDashboard();
+      });
+    }
     
     // Toggle de visibilidade para outros botões de olho
     toggleEyeButtons.forEach(button => {
       button.addEventListener('click', function() {
         const icons = this.querySelectorAll('.eye-icon');
         icons.forEach(icon => icon.classList.toggle('hidden'));
-        
         showValues = !showValues;
         updateDashboard();
       });
     });
     
     // Toggle de detalhes da conta
-    toggleAccountDetailsBtn.addEventListener('click', async function() {
-      showAccountDetails = !showAccountDetails;
-      
-      if (showAccountDetails) {
-        accountSummaryEl.classList.add('hidden');
-        accountDetailsEl.classList.remove('hidden');
-        this.textContent = 'Ocultar detalhes';
-        await renderAccountDetails();
-      } else {
-        accountSummaryEl.classList.remove('hidden');
-        accountDetailsEl.classList.add('hidden');
-        this.textContent = 'Mostrar por conta';
-      }
-    });
+    if (toggleAccountDetailsBtn) {
+      toggleAccountDetailsBtn.addEventListener('click', async function() {
+        showAccountDetails = !showAccountDetails;
+        
+        if (showAccountDetails) {
+          if (accountSummaryEl) accountSummaryEl.classList.add('hidden');
+          if (accountDetailsEl) accountDetailsEl.classList.remove('hidden');
+          this.textContent = 'Ocultar detalhes';
+          await renderAccountDetails();
+        } else {
+          if (accountSummaryEl) accountSummaryEl.classList.remove('hidden');
+          if (accountDetailsEl) accountDetailsEl.classList.add('hidden');
+          this.textContent = 'Mostrar por conta';
+        }
+      });
+    }
     
     // Toggle de filtros
-    toggleFiltersBtn.addEventListener('click', function() {
-      filterBodyEl.classList.toggle('active');
-    });
+    if (toggleFiltersBtn && filterBodyEl) {
+      toggleFiltersBtn.addEventListener('click', function() {
+        filterBodyEl.classList.toggle('active');
+      });
+    }
     
     // Aplicar filtros
-    applyFiltersBtn.addEventListener('click', function() {
-      activeFilters.startDate = startDateInput.value;
-      activeFilters.endDate = endDateInput.value;
-      activeFilters.categoryId = categoryFilterEl.value ? parseInt(categoryFilterEl.value, 10) : null;
-      activeFilters.accountId = accountFilterEl.value ? parseInt(accountFilterEl.value, 10) : null;
-      
-      filterTransactions();
-    });
+    if (applyFiltersBtn) {
+      applyFiltersBtn.addEventListener('click', function() {
+        activeFilters.startDate = startDateInput ? startDateInput.value : '';
+        activeFilters.endDate = endDateInput ? endDateInput.value : '';
+        activeFilters.categoryId = categoryFilterEl && categoryFilterEl.value ? parseInt(categoryFilterEl.value, 10) : null;
+        activeFilters.accountId = accountFilterEl && accountFilterEl.value ? parseInt(accountFilterEl.value, 10) : null;
+        filterTransactions();
+      });
+    }
     
     // Limpar filtros
-    clearFiltersBtn.addEventListener('click', function() {
-      startDateInput.value = '';
-      endDateInput.value = '';
-      categoryFilterEl.value = '';
-      accountFilterEl.value = '';
-      
-      activeFilters = {
-        startDate: '',
-        endDate: '',
-        categoryId: null,
-        accountId: null
-      };
-      
-      filteredTransactions = [...transactions];
-      renderTransactions();
-    });
+    if (clearFiltersBtn) {
+      clearFiltersBtn.addEventListener('click', function() {
+        if (startDateInput) startDateInput.value = '';
+        if (endDateInput) endDateInput.value = '';
+        if (categoryFilterEl) categoryFilterEl.value = '';
+        if (accountFilterEl) accountFilterEl.value = '';
+        
+        activeFilters = {
+          startDate: '',
+          endDate: '',
+          categoryId: null,
+          accountId: null
+        };
+        
+        filteredTransactions = [...transactions];
+        renderTransactions();
+      });
+    }
   }
   
-  // Iniciar a aplicação
   initApp();
+  
 });

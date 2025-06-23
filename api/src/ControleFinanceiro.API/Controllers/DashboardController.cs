@@ -1,5 +1,4 @@
-﻿using ControleFinanceiro.Application.DTOs;
-using ControleFinanceiro.Application.UseCases.Dashboard.ListarMovimentacoesEmAberto;
+﻿using ControleFinanceiro.Application.UseCases.Dashboard.ListarMovimentacoesEmAberto;
 using ControleFinanceiro.Application.UseCases.Financeiro.ListarSaldosContas;
 using ControleFinanceiro.Application.UseCases.Financeiro.ObterDespesasEmAberto;
 using ControleFinanceiro.Application.UseCases.Financeiro.ObterReceitasEmAberto;

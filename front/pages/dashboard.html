@@ -21,71 +21,76 @@
   <body>
     <!-- Navbar -->
     <nav class="navbar">
-      <div class="container navbar-container">
-        <div class="navbar-logo">Meu Controle Financeiro</div>
-        
-        <button class="navbar-mobile-toggle" id="mobileMenuToggle">
-          <span class="menu-icon">☰</span>
-        </button>
-        
-        <ul class="navbar-menu">
-          <li class="navbar-item">
-            <a href="#" class="navbar-link">Visão Geral</a>
-          </li>
-          
-          <li class="navbar-item">
-            <a href="#" class="navbar-link">
-              Financeiro
-              <svg class="dropdown-icon" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-              </svg>
-            </a>
-            <div class="navbar-dropdown">
-              <a href="#" class="dropdown-item">Despesas</a>
-              <a href="#" class="dropdown-item">Receitas</a>
-              <a href="#" class="dropdown-item">Relatórios</a>
+        <div class="container navbar-container">
+            <!-- Logo -->
+            <div class="navbar-logo">Meu Controle Financeiro</div>
+            
+            <!-- Menu horizontal com logout e menu vertical -->
+            <div class="navbar-actions">
+                <!-- Botão de logout -->
+                <button class="logout-btn">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                    </svg>
+                    Sair
+                </button>
+                
+                <!-- Botão do menu vertical -->
+                <div class="vertical-menu-container">
+                    <button class="vertical-menu-toggle" id="verticalMenuToggle">
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                            <circle cx="12" cy="5" r="2"></circle>
+                            <circle cx="12" cy="12" r="2"></circle>
+                            <circle cx="12" cy="19" r="2"></circle>
+                        </svg>
+                    </button>
+                    
+                    <!-- Menu vertical dropdown -->
+                    <div class="vertical-menu" id="verticalMenu">
+                        <div class="vertical-menu-item">
+                            <a href="#" class="vertical-menu-link">
+                                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5a2 2 0 012-2h4a2 2 0 012 2v0H8v0z"></path>
+                                </svg>
+                                Visão Geral
+                            </a>
+                        </div>
+                        
+                        <div class="vertical-menu-item">
+                            <div class="vertical-menu-category">
+                                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+                                </svg>
+                                Financeiro
+                            </div>
+                            <div class="vertical-submenu">
+                                <a href="#" class="vertical-submenu-link">Despesas</a>
+                                <a href="#" class="vertical-submenu-link">Receitas</a>
+                                <a href="#" class="vertical-submenu-link">Relatórios</a>
+                            </div>
+                        </div>
+                        
+                        <div class="vertical-menu-item">
+                            <div class="vertical-menu-category">
+                                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
+                                </svg>
+                                Mais
+                            </div>
+                            <div class="vertical-submenu">
+                                <a href="#" class="vertical-submenu-link">Categorias</a>
+                                <a href="#" class="vertical-submenu-link">Contas Bancárias</a>
+                                <a href="#" class="vertical-submenu-link">Cartões de Crédito</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </li>
-          
-          <li class="navbar-item">
-            <a href="#" class="navbar-link">
-              Mais
-              <svg class="dropdown-icon" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-              </svg>
-            </a>
-            <div class="navbar-dropdown">
-              <a href="#" class="dropdown-item">Categorias</a>
-              <a href="#" class="dropdown-item">Contas Bancárias</a>
-              <a href="#" class="dropdown-item">Cartões de Crédito</a>
-            </div>
-          </li>
-        </ul>
-      </div>
-
-      <!-- Mobile Menu -->
-      <div class="mobile-menu" id="mobileMenu">
-        <div class="mobile-menu-item">
-          <a href="#" class="mobile-menu-link">Visão Geral</a>
         </div>
-        <div class="mobile-menu-item">
-          <div class="mobile-menu-category">Financeiro</div>
-          <div class="mobile-submenu">
-            <a href="#" class="mobile-submenu-link">Despesas</a>
-            <a href="#" class="mobile-submenu-link">Receitas</a>
-            <a href="#" class="mobile-submenu-link">Relatórios</a>
-          </div>
-        </div>
-        <div class="mobile-menu-item">
-          <div class="mobile-menu-category">Mais</div>
-          <div class="mobile-submenu">
-            <a href="#" class="mobile-submenu-link">Categorias</a>
-            <a href="#" class="mobile-submenu-link">Contas Bancárias</a>
-            <a href="#" class="mobile-submenu-link">Cartões de Crédito</a>
-          </div>
-        </div>
-      </div>
     </nav>
+
+    <div class="overlay" id="overlay"></div>
     
     <!-- Content -->
     <div class="container" id="mainContent">
