@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using ControleFinanceiro.Application.DTOs;
 using ControleFinanceiro.Domain.Entities;
 using ControleFinanceiro.Domain.Enum;
 using ControleFinanceiro.Domain.Interfaces;
@@ -84,10 +85,29 @@ namespace ControleFinanceiro.Infrastructure.Repositories
                 .SumAsync(m => m.Valor);
         }
 
-        public async Task<List<Movimentacoes>> ListarMovimentacoesEmAbertoAsync(int usuarioId)
+        public async Task<List<MovimentacoesResumo>> ListarMovimentacoesEmAbertoAsync(int usuarioId)
         {
             return await context.Movimentacoes
                 .Where(m => m.UsuarioId == usuarioId && m.Realizado == false)
+                .Select(m => new MovimentacoesResumo
+                {
+                    Id = m.Id,
+                    Titulo = m.Titulo,
+                    DataVencimento = m.DataVencimento,
+                    Tipo = m.Tipo,
+                    Valor = m.Valor,
+                    Realizado = m.Realizado,
+
+                    MesReferenciaId = m.MesReferenciaId,
+                    CategoriaId = m.CategoriaId,
+                    CartaoId = m.CartaoId,
+                    ContaBancariaId = m.ContaBancariaId,
+                    UsuarioId = m.UsuarioId,
+
+                    CategoriaNome = m.Categoria.NomeCategoria,
+                    ContaBancariaNome = m.ContaBancaria.NomeConta,
+                    CartaoNome = m.Cartao != null ? m.Cartao.NomeCartao : null
+                })
                 .OrderByDescending(m => m.DataVencimento)
                 .ToListAsync();
         }

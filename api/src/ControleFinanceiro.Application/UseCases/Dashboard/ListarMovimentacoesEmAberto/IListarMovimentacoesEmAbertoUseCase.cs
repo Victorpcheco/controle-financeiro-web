@@ -4,6 +4,6 @@ namespace ControleFinanceiro.Application.UseCases.Dashboard.ListarMovimentacoesE
 {
     public interface IListarMovimentacoesEmAbertoUseCase
     {
-        Task<List<Movimentacoes>> ExecuteAsync();
+        Task<List<MovimentacoesResumo>> ExecuteAsync();
     }
 }

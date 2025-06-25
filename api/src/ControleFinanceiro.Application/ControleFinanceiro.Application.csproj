@@ -17,6 +17,7 @@
 
     <ItemGroup>
       <Compile Remove="Dtos\CartaoAtualizarDto.cs" />
+      <Compile Remove="DTOs\MovimentacoesResponseDto.cs" />
       <Compile Remove="Interfaces\Token\**" />
     </ItemGroup>
 
