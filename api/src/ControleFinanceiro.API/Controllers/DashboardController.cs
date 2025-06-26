@@ -1,4 +1,6 @@
-﻿using ControleFinanceiro.Application.UseCases.Dashboard.ListarMovimentacoesEmAberto;
+﻿using ControleFinanceiro.Application.Dtos;
+using ControleFinanceiro.Application.UseCases.Contas.ListarContaBancaria;
+using ControleFinanceiro.Application.UseCases.Dashboard.ListarMovimentacoesEmAberto;
 using ControleFinanceiro.Application.UseCases.Financeiro.ListarSaldosContas;
 using ControleFinanceiro.Application.UseCases.Financeiro.ObterDespesasEmAberto;
 using ControleFinanceiro.Application.UseCases.Financeiro.ObterReceitasEmAberto;
@@ -51,10 +53,19 @@ namespace ControleFinanceiro.API.Controllers
         }
 
         [HttpGet("movimentacoes-em-aberto")]
-        public async Task<ActionResult> MovimentacoesEmAberto()
+        public async Task<ActionResult> MovimentacoesEmAberto(
+        [FromQuery] int usuarioId,
+        [FromQuery] int pagina = 1,
+        [FromQuery] int quantidade = 10)
         {
-            var response = await movimentacoesEmAberto.ExecuteAsync();
-            return Ok(response);
+            var request = new PaginadoRequestDto
+            {
+                Pagina = pagina,
+                Quantidade = quantidade
+            };
+
+            var resultado = await movimentacoesEmAberto.ExecuteAsync(request);
+            return Ok(resultado);
         }
     }
 }

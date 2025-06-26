@@ -1,9 +1,11 @@
-﻿using ControleFinanceiro.Domain.Entities;
+﻿using ControleFinanceiro.Application.Dtos;
+using ControleFinanceiro.Application.DTOs;
+using ControleFinanceiro.Domain.Entities;
 
 namespace ControleFinanceiro.Application.UseCases.Dashboard.ListarMovimentacoesEmAberto
 {
     public interface IListarMovimentacoesEmAbertoUseCase
     {
-        Task<List<MovimentacoesResumo>> ExecuteAsync();
+        Task<MovimentacoesDashboardPaginadoResponseDto> ExecuteAsync(PaginadoRequestDto requestDto);
     }
 }

@@ -1176,6 +1176,34 @@
         "tags": [
           "Financeiro"
         ],
+        "parameters": [
+          {
+            "name": "usuarioId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "pagina",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "quantidade",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"

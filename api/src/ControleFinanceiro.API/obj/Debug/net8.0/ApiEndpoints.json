@@ -436,7 +436,23 @@
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
-    "Parameters": [],
+    "Parameters": [
+      {
+        "Name": "usuarioId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pagina",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "quantidade",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
     "ReturnTypes": []
   },
   {

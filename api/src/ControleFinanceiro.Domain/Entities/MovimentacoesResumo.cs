@@ -21,6 +21,7 @@ namespace ControleFinanceiro.Domain.Entities
         public int UsuarioId { get; set; }
 
         // Dados específicos (sem objetos completos)
+        public string MesReferenciaNome { get; set; }
         public string CategoriaNome { get; set; }
         public string ContaBancariaNome { get; set; }
         public string? CartaoNome { get; set; }

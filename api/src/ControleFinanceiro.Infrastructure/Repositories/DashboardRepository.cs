@@ -85,10 +85,12 @@ namespace ControleFinanceiro.Infrastructure.Repositories
                 .SumAsync(m => m.Valor);
         }
 
-        public async Task<List<MovimentacoesResumo>> ListarMovimentacoesEmAbertoAsync(int usuarioId)
+        public async Task<List<MovimentacoesResumo>> ListarMovimentacoesEmAbertoAsync(int usuarioId, int pagina, int quantidadePorPagina)
         {
             return await context.Movimentacoes
-                .Where(m => m.UsuarioId == usuarioId && m.Realizado == false)
+                .Where(m => m.UsuarioId == usuarioId)
+                .Skip((pagina - 1) * quantidadePorPagina)
+                .Take(quantidadePorPagina)
                 .Select(m => new MovimentacoesResumo
                 {
                     Id = m.Id,
@@ -104,12 +106,20 @@ namespace ControleFinanceiro.Infrastructure.Repositories
                     ContaBancariaId = m.ContaBancariaId,
                     UsuarioId = m.UsuarioId,
 
+                    MesReferenciaNome = m.MesReferencia.NomeMes,
                     CategoriaNome = m.Categoria.NomeCategoria,
                     ContaBancariaNome = m.ContaBancaria.NomeConta,
                     CartaoNome = m.Cartao != null ? m.Cartao.NomeCartao : null
                 })
                 .OrderByDescending(m => m.DataVencimento)
                 .ToListAsync();
+        }
+
+        public async Task<int> ContarTotalAsync(int usuarioId)
+        {
+            return await context.Movimentacoes
+                .Where(m => m.UsuarioId == usuarioId)
+                .CountAsync();
         }
     }
 }

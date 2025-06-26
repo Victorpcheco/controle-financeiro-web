@@ -179,7 +179,7 @@
           <circle cx="11" cy="11" r="8"></circle>
           <path d="m21 21-4.35-4.35"></path>
         </svg>
-        <input type="text" class="search-input" id="searchInput" placeholder="Pesquisar por descrição, valor ou categoria...">
+        <input type="text" class="search-input" id="searchInput" placeholder="Pesquisar por título, valor ou categoria...">
         <button class="search-clear" id="searchClear" style="display: none;">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -267,20 +267,22 @@
       <table class="transactions-table" id="transactionsTable">
         <thead>
           <tr>
-            <th>Titulo</th>
-            <th>Mes de Referencia</th>           
+            <th>Título</th>
+            <th>Mês de Referência</th>           
             <th>Data de Vencimento</th>
             <th>Tipo</th>
             <th>Status</th>    
-            <th>Conta Bancaria</th>                   
-            <th>Cartao</th>
+            <th>Categoria</th>
+            <th>Conta Bancária</th>                   
+            <th>Cartão</th>
             <th>Valor</th>
+            <th>Ações</th>
           </tr>
         </thead>
         <tbody id="transactionsBody">
         </tbody>
       </table>
-      
+
       <!-- Estado Vazio -->
       <div id="emptyState" class="empty-state hidden">
         <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
@@ -296,6 +298,52 @@
         <div class="loading-spinner"></div>
         <p>Carregando movimentações...</p>
       </div>
+      <!-- Adicionar após a tabela, antes do fechamento de .transactions-container -->
+  <div class="pagination-container" id="paginationContainer" style="display: none;">
+    <div class="pagination-info">
+      <span id="paginationInfo">Mostrando 1-10 de 100 registros</span>
+    </div>
+    
+    <div class="pagination-controls">
+      <button class="pagination-btn" id="firstPageBtn" title="Primeira página">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M11 17l-5-5 5-5M18 17l-5-5 5-5"/>
+        </svg>
+      </button>
+      
+      <button class="pagination-btn" id="prevPageBtn" title="Página anterior">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M15 18l-6-6 6-6"/>
+        </svg>
+      </button>
+      
+      <div class="pagination-pages" id="paginationPages">
+        <!-- Números das páginas serão inseridos aqui -->
+      </div>
+      
+      <button class="pagination-btn" id="nextPageBtn" title="Próxima página">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 18l6-6-6-6"/>
+        </svg>
+      </button>
+      
+      <button class="pagination-btn" id="lastPageBtn" title="Última página">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M13 17l5-5-5-5M6 17l5-5-5-5"/>
+        </svg>
+      </button>
+    </div>
+    
+    <div class="pagination-size">
+      <label for="pageSize">Itens por página:</label>
+      <select id="pageSize" class="pagination-select">
+        <option value="10">10</option>
+        <option value="25">25</option>
+        <option value="50">50</option>
+        <option value="100">100</option>
+      </select>
+    </div>
+</div>
     </div>
   </div>
 </div>
