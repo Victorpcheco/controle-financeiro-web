@@ -34,16 +34,14 @@ public class UsuarioRepository(ApplicationDbContext context) : IUsuarioRepositor
         var categorias = context.Categorias.Where(c => c.UsuarioId == usuarioId);
         var contas = context.ContasBancarias.Where(c => c.UsuarioId == usuarioId);
         var cartoes = context.Cartoes.Where(c => c.UsuarioId == usuarioId);
-        var despesas = context.Despesas.Where(d => d.UsuarioId == usuarioId);
-        var receitas = context.Receitas.Where(r => r.UsuarioId == usuarioId);
+        var despesas = context.Movimentacoes.Where(d => d.UsuarioId == usuarioId);
         var meses = context.MesesReferencia.Where(m => m.UsuarioId == usuarioId);
         var planejamentos = context.PlanejamentosCategorias.Where(p => p.UsuarioId == usuarioId);
 
         context.Categorias.RemoveRange(categorias);
         context.ContasBancarias.RemoveRange(contas);
         context.Cartoes.RemoveRange(cartoes);
-        context.Despesas.RemoveRange(despesas);
-        context.Receitas.RemoveRange(receitas);
+        context.Movimentacoes.RemoveRange(despesas);
         context.MesesReferencia.RemoveRange(meses);
         context.PlanejamentosCategorias.RemoveRange(planejamentos);
 

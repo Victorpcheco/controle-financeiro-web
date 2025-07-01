@@ -99,6 +99,7 @@ namespace ControleFinanceiro.Infrastructure.Repositories
                     Tipo = m.Tipo,
                     Valor = m.Valor,
                     Realizado = m.Realizado,
+                    FormaDePagamento = m.FormaDePagamento,
 
                     MesReferenciaId = m.MesReferenciaId,
                     CategoriaId = m.CategoriaId,

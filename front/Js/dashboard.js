@@ -1,27 +1,3 @@
-// ===== CONFIGURAÇÕES E DADOS =====
-const categories = [
-  { id: 1, name: "Salário", type: "income" },
-  { id: 2, name: "Freelance", type: "income" },
-  { id: 3, name: "Investimentos", type: "income" },
-  { id: 4, name: "Alimentação", type: "expense" },
-  { id: 5, name: "Transporte", type: "expense" },
-  { id: 6, name: "Moradia", type: "expense" },
-  { id: 7, name: "Saúde", type: "expense" },
-  { id: 8, name: "Educação", type: "expense" },
-  { id: 9, name: "Lazer", type: "expense" },
-  { id: 10, name: "Outros", type: "expense" },
-]
-
-const paymentMethods = [
-  { id: 1, name: "Cartão de Crédito" },
-  { id: 2, name: "Débito" },
-  { id: 3, name: "Dinheiro" },
-  { id: 4, name: "PIX" },
-  { id: 5, name: "Transferência" },
-]
-
-const transactions = []
-
 // ===== VARIÁVEIS GLOBAIS =====
 let apiAccountsData = null
 let apiSaldoTotal = 0
@@ -29,6 +5,60 @@ let apiPendingIncomes = 0
 let apiPendingExpenses = 0
 let showValues = true
 let showAccountDetails = false
+let currentEditingTransaction = null
+
+// ===== FUNÇÕES DE FORMATAÇÃO DE DATA =====
+function formatDateToBR(dateString) {
+  if (!dateString) return ""
+  const date = new Date(dateString + "T00:00:00")
+  return date.toLocaleDateString("pt-BR")
+}
+
+function formatDateToISO(brDateString) {
+  if (!brDateString) return ""
+
+  console.log("Convertendo data BR para ISO:", brDateString)
+
+  // Remove caracteres não numéricos
+  const cleanDate = brDateString.replace(/\D/g, "")
+  if (cleanDate.length !== 8) {
+    console.log("Data inválida - comprimento incorreto:", cleanDate.length)
+    return ""
+  }
+
+  // Extrai dia, mês e ano
+  const day = cleanDate.substring(0, 2)
+  const month = cleanDate.substring(2, 4)
+  const year = cleanDate.substring(4, 8)
+
+  console.log(`Extraído: dia=${day}, mês=${month}, ano=${year}`)
+
+  // Valida se é uma data válida
+  const date = new Date(year, month - 1, day)
+  if (date.getFullYear() != year || date.getMonth() != month - 1 || date.getDate() != day) {
+    console.log("Data inválida após validação")
+    return ""
+  }
+
+  const isoDate = `${year}-${month}-${day}`
+  console.log("Data ISO resultante:", isoDate)
+  return isoDate
+}
+
+function applyDateMask(value) {
+  // Remove tudo que não é número
+  value = value.replace(/\D/g, "")
+
+  // Aplica a máscara DD/MM/AAAA
+  if (value.length >= 2) {
+    value = value.substring(0, 2) + "/" + value.substring(2)
+  }
+  if (value.length >= 5) {
+    value = value.substring(0, 5) + "/" + value.substring(5, 9)
+  }
+
+  return value
+}
 
 // ===== CONFIGURAÇÃO DA API =====
 const API_CONFIG = {
@@ -38,7 +68,15 @@ const API_CONFIG = {
     accountsBalance: "/dashboard/saldo-contas",
     ReceitasTotaisRotaApi: "/dashboard/valor-em-aberto-receitas",
     pendingExpenses: "/dashboard/valor-em-aberto-despesas",
+    // ENDPOINT ORIGINAL PARA CARREGAR MOVIMENTAÇÕES INICIAIS
     transactions: "/dashboard/movimentacoes-em-aberto",
+    // NOVO ENDPOINT PARA FILTROS
+    transactionsFilter: "/movimentacoes/filtrar",
+    editTransaction: "/movimentacoes/editar",
+    categories: "/categoria",
+    accounts: "/contabancaria",
+    cards: "/cartao",
+    months: "/MesReferencia",
   },
 }
 
@@ -197,7 +235,7 @@ async function fetchAccountsBalance() {
   }
 }
 
-// ===== FUNÇÃO PARA BUSCAR MOVIMENTAÇÕES DA API =====
+// ===== FUNÇÃO ORIGINAL PARA BUSCAR MOVIMENTAÇÕES (SEM FILTROS) =====
 async function fetchTransactionsFromApi(pagina = 1, quantidadePorPagina = 10) {
   try {
     const token = buscaTokenJwt()
@@ -211,8 +249,14 @@ async function fetchTransactionsFromApi(pagina = 1, quantidadePorPagina = 10) {
       "Content-Type": "application/json",
     }
 
-    const url = `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.transactions}?pagina=${pagina}&quantidadePorPagina=${quantidadePorPagina}`
-    console.log("Buscando movimentações da URL:", url)
+    // Construir URL com parâmetros básicos de paginação
+    const params = new URLSearchParams({
+      pagina: pagina.toString(),
+      quantidadePorPagina: quantidadePorPagina.toString(),
+    })
+
+    const url = `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.transactions}?${params.toString()}`
+    console.log("Buscando movimentações da URL (sem filtros):", url)
 
     const response = await fetch(url, {
       method: "GET",
@@ -225,7 +269,7 @@ async function fetchTransactionsFromApi(pagina = 1, quantidadePorPagina = 10) {
     }
 
     const data = await response.json()
-    console.log("Dados recebidos da API:", data)
+    console.log("Dados recebidos da API (sem filtros):", data)
 
     // Verificar se a resposta tem a estrutura esperada
     if (!data.movimentacoes || !Array.isArray(data.movimentacoes)) {
@@ -245,6 +289,184 @@ async function fetchTransactionsFromApi(pagina = 1, quantidadePorPagina = 10) {
   }
 }
 
+// ===== NOVA FUNÇÃO PARA BUSCAR MOVIMENTAÇÕES COM FILTROS =====
+
+// ===== FUNÇÃO PARA EDITAR MOVIMENTAÇÃO =====
+async function updateTransaction(transactionData) {
+  try {
+    const token = buscaTokenJwt()
+    if (!token) {
+      throw new Error("Usuário não autenticado")
+    }
+
+    const headers = {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    }
+
+    console.log("Enviando dados para API:", transactionData)
+
+    const response = await fetch(`${API_CONFIG.baseUrl}${API_CONFIG.endpoints.editTransaction}`, {
+      method: "PUT",
+      headers: headers,
+      body: JSON.stringify(transactionData),
+    })
+
+    if (!response.ok) {
+      const errorBody = await response.text()
+      throw new Error(`Erro na API: ${response.status} - ${response.statusText}. Detalhes: ${errorBody}`)
+    }
+
+    const data = await response.json()
+    console.log("Movimentação atualizada com sucesso:", data)
+    return data
+  } catch (error) {
+    console.error("Erro ao atualizar movimentação:", error.message)
+    throw error
+  }
+}
+
+// ===== FUNÇÕES PARA BUSCAR DADOS DOS SELECTS DA API =====
+async function fetchCategories() {
+  try {
+    const token = buscaTokenJwt()
+    if (!token) {
+      console.warn("Token não encontrado para buscar categorias")
+      return []
+    }
+
+    const headers = {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    }
+
+    const response = await fetch(`${API_CONFIG.baseUrl}${API_CONFIG.endpoints.categories}?pagina=1&quantidade=100`, {
+      method: "GET",
+      headers: headers,
+    })
+
+    if (!response.ok) {
+      console.error(`Erro ao buscar categorias: ${response.status} - ${response.statusText}`)
+      return []
+    }
+
+    const data = await response.json()
+    console.log("Resposta completa das categorias:", data)
+
+    const categorias = data.categorias || data.data || data || []
+    console.log("Categorias extraídas:", categorias)
+    return Array.isArray(categorias) ? categorias : []
+  } catch (error) {
+    console.error("Erro ao buscar categorias:", error)
+    return []
+  }
+}
+
+async function fetchAccounts() {
+  try {
+    const token = buscaTokenJwt()
+    if (!token) {
+      console.warn("Token não encontrado para buscar contas")
+      return []
+    }
+
+    const headers = {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    }
+
+    const response = await fetch(`${API_CONFIG.baseUrl}${API_CONFIG.endpoints.accounts}?pagina=1&quantidade=100`, {
+      method: "GET",
+      headers: headers,
+    })
+
+    if (!response.ok) {
+      console.error(`Erro ao buscar contas: ${response.status} - ${response.statusText}`)
+      return []
+    }
+
+    const data = await response.json()
+    console.log("Resposta completa das contas:", data)
+
+    const contas = data.contas || data.contasBancarias || data.data || data || []
+    console.log("Contas extraídas:", contas)
+    return Array.isArray(contas) ? contas : []
+  } catch (error) {
+    console.error("Erro ao buscar contas:", error)
+    return []
+  }
+}
+
+async function fetchCards() {
+  try {
+    const token = buscaTokenJwt()
+    if (!token) {
+      console.warn("Token não encontrado para buscar cartões")
+      return []
+    }
+
+    const headers = {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    }
+
+    const response = await fetch(`${API_CONFIG.baseUrl}${API_CONFIG.endpoints.cards}?pagina=1&quantidade=100`, {
+      method: "GET",
+      headers: headers,
+    })
+
+    if (!response.ok) {
+      console.error(`Erro ao buscar cartões: ${response.status} - ${response.statusText}`)
+      return []
+    }
+
+    const data = await response.json()
+    console.log("Resposta completa dos cartões:", data)
+
+    const cartoes = data.cartoes || data.data || data || []
+    console.log("Cartões extraídos:", cartoes)
+    return Array.isArray(cartoes) ? cartoes : []
+  } catch (error) {
+    console.error("Erro ao buscar cartões:", error)
+    return []
+  }
+}
+
+async function fetchMonths() {
+  try {
+    const token = buscaTokenJwt()
+    if (!token) {
+      console.warn("Token não encontrado para buscar meses")
+      return []
+    }
+
+    const headers = {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    }
+
+    const response = await fetch(`${API_CONFIG.baseUrl}${API_CONFIG.endpoints.months}?pagina=1&quantidade=100`, {
+      method: "GET",
+      headers: headers,
+    })
+
+    if (!response.ok) {
+      console.error(`Erro ao buscar meses: ${response.status} - ${response.statusText}`)
+      return []
+    }
+
+    const data = await response.json()
+    console.log("Resposta completa dos meses:", data)
+
+    const meses = data.meses || data.mesesReferencia || data.data || data || []
+    console.log("Meses extraídos:", meses)
+    return Array.isArray(meses) ? meses : []
+  } catch (error) {
+    console.error("Erro ao buscar meses:", error)
+    return []
+  }
+}
+
 // ===== FUNÇÕES AUXILIARES =====
 function formatCurrency(value) {
   return new Intl.NumberFormat("pt-BR", {
@@ -253,9 +475,26 @@ function formatCurrency(value) {
   }).format(value)
 }
 
+// ===== FUNÇÃO CORRIGIDA PARA FORMATAÇÃO DE DATA =====
 function formatDate(dateString) {
   if (!dateString) return "Data inválida"
-  return new Date(dateString).toLocaleDateString("pt-BR")
+
+  // Extrair apenas a parte da data (YYYY-MM-DD) ignorando horário e timezone
+  const dateOnly = dateString.split("T")[0]
+  const [year, month, day] = dateOnly.split("-")
+
+  // Criar data local sem problemas de timezone
+  const date = new Date(Number.parseInt(year), Number.parseInt(month) - 1, Number.parseInt(day))
+
+  return date.toLocaleDateString("pt-BR")
+}
+
+function formatDateForInput(dateString) {
+  if (!dateString) return ""
+
+  // Extrair apenas a parte da data (YYYY-MM-DD) ignorando horário
+  const dateOnly = dateString.split("T")[0]
+  return dateOnly
 }
 
 function updateValueDisplay(element, value) {
@@ -274,13 +513,13 @@ async function renderAccountDetails() {
 
   if (!showAccountDetails || !accountDetailsEl) return
 
-  console.log("Renderizando detalhes das contas...") // Debug
+  console.log("Renderizando detalhes das contas...")
 
   const accountsData = await fetchAccountsBalance()
   let html = ""
 
   if (accountsData && Array.isArray(accountsData)) {
-    console.log("Dados das contas:", accountsData) // Debug
+    console.log("Dados das contas:", accountsData)
 
     accountsData.forEach((account) => {
       html += `
@@ -312,7 +551,6 @@ async function renderAccountDetails() {
     `
   }
 
-  // Adicionar total geral
   const totalBalance = await buscaApiSaldoTotal()
   html += `
     <div class="account-total">
@@ -332,52 +570,48 @@ async function renderAccountDetails() {
 
 // ===== FUNÇÃO PARA ATUALIZAR DASHBOARD =====
 async function updateDashboard() {
-  console.log("Atualizando dashboard...") // Debug
+  console.log("Atualizando dashboard...")
 
   const totalBalanceEl = document.getElementById("totalBalance")
   const pendingIncomesEl = document.getElementById("pendingIncomes")
   const pendingExpensesEl = document.getElementById("pendingExpenses")
 
   try {
-    // Buscar saldo total
     const totalBalance = await buscaApiSaldoTotal()
     if (totalBalance !== null) {
       updateValueDisplay(totalBalanceEl, totalBalance)
     }
 
-    // Buscar receitas pendentes
     const pendingIncomes = await buscaAPiReceitasPendentes()
     if (pendingIncomes !== null) {
       updateValueDisplay(pendingIncomesEl, pendingIncomes)
     }
 
-    // Buscar despesas pendentes
     const pendingExpenses = await fetchPendingExpenses()
     if (pendingExpenses !== null) {
       updateValueDisplay(pendingExpensesEl, pendingExpenses)
     }
 
-    // Atualizar detalhes das contas se estiver visível
     if (showAccountDetails) {
       await renderAccountDetails()
     }
 
-    console.log("Dashboard atualizado com sucesso") // Debug
+    console.log("Dashboard atualizado com sucesso")
   } catch (error) {
     console.error("Erro ao atualizar dashboard:", error)
   }
 }
 
-// ===== CLASSE PARA GERENCIAR FILTROS E MOVIMENTAÇÕES =====
+// ===== CLASSE ATUALIZADA PARA GERENCIAR FILTROS E MOVIMENTAÇÕES =====
 class MovementsManager {
   constructor() {
     this.filters = {
       search: "",
-      startDate: "",
-      endDate: "",
+      specificDate: "",
+      month: "",
+      card: "",
       category: "",
       account: "",
-      type: "",
       status: "",
     }
 
@@ -386,7 +620,6 @@ class MovementsManager {
     this.allTransactions = []
     this.filteredTransactions = []
 
-    // ===== NOVAS PROPRIEDADES PARA PAGINAÇÃO =====
     this.currentPage = 1
     this.pageSize = 10
     this.totalRecords = 0
@@ -397,32 +630,27 @@ class MovementsManager {
   }
 
   initializeElements() {
-    // Elementos do sistema de filtros
     this.filterToggle = document.getElementById("toggleFilters")
     this.advancedFilters = document.getElementById("advancedFilters")
     this.searchInput = document.getElementById("searchInput")
     this.searchClear = document.getElementById("searchClear")
 
-    // Filtros
-    this.startDateInput = document.getElementById("startDate")
-    this.endDateInput = document.getElementById("endDate")
+    this.specificDateInput = document.getElementById("specificDate")
+    this.monthSelect = document.getElementById("monthFilter")
+    this.cardSelect = document.getElementById("cardFilter")
     this.categorySelect = document.getElementById("categoryFilter")
     this.accountSelect = document.getElementById("accountFilter")
-    this.typeSelect = document.getElementById("typeFilter")
     this.statusSelect = document.getElementById("statusFilter")
 
-    // Botões
     this.applyButton = document.getElementById("applyFilters")
     this.clearButton = document.getElementById("clearFilters")
 
-    // Containers
     this.activeFilters = document.getElementById("activeFilters")
     this.activeFiltersList = document.getElementById("activeFiltersList")
     this.transactionsBody = document.getElementById("transactionsBody")
     this.emptyState = document.getElementById("emptyState")
     this.loadingState = document.getElementById("loadingState")
 
-    // ===== NOVOS ELEMENTOS DE PAGINAÇÃO =====
     this.paginationContainer = document.getElementById("paginationContainer")
     this.paginationInfo = document.getElementById("paginationInfo")
     this.paginationPages = document.getElementById("paginationPages")
@@ -434,28 +662,45 @@ class MovementsManager {
   }
 
   bindEvents() {
-    // Toggle dos filtros avançados
     if (this.filterToggle) {
       this.filterToggle.addEventListener("click", () => {
         this.toggleAdvancedFilters()
       })
     }
 
-    // Pesquisa em tempo real
+    // Pesquisa em tempo real (mas não aplica filtros automaticamente)
     if (this.searchInput) {
       this.searchInput.addEventListener("input", (e) => {
         this.handleSearchInput(e.target.value)
       })
     }
 
-    // Limpar pesquisa
     if (this.searchClear) {
       this.searchClear.addEventListener("click", () => {
         this.clearSearch()
       })
     }
 
-    // Aplicar filtros
+    // Máscara para data específica (sem aplicar filtros automaticamente)
+    if (this.specificDateInput) {
+      this.specificDateInput.addEventListener("input", (e) => {
+        const maskedValue = applyDateMask(e.target.value)
+        e.target.value = maskedValue
+      })
+
+      this.specificDateInput.addEventListener("blur", (e) => {
+        const value = e.target.value
+        if (value && value.length === 10) {
+          const isoDate = formatDateToISO(value)
+          if (!isoDate) {
+            alert("Data inválida. Use o formato DD/MM/AAAA")
+            e.target.value = ""
+          }
+        }
+      })
+    }
+
+    // BOTÃO APLICAR FILTROS
     if (this.applyButton) {
       this.applyButton.addEventListener("click", () => {
         this.applyFilters()
@@ -469,24 +714,7 @@ class MovementsManager {
       })
     }
 
-    // Filtros individuais
-    const filterElements = [
-      this.startDateInput,
-      this.endDateInput,
-      this.categorySelect,
-      this.accountSelect,
-      this.typeSelect,
-      this.statusSelect,
-    ].filter((el) => el !== null)
-
-    filterElements.forEach((element) => {
-      element.addEventListener("change", () => {
-        this.updateFilterFromElement(element)
-        this.applyFilters()
-      })
-    })
-
-    // ===== NOVOS EVENTOS DE PAGINAÇÃO =====
+    // Eventos de paginação
     if (this.firstPageBtn) {
       this.firstPageBtn.addEventListener("click", () => this.goToPage(1))
     }
@@ -506,8 +734,10 @@ class MovementsManager {
     if (this.pageSizeSelect) {
       this.pageSizeSelect.addEventListener("change", (e) => {
         this.pageSize = Number.parseInt(e.target.value)
+        this.totalPages = Math.ceil(this.totalRecords / this.pageSize)
         this.currentPage = 1
-        this.loadTransactions()
+        this.renderFilteredTransactions()
+        this.updatePagination()
       })
     }
   }
@@ -535,12 +765,8 @@ class MovementsManager {
       }
     }
 
-    clearTimeout(this.searchTimeout)
-    this.searchTimeout = setTimeout(() => {
-      this.filters.search = value
-      this.currentPage = 1 // Reset para primeira página ao pesquisar
-      this.applyFilters()
-    }, 300)
+    // Atualizar o filtro mas não aplicar automaticamente
+    this.filters.search = value
   }
 
   clearSearch() {
@@ -551,108 +777,176 @@ class MovementsManager {
       this.searchClear.style.display = "none"
     }
     this.filters.search = ""
-    this.currentPage = 1
-    this.applyFilters()
   }
 
-  updateFilterFromElement(element) {
-    if (!element) return
-
-    const filterMap = {
-      startDate: "startDate",
-      endDate: "endDate",
-      categoryFilter: "category",
-      accountFilter: "account",
-      typeFilter: "type",
-      statusFilter: "status",
-    }
-
-    const filterKey = filterMap[element.id]
-    if (filterKey) {
-      this.filters[filterKey] = element.value
-    }
+  updateFiltersFromForm() {
+    // Atualizar todos os filtros baseado nos valores dos campos
+    this.filters.search = this.searchInput?.value || ""
+    this.filters.specificDate = this.specificDateInput?.value ? formatDateToISO(this.specificDateInput.value) : ""
+    this.filters.month = this.monthSelect?.value || ""
+    this.filters.card = this.cardSelect?.value || ""
+    this.filters.category = this.categorySelect?.value || ""
+    this.filters.account = this.accountSelect?.value || ""
+    this.filters.status = this.statusSelect?.value || ""
   }
 
   applyFilters() {
-    console.log("Aplicando filtros:", this.filters)
+    console.log("Aplicando filtros localmente...")
+    this.updateFiltersFromForm()
+    console.log("Filtros coletados:", this.filters)
 
-    // Reset para primeira página ao aplicar filtros
     this.currentPage = 1
-    this.loadTransactions()
+    this.filterTransactionsLocally()
   }
 
-  filterTransactions() {
-    // Como estamos usando paginação no servidor, os filtros serão aplicados lá
-    // Mas mantemos a lógica local para casos específicos
-    this.filteredTransactions = this.allTransactions.filter((transaction) => {
-      // Filtro de pesquisa (aplicado localmente para melhor UX)
-      if (this.filters.search) {
-        const searchTerm = this.filters.search.toLowerCase()
-        const matchesSearch =
-          transaction.titulo.toLowerCase().includes(searchTerm) ||
-          (transaction.categoriaNome && transaction.categoriaNome.toLowerCase().includes(searchTerm)) ||
-          (transaction.contaBancariaNome && transaction.contaBancariaNome.toLowerCase().includes(searchTerm)) ||
-          Math.abs(transaction.valor).toString().includes(searchTerm)
+  filterTransactionsLocally() {
+    let filtered = [...this.allTransactions]
 
-        if (!matchesSearch) return false
-      }
+    // Aplicar filtro de pesquisa
+    if (this.filters.search && this.filters.search.trim() !== "") {
+      const searchTerm = this.filters.search.toLowerCase()
+      filtered = filtered.filter(
+        (transaction) =>
+          (transaction.titulo || "").toLowerCase().includes(searchTerm) ||
+          (transaction.categoriaNome || "").toLowerCase().includes(searchTerm) ||
+          (transaction.contaBancariaNome || "").toLowerCase().includes(searchTerm) ||
+          (transaction.cartaoNome || "").toLowerCase().includes(searchTerm) ||
+          (transaction.formaPagamento || "").toLowerCase().includes(searchTerm),
+      )
+    }
 
-      return true
-    })
+    // Aplicar filtro de data específica
+    if (this.filters.specificDate && this.filters.specificDate.trim() !== "") {
+      console.log("Aplicando filtro de data:", this.filters.specificDate)
 
-    this.renderTransactions()
+      filtered = filtered.filter((transaction) => {
+        // Extrair apenas a data (YYYY-MM-DD) da movimentação, ignorando horário
+        const transactionDateOnly = transaction.dataVencimento.split("T")[0]
+
+        console.log(`Comparando: ${transactionDateOnly} === ${this.filters.specificDate}`)
+
+        // Comparar apenas as datas (YYYY-MM-DD)
+        return transactionDateOnly === this.filters.specificDate
+      })
+
+      console.log(`Movimentações encontradas para a data ${this.filters.specificDate}:`, filtered.length)
+    }
+
+    // Aplicar filtro de mês de referência
+    if (this.filters.month && this.filters.month.trim() !== "") {
+      const monthId = Number.parseInt(this.filters.month)
+      filtered = filtered.filter((transaction) => transaction.mesReferenciaId === monthId)
+    }
+
+    // Aplicar filtro de cartão
+    if (this.filters.card && this.filters.card.trim() !== "") {
+      const cardId = Number.parseInt(this.filters.card)
+      filtered = filtered.filter((transaction) => transaction.cartaoId === cardId)
+    }
+
+    // Aplicar filtro de categoria
+    if (this.filters.category && this.filters.category.trim() !== "") {
+      const categoryId = Number.parseInt(this.filters.category)
+      filtered = filtered.filter((transaction) => transaction.categoriaId === categoryId)
+    }
+
+    // Aplicar filtro de conta
+    if (this.filters.account && this.filters.account.trim() !== "") {
+      const accountId = Number.parseInt(this.filters.account)
+      filtered = filtered.filter((transaction) => transaction.contaBancariaId === accountId)
+    }
+
+    // Aplicar filtro de status
+    if (this.filters.status && this.filters.status.trim() !== "") {
+      filtered = filtered.filter((transaction) => {
+        switch (this.filters.status) {
+          case "pago":
+            return transaction.realizado && transaction.tipo === "Despesa"
+          case "recebido":
+            return transaction.realizado && transaction.tipo === "Receita"
+          case "pendente":
+            return !transaction.realizado
+          default:
+            return true
+        }
+      })
+    }
+
+    this.filteredTransactions = filtered
+    this.totalRecords = filtered.length
+    this.totalPages = Math.ceil(this.totalRecords / this.pageSize)
+
+    console.log(`Filtros aplicados: ${filtered.length} de ${this.allTransactions.length} movimentações`)
+
+    this.renderFilteredTransactions()
+    this.updatePagination()
     this.updateActiveFiltersDisplay()
   }
 
-  renderTransactions() {
+  renderFilteredTransactions() {
     if (!this.transactionsBody || !this.emptyState) return
 
-    if (this.filteredTransactions.length === 0) {
-      this.transactionsBody.innerHTML = ""
+    this.transactionsBody.innerHTML = ""
+
+    // Calcular paginação local
+    const startIndex = (this.currentPage - 1) * this.pageSize
+    const endIndex = startIndex + this.pageSize
+    const paginatedTransactions = this.filteredTransactions.slice(startIndex, endIndex)
+
+    if (paginatedTransactions.length === 0) {
       this.emptyState.classList.remove("hidden")
+      const hasActiveFilters = Object.values(this.filters).some((filter) => filter !== "")
+      const emptyStateTitle = this.emptyState.querySelector("h3")
+      const emptyStateText = this.emptyState.querySelector("p")
+
+      if (hasActiveFilters) {
+        if (emptyStateTitle) emptyStateTitle.textContent = "Nenhuma movimentação encontrada"
+        if (emptyStateText) emptyStateText.textContent = "Nenhuma movimentação encontrada para os filtros aplicados."
+      } else {
+        if (emptyStateTitle) emptyStateTitle.textContent = "Nenhuma movimentação encontrada"
+        if (emptyStateText) emptyStateText.textContent = "Tente ajustar os filtros ou adicionar novas movimentações."
+      }
       return
     }
 
     this.emptyState.classList.add("hidden")
 
-    this.transactionsBody.innerHTML = this.filteredTransactions
+    this.transactionsBody.innerHTML = paginatedTransactions
       .map(
         (transaction) => `
-            <tr class="transaction-row-${transaction.tipo.toLowerCase() === "despesa" ? "expense" : "income"}">
-                <td class="transaction-name">${transaction.titulo}</td>
-                <td>${transaction.mesReferenciaNome || "N/A"}</td>
-                <td class="transaction-date">${formatDate(transaction.dataVencimento)}</td>
-                <td class="transaction-type">${transaction.tipo}</td>
-                <td>
-                    ${
-                      transaction.realizado
-                        ? `<span class="transaction-status status-completed">
-                            ${transaction.tipo === "Despesa" ? "Pago" : "Recebido"}
-                          </span>`
-                        : `<span class="transaction-status status-pending">
-                            Pendente
-                          </span>`
-                    }
-                </td>
-                <td>${transaction.categoriaNome || "N/A"}</td>
-                <td>${transaction.contaBancariaNome || "N/A"}</td>
-                <td>${transaction.cartaoNome || "N/A"}</td>
-                <td>
-                    <span class="transaction-amount transaction-amount-${transaction.tipo.toLowerCase() === "despesa" ? "expense" : "income"}">
-                        ${transaction.tipo === "Despesa" ? "-" : "+"} ${formatCurrency(transaction.valor)}
-                    </span>
-                </td>
-                <td>
-                    <button class="btn-action btn-edit" onclick="editTransaction(${transaction.id})" title="Editar">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                        </svg>
-                        Editar
-                    </button>
-                </td>
-            </tr>
-        `,
+      <tr class="transaction-row-${transaction.tipo && transaction.tipo.toLowerCase() === "despesa" ? "expense" : "income"}">
+          <td class="transaction-name">${transaction.titulo || "Sem título"}</td>
+          <td>${transaction.mesReferenciaNome || "N/A"}</td>
+          <td class="transaction-date">${formatDate(transaction.dataVencimento)}</td>
+          <td>
+              ${
+                transaction.realizado
+                  ? `<span class="transaction-status status-completed">
+                    ${transaction.tipo === "Despesa" ? "Pago" : "Recebido"}
+                  </span>`
+                  : `<span class="transaction-status status-pending">
+                    Pendente
+                  </span>`
+              }
+          </td>
+          <td>${transaction.categoriaNome || "N/A"}</td>
+          <td>${transaction.contaBancariaNome || "N/A"}</td>
+          <td>${transaction.cartaoNome || "N/A"}</td>
+          <td>${transaction.formaPagamento || "N/A"}</td>
+          <td>
+              <span class="transaction-amount transaction-amount-${transaction.tipo && transaction.tipo.toLowerCase() === "despesa" ? "expense" : "income"}">
+                  ${transaction.tipo === "Despesa" ? "-" : "+"} ${formatCurrency(transaction.valor || 0)}
+              </span>
+          </td>
+          <td>
+              <button class="transaction-arrow" onclick="openEditModal(${transaction.id})" title="Editar movimentação">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M9 18l6-6-6-6"/>
+                  </svg>
+              </button>
+          </td>
+      </tr>
+    `,
       )
       .join("")
   }
@@ -666,28 +960,49 @@ class MovementsManager {
       activeFilters.push({ key: "search", label: `Pesquisa: "${this.filters.search}"` })
     }
 
-    if (this.filters.startDate) {
-      activeFilters.push({ key: "startDate", label: `De: ${formatDate(this.filters.startDate)}` })
+    if (this.filters.specificDate) {
+      const brDate = formatDateToBR(this.filters.specificDate)
+      activeFilters.push({ key: "specificDate", label: `Data: ${brDate}` })
     }
 
-    if (this.filters.endDate) {
-      activeFilters.push({ key: "endDate", label: `Até: ${formatDate(this.filters.endDate)}` })
+    if (this.filters.month) {
+      const monthSelect = document.getElementById("monthFilter")
+      const selectedOption = monthSelect?.querySelector(`option[value="${this.filters.month}"]`)
+      const monthName = selectedOption?.textContent || this.filters.month
+      activeFilters.push({ key: "month", label: `Mês: ${monthName}` })
+    }
+
+    if (this.filters.card) {
+      const cardSelect = document.getElementById("cardFilter")
+      const selectedOption = cardSelect?.querySelector(`option[value="${this.filters.card}"]`)
+      const cardName = selectedOption?.textContent || this.filters.card
+      activeFilters.push({ key: "card", label: `Cartão: ${cardName}` })
     }
 
     if (this.filters.category) {
-      activeFilters.push({ key: "category", label: `Categoria: ${this.filters.category}` })
+      const categorySelect = document.getElementById("categoryFilter")
+      const selectedOption = categorySelect?.querySelector(`option[value="${this.filters.category}"]`)
+      const categoryName = selectedOption?.textContent || this.filters.category
+      activeFilters.push({ key: "category", label: `Categoria: ${categoryName}` })
     }
 
     if (this.filters.account) {
-      activeFilters.push({ key: "account", label: `Conta: ${this.filters.account}` })
-    }
-
-    if (this.filters.type) {
-      activeFilters.push({ key: "type", label: `Tipo: ${this.filters.type}` })
+      const accountSelect = document.getElementById("accountFilter")
+      const selectedOption = accountSelect?.querySelector(`option[value="${this.filters.account}"]`)
+      const accountName = selectedOption?.textContent || this.filters.account
+      activeFilters.push({ key: "account", label: `Conta: ${accountName}` })
     }
 
     if (this.filters.status) {
-      activeFilters.push({ key: "status", label: `Status: ${this.filters.status === "pago" ? "Pago" : "Pendente"}` })
+      const statusLabels = {
+        pago: "Pago",
+        recebido: "Recebido",
+        pendente: "Pendente",
+      }
+      activeFilters.push({
+        key: "status",
+        label: `Status: ${statusLabels[this.filters.status] || this.filters.status}`,
+      })
     }
 
     if (activeFilters.length > 0) {
@@ -695,16 +1010,16 @@ class MovementsManager {
       this.activeFiltersList.innerHTML = activeFilters
         .map(
           (filter) => `
-                <div class="filter-tag">
-                    ${filter.label}
-                    <button class="filter-tag-remove" onclick="window.movementsManager.removeFilter('${filter.key}')">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <line x1="18" y1="6" x2="6" y2="18"></line>
-                            <line x1="6" y1="6" x2="18" y2="18"></line>
-                        </svg>
-                    </button>
-                </div>
-            `,
+              <div class="filter-tag">
+                  ${filter.label}
+                  <button class="filter-tag-remove" onclick="window.movementsManager.removeFilter('${filter.key}')">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <line x1="18" y1="6" x2="6" y2="18"></line>
+                          <line x1="6" y1="6" x2="18" y2="18"></line>
+                      </svg>
+                  </button>
+              </div>
+          `,
         )
         .join("")
     } else {
@@ -717,11 +1032,11 @@ class MovementsManager {
 
     const elementMap = {
       search: this.searchInput,
-      startDate: this.startDateInput,
-      endDate: this.endDateInput,
+      specificDate: this.specificDateInput,
+      month: this.monthSelect,
+      card: this.cardSelect,
       category: this.categorySelect,
       account: this.accountSelect,
-      type: this.typeSelect,
       status: this.statusSelect,
     }
 
@@ -733,7 +1048,7 @@ class MovementsManager {
       }
     }
 
-    this.currentPage = 1
+    // Aplicar filtros automaticamente quando remover um filtro
     this.applyFilters()
   }
 
@@ -744,11 +1059,11 @@ class MovementsManager {
 
     const elements = [
       this.searchInput,
-      this.startDateInput,
-      this.endDateInput,
+      this.specificDateInput,
+      this.monthSelect,
+      this.cardSelect,
       this.categorySelect,
       this.accountSelect,
-      this.typeSelect,
       this.statusSelect,
     ]
 
@@ -760,8 +1075,15 @@ class MovementsManager {
       this.searchClear.style.display = "none"
     }
 
+    // Mostrar todas as movimentações novamente
+    this.filteredTransactions = [...this.allTransactions]
+    this.totalRecords = this.allTransactions.length
+    this.totalPages = Math.ceil(this.totalRecords / this.pageSize)
     this.currentPage = 1
-    this.applyFilters()
+
+    this.renderFilteredTransactions()
+    this.updatePagination()
+    this.updateActiveFiltersDisplay()
   }
 
   showLoading() {
@@ -773,26 +1095,27 @@ class MovementsManager {
     if (this.loadingState) this.loadingState.classList.add("hidden")
   }
 
-  // ===== NOVOS MÉTODOS DE PAGINAÇÃO =====
   async loadTransactions() {
     try {
-      console.log(`Carregando movimentações - Página: ${this.currentPage}, Tamanho: ${this.pageSize}`)
+      console.log(`Carregando todas as movimentações em aberto...`)
+
       this.showLoading()
 
-      const apiResponse = await fetchTransactionsFromApi(this.currentPage, this.pageSize)
+      // Sempre carregar TODAS as movimentações em aberto (sem paginação no backend)
+      const apiResponse = await fetchTransactionsFromApi(1, 1000) // Buscar muitas para ter todas
 
       this.allTransactions = apiResponse.movimentacoes || []
-      this.totalRecords = apiResponse.total || 0
+      this.filteredTransactions = [...this.allTransactions] // Inicialmente, mostrar todas
+      this.totalRecords = this.allTransactions.length
       this.totalPages = Math.ceil(this.totalRecords / this.pageSize)
 
-      // Aplicar filtros locais se necessário
-      this.filterTransactions()
+      console.log(`Carregadas ${this.allTransactions.length} movimentações`)
 
+      this.renderFilteredTransactions()
       await this.loadFilterOptions()
       this.updatePagination()
+      this.updateActiveFiltersDisplay()
       this.hideLoading()
-
-      console.log(`Movimentações carregadas: ${this.allTransactions.length} de ${this.totalRecords} total`)
     } catch (error) {
       console.error("Erro ao carregar movimentações:", error)
       this.hideLoading()
@@ -804,13 +1127,13 @@ class MovementsManager {
 
     console.log(`Navegando para página ${page}`)
     this.currentPage = page
-    this.loadTransactions()
+    this.renderFilteredTransactions() // Apenas re-renderizar, não recarregar da API
+    this.updatePagination()
   }
 
   updatePagination() {
     if (!this.paginationContainer) return
 
-    // Mostrar/esconder container de paginação
     if (this.totalRecords > this.pageSize) {
       this.paginationContainer.style.display = "flex"
     } else {
@@ -818,7 +1141,6 @@ class MovementsManager {
       return
     }
 
-    // Atualizar informações
     const startRecord = (this.currentPage - 1) * this.pageSize + 1
     const endRecord = Math.min(this.currentPage * this.pageSize, this.totalRecords)
 
@@ -826,16 +1148,13 @@ class MovementsManager {
       this.paginationInfo.textContent = `Mostrando ${startRecord}-${endRecord} de ${this.totalRecords} registros`
     }
 
-    // Atualizar botões de navegação
     if (this.firstPageBtn) this.firstPageBtn.disabled = this.currentPage === 1
     if (this.prevPageBtn) this.prevPageBtn.disabled = this.currentPage === 1
     if (this.nextPageBtn) this.nextPageBtn.disabled = this.currentPage === this.totalPages
     if (this.lastPageBtn) this.lastPageBtn.disabled = this.currentPage === this.totalPages
 
-    // Atualizar páginas
     this.renderPageNumbers()
 
-    // Atualizar select de tamanho da página
     if (this.pageSizeSelect) {
       this.pageSizeSelect.value = this.pageSize.toString()
     }
@@ -848,7 +1167,6 @@ class MovementsManager {
     let startPage = Math.max(1, this.currentPage - Math.floor(maxVisiblePages / 2))
     const endPage = Math.min(this.totalPages, startPage + maxVisiblePages - 1)
 
-    // Ajustar se não temos páginas suficientes no final
     if (endPage - startPage + 1 < maxVisiblePages) {
       startPage = Math.max(1, endPage - maxVisiblePages + 1)
     }
@@ -868,25 +1186,209 @@ class MovementsManager {
   }
 
   async loadFilterOptions() {
-    // Carregar categorias únicas das movimentações
-    if (this.categorySelect) {
-      let categoryHtml = '<option value="">Todas as categorias</option>'
-      const uniqueCategories = [...new Set(this.allTransactions.map((t) => t.categoriaNome).filter(Boolean))]
-      uniqueCategories.forEach((category) => {
-        categoryHtml += `<option value="${category}">${category}</option>`
-      })
-      this.categorySelect.innerHTML = categoryHtml
+    try {
+      const [categories, accounts, cards, months] = await Promise.all([
+        fetchCategories(),
+        fetchAccounts(),
+        fetchCards(),
+        fetchMonths(),
+      ])
+
+      if (this.categorySelect) {
+        let categoryHtml = '<option value="">Todas as categorias</option>'
+        categories.forEach((category) => {
+          categoryHtml += `<option value="${category.id}">${category.nomeCategoria || category.nome}</option>`
+        })
+        this.categorySelect.innerHTML = categoryHtml
+      }
+
+      if (this.accountSelect) {
+        let accountHtml = '<option value="">Todas as contas</option>'
+        accounts.forEach((account) => {
+          accountHtml += `<option value="${account.id}">${account.nomeConta || account.nome}</option>`
+        })
+        this.accountSelect.innerHTML = accountHtml
+      }
+
+      if (this.cardSelect) {
+        let cardHtml = '<option value="">Todos os cartões</option>'
+        cards.forEach((card) => {
+          cardHtml += `<option value="${card.id}">${card.nomeCartao || card.nome}</option>`
+        })
+        this.cardSelect.innerHTML = cardHtml
+      }
+
+      if (this.monthSelect) {
+        let monthHtml = '<option value="">Todos os meses</option>'
+        months.forEach((month) => {
+          monthHtml += `<option value="${month.id}">${month.nomeMes || month.nome}</option>`
+        })
+        this.monthSelect.innerHTML = monthHtml
+      }
+
+      console.log("Filtros carregados com dados da API")
+    } catch (error) {
+      console.error("Erro ao carregar opções dos filtros:", error)
+    }
+  }
+}
+
+// ===== FUNÇÕES DA MODAL DE EDIÇÃO =====
+async function openEditModal(transactionId) {
+  try {
+    console.log("Abrindo modal de edição para transação:", transactionId)
+
+    const transaction = window.movementsManager.allTransactions.find((t) => t.id === transactionId)
+
+    if (!transaction) {
+      alert("Transação não encontrada!")
+      return
     }
 
-    // Carregar contas únicas das movimentações
-    if (this.accountSelect) {
-      let accountHtml = '<option value="">Todas as contas</option>'
-      const uniqueAccounts = [...new Set(this.allTransactions.map((t) => t.contaBancariaNome).filter(Boolean))]
-      uniqueAccounts.forEach((account) => {
-        accountHtml += `<option value="${account}">${account}</option>`
-      })
-      this.accountSelect.innerHTML = accountHtml
+    currentEditingTransaction = transaction
+    console.log("Dados da transação para edição:", transaction)
+
+    await populateEditForm(transaction)
+
+    const modal = document.getElementById("editModalOverlay")
+    if (modal) {
+      modal.classList.add("active")
+      document.body.style.overflow = "hidden"
     }
+  } catch (error) {
+    console.error("Erro ao abrir modal de edição:", error)
+    alert("Erro ao carregar dados da movimentação")
+  }
+}
+
+async function populateEditForm(transaction) {
+  try {
+    console.log("Preenchendo formulário com dados:", transaction)
+
+    const [categories, accounts, cards, months] = await Promise.all([
+      fetchCategories(),
+      fetchAccounts(),
+      fetchCards(),
+      fetchMonths(),
+    ])
+
+    console.log("Dados carregados para selects:", { categories, accounts, cards, months })
+
+    populateSelect("editCategoria", categories, "id", "nomeCategoria", transaction.categoriaId)
+    populateSelect("editContaBancaria", accounts, "id", "nomeConta", transaction.contaBancariaId)
+    populateSelect("editCartao", cards, "id", "nomeCartao", transaction.cartaoId)
+    populateSelect("editMesReferencia", months, "id", "nomeMes", transaction.mesReferenciaId)
+
+    const titleField = document.getElementById("editTitulo")
+    const valueField = document.getElementById("editValor")
+    const typeField = document.getElementById("editTipo")
+    const dateField = document.getElementById("editDataVencimento")
+    const paymentMethodField = document.getElementById("editFormaPagamento")
+    const completedField = document.getElementById("editRealizado")
+
+    if (titleField) titleField.value = transaction.titulo || ""
+    if (valueField) valueField.value = transaction.valor || ""
+    if (typeField) typeField.value = transaction.tipo || ""
+    if (dateField) dateField.value = formatDateForInput(transaction.dataVencimento)
+    if (paymentMethodField) paymentMethodField.value = transaction.formaPagamento || ""
+    if (completedField) completedField.checked = transaction.realizado || false
+
+    console.log("Formulário preenchido com sucesso")
+  } catch (error) {
+    console.error("Erro ao preencher formulário:", error)
+    alert("Erro ao carregar dados para edição")
+  }
+}
+
+function populateSelect(selectId, options, valueField, textField, selectedValue) {
+  const select = document.getElementById(selectId)
+  if (!select) {
+    console.warn(`Select ${selectId} não encontrado`)
+    return
+  }
+
+  console.log(`Populando select ${selectId} com ${options.length} opções`)
+
+  const firstOption = select.querySelector("option")
+  select.innerHTML = ""
+  if (firstOption) {
+    select.appendChild(firstOption)
+  }
+
+  let optionSelected = false
+  options.forEach((option) => {
+    const optionElement = document.createElement("option")
+    optionElement.value = option[valueField]
+    optionElement.textContent = option[textField]
+
+    if (option[valueField] === selectedValue) {
+      optionElement.selected = true
+      optionSelected = true
+    }
+
+    select.appendChild(optionElement)
+  })
+
+  if (selectedValue && !optionSelected) {
+    console.warn(`Valor ${selectedValue} não encontrado nas opções do select ${selectId}`)
+  }
+}
+
+function closeEditModal() {
+  const modal = document.getElementById("editModalOverlay")
+  if (modal) {
+    modal.classList.remove("active")
+    document.body.style.overflow = ""
+  }
+  currentEditingTransaction = null
+}
+
+async function saveTransaction() {
+  try {
+    if (!currentEditingTransaction) {
+      alert("Nenhuma transação selecionada para edição")
+      return
+    }
+
+    const form = document.getElementById("editTransactionForm")
+    const formData = new FormData(form)
+
+    const transactionData = {
+      id: currentEditingTransaction.id,
+      titulo: formData.get("titulo"),
+      valor: Number.parseFloat(formData.get("valor")),
+      tipo: formData.get("tipo"),
+      dataVencimento: formData.get("dataVencimento"),
+      categoriaId: Number.parseInt(formData.get("categoriaId")) || null,
+      contaBancariaId: Number.parseInt(formData.get("contaBancariaId")) || null,
+      cartaoId: formData.get("cartaoId") ? Number.parseInt(formData.get("cartaoId")) : null,
+      formaPagamento: formData.get("formaPagamento") || null,
+      mesReferenciaId: Number.parseInt(formData.get("mesReferenciaId")) || null,
+      realizado: formData.get("realizado") === "on",
+    }
+
+    console.log("Dados para envio:", transactionData)
+
+    if (!transactionData.titulo || !transactionData.valor || !transactionData.tipo) {
+      alert("Por favor, preencha todos os campos obrigatórios (título, valor e tipo)")
+      return
+    }
+
+    if (!transactionData.categoriaId || !transactionData.contaBancariaId || !transactionData.mesReferenciaId) {
+      alert("Por favor, selecione categoria, conta bancária e mês de referência")
+      return
+    }
+
+    await updateTransaction(transactionData)
+
+    closeEditModal()
+
+    await window.movementsManager.loadTransactions()
+
+    alert("Movimentação atualizada com sucesso!")
+  } catch (error) {
+    console.error("Erro ao salvar transação:", error)
+    alert("Erro ao salvar movimentação: " + error.message)
   }
 }
 
@@ -894,7 +1396,6 @@ class MovementsManager {
 document.addEventListener("DOMContentLoaded", async () => {
   console.log("Inicializando aplicação...")
 
-  // Verificar autenticação
   const token = buscaTokenJwt()
   if (!token) {
     console.warn("Usuário não autenticado, redirecionando para login")
@@ -957,6 +1458,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
       closeVerticalMenu()
+      closeEditModal()
     }
   })
 
@@ -971,8 +1473,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   // ===== CONFIGURAR TOGGLES DE VISIBILIDADE =====
-
-  // Toggle principal de visibilidade dos valores
   const toggleValuesButton = document.getElementById("toggleValues")
   if (toggleValuesButton) {
     toggleValuesButton.addEventListener("click", () => {
@@ -985,7 +1485,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     })
   }
 
-  // Outros botões de toggle de visibilidade
   const toggleEyeButtons = document.querySelectorAll(".toggle-eye")
   toggleEyeButtons.forEach((button) => {
     button.addEventListener("click", function () {
@@ -1008,16 +1507,43 @@ document.addEventListener("DOMContentLoaded", async () => {
       console.log("Toggle account details:", showAccountDetails)
 
       if (showAccountDetails) {
-        // Mostrar detalhes das contas
         if (accountSummaryEl) accountSummaryEl.classList.add("hidden")
         if (accountDetailsEl) accountDetailsEl.classList.remove("hidden")
         this.textContent = "Ocultar detalhes"
         await renderAccountDetails()
       } else {
-        // Mostrar resumo
         if (accountSummaryEl) accountSummaryEl.classList.remove("hidden")
         if (accountDetailsEl) accountDetailsEl.classList.add("hidden")
         this.textContent = "Mostrar por conta"
+      }
+    })
+  }
+
+  // ===== CONFIGURAR MODAL DE EDIÇÃO =====
+  const closeModalBtn = document.getElementById("closeEditModal")
+  const cancelModalBtn = document.getElementById("cancelEditModal")
+  const editForm = document.getElementById("editTransactionForm")
+
+  if (closeModalBtn) {
+    closeModalBtn.addEventListener("click", closeEditModal)
+  }
+
+  if (cancelModalBtn) {
+    cancelModalBtn.addEventListener("click", closeEditModal)
+  }
+
+  if (editForm) {
+    editForm.addEventListener("submit", (e) => {
+      e.preventDefault()
+      saveTransaction()
+    })
+  }
+
+  const modalOverlay = document.getElementById("editModalOverlay")
+  if (modalOverlay) {
+    modalOverlay.addEventListener("click", (e) => {
+      if (e.target === modalOverlay) {
+        closeEditModal()
       }
     })
   }
@@ -1030,34 +1556,18 @@ document.addEventListener("DOMContentLoaded", async () => {
   try {
     console.log("Carregando dados iniciais...")
     await updateDashboard()
-    await movementsManager.loadTransactions()
+    await movementsManager.loadTransactions() // Carrega SEM filtros inicialmente
     console.log("Aplicação inicializada com sucesso!")
   } catch (error) {
     console.error("Erro ao inicializar aplicação:", error)
   }
 })
 
-// ===== FUNÇÕES GLOBAIS PARA AÇÕES =====
+// ===== FUNÇÕES GLOBAIS =====
 function editTransaction(id) {
-  console.log("Redirecionando para edição da movimentação:", id)
-  // Redirecionar para a tela de edição
-  window.location.href = `/editar-movimentacao.html?id=${id}`
+  openEditModal(id)
 }
 
-function deleteTransaction(id) {
-  if (confirm("Tem certeza que deseja excluir esta transação?")) {
-    console.log("Excluir transação:", id)
-    // TODO: Implementar chamada para API de exclusão
-    alert(`Funcionalidade de exclusão será implementada para a transação ${id}`)
-
-    // Após excluir, recarregar as transações
-    if (window.movementsManager) {
-      window.movementsManager.loadTransactions()
-    }
-  }
-}
-
-// ===== FUNÇÕES DE UTILIDADE =====
 function refreshDashboard() {
   console.log("Atualizando dashboard...")
   updateDashboard()
@@ -1068,9 +1578,7 @@ function refreshDashboard() {
 
 function exportTransactions() {
   console.log("Exportar transações...")
-  // TODO: Implementar funcionalidade de exportação
   alert("Funcionalidade de exportação será implementada")
 }
 
-// ===== LOG DE INICIALIZAÇÃO =====
 console.log("Dashboard JavaScript carregado com sucesso! 🚀")

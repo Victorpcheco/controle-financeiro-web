@@ -20,13 +20,15 @@ namespace ControleFinanceiro.Domain.Entities
         public bool Realizado { get; private set; } = false;
         public int UsuarioId { get; private set; }
         public Usuario Usuario { get; private set; } = null!;
+        public string? FormaDePagamento { get; private set; } = null!;
 
         public Movimentacoes()
         {
 
         }
 
-        public Movimentacoes(string titulo, DateOnly dataVencimento, Tipo tipo, int mesReferenciaId, int categoriaId, int? cartaoId, int contaBancariaId, decimal valor, bool realizado, int usuarioId)
+        public Movimentacoes(string titulo, DateOnly dataVencimento, Tipo tipo, int mesReferenciaId, int categoriaId, 
+            int? cartaoId, int contaBancariaId, decimal valor, bool realizado, int usuarioId, string formaDePagamento)
         {
             ValidarTituloMovimentacao(titulo);
             ValidarDataVencimento(dataVencimento);
@@ -41,6 +43,7 @@ namespace ControleFinanceiro.Domain.Entities
             Valor = valor;
             Realizado = realizado;
             UsuarioId = usuarioId;
+            FormaDePagamento = formaDePagamento;
         }
 
 
@@ -62,7 +65,8 @@ namespace ControleFinanceiro.Domain.Entities
                 throw new ArgumentException("Data muito antiga.");
         }
 
-        public void AtualizarMovimentacao(string titulo, DateOnly dataVencimento, int mesReferenciaId, int categoriaId, int cartaoId, int contaBancariaId, decimal valor, bool realizado)
+        public void AtualizarMovimentacao(string titulo, DateOnly dataVencimento, int mesReferenciaId, int categoriaId, 
+            int cartaoId, int contaBancariaId, decimal valor, bool realizado, string formaDePagamento)
         {
             ValidarTituloMovimentacao(titulo);
             ValidarDataVencimento(dataVencimento);
@@ -76,6 +80,7 @@ namespace ControleFinanceiro.Domain.Entities
             ContaBancariaId = contaBancariaId;
             Valor = valor;
             Realizado = realizado;
+            FormaDePagamento = formaDePagamento;
         }
     }
 }

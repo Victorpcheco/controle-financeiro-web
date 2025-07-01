@@ -711,349 +711,6 @@
         }
       }
     },
-    "/api/Despesa": {
-      "get": {
-        "tags": [
-          "Despesa"
-        ],
-        "parameters": [
-          {
-            "name": "pagina",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 1
-            }
-          },
-          {
-            "name": "quantidade",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 10
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "Despesa"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/DespesaCriarDto"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/DespesaCriarDto"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/DespesaCriarDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/Despesa/{id}": {
-      "get": {
-        "tags": [
-          "Despesa"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "Despesa"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/DespesaCriarDto"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/DespesaCriarDto"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/DespesaCriarDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "Despesa"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/Despesa/por-data": {
-      "get": {
-        "tags": [
-          "Despesa"
-        ],
-        "parameters": [
-          {
-            "name": "data",
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "pagina",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 1
-            }
-          },
-          {
-            "name": "quantidade",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 10
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/Despesa/por-conta": {
-      "get": {
-        "tags": [
-          "Despesa"
-        ],
-        "parameters": [
-          {
-            "name": "contaId",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
-            "name": "pagina",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 1
-            }
-          },
-          {
-            "name": "quantidade",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 10
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/Despesa/por-categoria": {
-      "get": {
-        "tags": [
-          "Despesa"
-        ],
-        "parameters": [
-          {
-            "name": "categoriaId",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
-            "name": "pagina",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 1
-            }
-          },
-          {
-            "name": "quantidade",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 10
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/Despesa/por-titulo": {
-      "get": {
-        "tags": [
-          "Despesa"
-        ],
-        "parameters": [
-          {
-            "name": "titulo",
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "pagina",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 1
-            }
-          },
-          {
-            "name": "quantidade",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 10
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/Despesa/por-cartao": {
-      "get": {
-        "tags": [
-          "Despesa"
-        ],
-        "parameters": [
-          {
-            "name": "cartaoId",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
-            "name": "pagina",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 1
-            }
-          },
-          {
-            "name": "quantidade",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 10
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
     "/api/dashboard/saldo-total": {
       "get": {
         "tags": [
@@ -1449,10 +1106,10 @@
         }
       }
     },
-    "/api/Receita": {
+    "/api/movimentacoes/despesas": {
       "get": {
         "tags": [
-          "Receita"
+          "Movimentacao"
         ],
         "parameters": [
           {
@@ -1479,30 +1136,33 @@
             "description": "OK"
           }
         }
-      },
-      "post": {
+      }
+    },
+    "/api/movimentacoes/receitas": {
+      "get": {
         "tags": [
-          "Receita"
+          "Movimentacao"
         ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ReceitaCriarDto"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ReceitaCriarDto"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/ReceitaCriarDto"
-              }
+        "parameters": [
+          {
+            "name": "pagina",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "quantidade",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
             }
           }
-        },
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -1510,10 +1170,10 @@
         }
       }
     },
-    "/api/Receita/{id}": {
+    "/api/movimentacoes/{id}": {
       "get": {
         "tags": [
-          "Receita"
+          "Movimentacao"
         ],
         "parameters": [
           {
@@ -1534,7 +1194,7 @@
       },
       "put": {
         "tags": [
-          "Receita"
+          "Movimentacao"
         ],
         "parameters": [
           {
@@ -1551,17 +1211,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ReceitaCriarDto"
+                "$ref": "#/components/schemas/MovimentacaoCriarDto"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/ReceitaCriarDto"
+                "$ref": "#/components/schemas/MovimentacaoCriarDto"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/ReceitaCriarDto"
+                "$ref": "#/components/schemas/MovimentacaoCriarDto"
               }
             }
           }
@@ -1574,7 +1234,7 @@
       },
       "delete": {
         "tags": [
-          "Receita"
+          "Movimentacao"
         ],
         "parameters": [
           {
@@ -1594,18 +1254,48 @@
         }
       }
     },
-    "/api/Receita/por-data": {
+    "/api/movimentacoes": {
+      "post": {
+        "tags": [
+          "Movimentacao"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MovimentacaoCriarDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MovimentacaoCriarDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/MovimentacaoCriarDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/movimentacoes/por-data": {
       "get": {
         "tags": [
-          "Receita"
+          "Movimentacao"
         ],
         "parameters": [
           {
             "name": "data",
             "in": "query",
             "schema": {
-              "type": "string",
-              "format": "date"
+              "type": "string"
             }
           },
           {
@@ -1634,10 +1324,10 @@
         }
       }
     },
-    "/api/Receita/por-conta": {
+    "/api/movimentacoes/por-conta": {
       "get": {
         "tags": [
-          "Receita"
+          "Movimentacao"
         ],
         "parameters": [
           {
@@ -1674,10 +1364,10 @@
         }
       }
     },
-    "/api/Receita/por-categoria": {
+    "/api/movimentacoes/por-categoria": {
       "get": {
         "tags": [
-          "Receita"
+          "Movimentacao"
         ],
         "parameters": [
           {
@@ -1714,10 +1404,10 @@
         }
       }
     },
-    "/api/Receita/por-titulo": {
+    "/api/movimentacoes/por-titulo": {
       "get": {
         "tags": [
-          "Receita"
+          "Movimentacao"
         ],
         "parameters": [
           {
@@ -1725,6 +1415,46 @@
             "in": "query",
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "name": "pagina",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "quantidade",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/movimentacoes/por-cartao": {
+      "get": {
+        "tags": [
+          "Movimentacao"
+        ],
+        "parameters": [
+          {
+            "name": "cartaoId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
             }
           },
           {
@@ -2005,43 +1735,6 @@
         },
         "additionalProperties": false
       },
-      "DespesaCriarDto": {
-        "type": "object",
-        "properties": {
-          "tituloDespesa": {
-            "type": "string",
-            "nullable": true
-          },
-          "data": {
-            "type": "string",
-            "format": "date"
-          },
-          "mesReferenciaId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "categoriaId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "cartaoId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "contaBancariaId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "valor": {
-            "type": "number",
-            "format": "double"
-          },
-          "realizado": {
-            "type": "boolean"
-          }
-        },
-        "additionalProperties": false
-      },
       "LoginRequestDto": {
         "type": "object",
         "properties": {
@@ -2113,6 +1806,55 @@
         },
         "additionalProperties": false
       },
+      "MovimentacaoCriarDto": {
+        "type": "object",
+        "properties": {
+          "titulo": {
+            "type": "string",
+            "nullable": true
+          },
+          "dataVencimento": {
+            "type": "string",
+            "format": "date"
+          },
+          "tipo": {
+            "$ref": "#/components/schemas/Tipo"
+          },
+          "mesReferenciaId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "categoriaId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "cartaoId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "contaBancariaId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "valor": {
+            "type": "number",
+            "format": "double"
+          },
+          "realizado": {
+            "type": "boolean"
+          },
+          "usuarioId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "formaDePagamento": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "ProblemDetails": {
         "type": "object",
         "properties": {
@@ -2139,39 +1881,6 @@
           }
         },
         "additionalProperties": { }
-      },
-      "ReceitaCriarDto": {
-        "type": "object",
-        "properties": {
-          "tituloReceita": {
-            "type": "string",
-            "nullable": true
-          },
-          "data": {
-            "type": "string",
-            "format": "date"
-          },
-          "mesReferenciaId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "categoriaId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "contaBancariaId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "valor": {
-            "type": "number",
-            "format": "double"
-          },
-          "realizado": {
-            "type": "boolean"
-          }
-        },
-        "additionalProperties": false
       },
       "RegisterRequestDto": {
         "type": "object",

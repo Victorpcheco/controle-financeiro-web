@@ -530,226 +530,6 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "ControleFinanceiro.API.Controllers.DespesaController",
-    "Method": "ListarDespesas",
-    "RelativePath": "api/Despesa",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "pagina",
-        "Type": "System.Int32",
-        "IsRequired": false
-      },
-      {
-        "Name": "quantidade",
-        "Type": "System.Int32",
-        "IsRequired": false
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "ControleFinanceiro.API.Controllers.DespesaController",
-    "Method": "CriarDespesa",
-    "RelativePath": "api/Despesa",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "request",
-        "Type": "ControleFinanceiro.Application.Dtos.DespesaCriarDto",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "ControleFinanceiro.API.Controllers.DespesaController",
-    "Method": "BuscarDespesa",
-    "RelativePath": "api/Despesa/{id}",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "ControleFinanceiro.API.Controllers.DespesaController",
-    "Method": "AtualizarDespesa",
-    "RelativePath": "api/Despesa/{id}",
-    "HttpMethod": "PUT",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
-      },
-      {
-        "Name": "request",
-        "Type": "ControleFinanceiro.Application.Dtos.DespesaCriarDto",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "ControleFinanceiro.API.Controllers.DespesaController",
-    "Method": "DeletarDespesa",
-    "RelativePath": "api/Despesa/{id}",
-    "HttpMethod": "DELETE",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "ControleFinanceiro.API.Controllers.DespesaController",
-    "Method": "ListarDespesaPorTitulo",
-    "RelativePath": "api/Despesa/por-cartao",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "cartaoId",
-        "Type": "System.Int32",
-        "IsRequired": false
-      },
-      {
-        "Name": "pagina",
-        "Type": "System.Int32",
-        "IsRequired": false
-      },
-      {
-        "Name": "quantidade",
-        "Type": "System.Int32",
-        "IsRequired": false
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "ControleFinanceiro.API.Controllers.DespesaController",
-    "Method": "ListarDespesaPorCategoria",
-    "RelativePath": "api/Despesa/por-categoria",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "categoriaId",
-        "Type": "System.Int32",
-        "IsRequired": false
-      },
-      {
-        "Name": "pagina",
-        "Type": "System.Int32",
-        "IsRequired": false
-      },
-      {
-        "Name": "quantidade",
-        "Type": "System.Int32",
-        "IsRequired": false
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "ControleFinanceiro.API.Controllers.DespesaController",
-    "Method": "ListarDespesaPorContaBancaria",
-    "RelativePath": "api/Despesa/por-conta",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "contaId",
-        "Type": "System.Int32",
-        "IsRequired": false
-      },
-      {
-        "Name": "pagina",
-        "Type": "System.Int32",
-        "IsRequired": false
-      },
-      {
-        "Name": "quantidade",
-        "Type": "System.Int32",
-        "IsRequired": false
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "ControleFinanceiro.API.Controllers.DespesaController",
-    "Method": "ListarDespesaPorData",
-    "RelativePath": "api/Despesa/por-data",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "data",
-        "Type": "System.String",
-        "IsRequired": false
-      },
-      {
-        "Name": "pagina",
-        "Type": "System.Int32",
-        "IsRequired": false
-      },
-      {
-        "Name": "quantidade",
-        "Type": "System.Int32",
-        "IsRequired": false
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "ControleFinanceiro.API.Controllers.DespesaController",
-    "Method": "ListarDespesaPorTitulo",
-    "RelativePath": "api/Despesa/por-titulo",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "titulo",
-        "Type": "System.String",
-        "IsRequired": false
-      },
-      {
-        "Name": "pagina",
-        "Type": "System.Int32",
-        "IsRequired": false
-      },
-      {
-        "Name": "quantidade",
-        "Type": "System.Int32",
-        "IsRequired": false
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
     "ContainingType": "ControleFinanceiro.API.Controllers.MesReferenciaController",
     "Method": "ListarMesReferenciaAsync",
     "RelativePath": "api/MesReferencia",
@@ -895,9 +675,78 @@
     ]
   },
   {
-    "ContainingType": "ControleFinanceiro.API.Controllers.ReceitaController",
-    "Method": "ListarReceitas",
-    "RelativePath": "api/Receita",
+    "ContainingType": "ControleFinanceiro.API.Controllers.MovimentacaoController",
+    "Method": "CriarDespesa",
+    "RelativePath": "api/movimentacoes",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "ControleFinanceiro.Application.Dtos.MovimentacaoCriarDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ControleFinanceiro.API.Controllers.MovimentacaoController",
+    "Method": "BuscarDespesa",
+    "RelativePath": "api/movimentacoes/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ControleFinanceiro.API.Controllers.MovimentacaoController",
+    "Method": "AtualizarDespesa",
+    "RelativePath": "api/movimentacoes/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "ControleFinanceiro.Application.Dtos.MovimentacaoCriarDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ControleFinanceiro.API.Controllers.MovimentacaoController",
+    "Method": "DeletarDespesa",
+    "RelativePath": "api/movimentacoes/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ControleFinanceiro.API.Controllers.MovimentacaoController",
+    "Method": "ListarDespesas",
+    "RelativePath": "api/movimentacoes/despesas",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -916,78 +765,35 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "ControleFinanceiro.API.Controllers.ReceitaController",
-    "Method": "CriarReceita",
-    "RelativePath": "api/Receita",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "request",
-        "Type": "ControleFinanceiro.Application.Dtos.ReceitaCriarDto",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "ControleFinanceiro.API.Controllers.ReceitaController",
-    "Method": "BuscarReceita",
-    "RelativePath": "api/Receita/{id}",
+    "ContainingType": "ControleFinanceiro.API.Controllers.MovimentacaoController",
+    "Method": "ListarDespesaPorTitulo",
+    "RelativePath": "api/movimentacoes/por-cartao",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "id",
+        "Name": "cartaoId",
         "Type": "System.Int32",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "ControleFinanceiro.API.Controllers.ReceitaController",
-    "Method": "AtualizarReceita",
-    "RelativePath": "api/Receita/{id}",
-    "HttpMethod": "PUT",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
+        "IsRequired": false
       },
       {
-        "Name": "request",
-        "Type": "ControleFinanceiro.Application.Dtos.ReceitaCriarDto",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "ControleFinanceiro.API.Controllers.ReceitaController",
-    "Method": "DeletarReceita",
-    "RelativePath": "api/Receita/{id}",
-    "HttpMethod": "DELETE",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
+        "Name": "pagina",
         "Type": "System.Int32",
-        "IsRequired": true
+        "IsRequired": false
+      },
+      {
+        "Name": "quantidade",
+        "Type": "System.Int32",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": []
   },
   {
-    "ContainingType": "ControleFinanceiro.API.Controllers.ReceitaController",
-    "Method": "ListarPorCategoria",
-    "RelativePath": "api/Receita/por-categoria",
+    "ContainingType": "ControleFinanceiro.API.Controllers.MovimentacaoController",
+    "Method": "ListarDespesaPorCategoria",
+    "RelativePath": "api/movimentacoes/por-categoria",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -1011,9 +817,9 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "ControleFinanceiro.API.Controllers.ReceitaController",
-    "Method": "ListarPorConta",
-    "RelativePath": "api/Receita/por-conta",
+    "ContainingType": "ControleFinanceiro.API.Controllers.MovimentacaoController",
+    "Method": "ListarDespesaPorContaBancaria",
+    "RelativePath": "api/movimentacoes/por-conta",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -1037,16 +843,16 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "ControleFinanceiro.API.Controllers.ReceitaController",
-    "Method": "ListarPorData",
-    "RelativePath": "api/Receita/por-data",
+    "ContainingType": "ControleFinanceiro.API.Controllers.MovimentacaoController",
+    "Method": "ListarDespesaPorData",
+    "RelativePath": "api/movimentacoes/por-data",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
         "Name": "data",
-        "Type": "System.DateOnly",
+        "Type": "System.String",
         "IsRequired": false
       },
       {
@@ -1063,9 +869,9 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "ControleFinanceiro.API.Controllers.ReceitaController",
-    "Method": "ListarPorTitulo",
-    "RelativePath": "api/Receita/por-titulo",
+    "ContainingType": "ControleFinanceiro.API.Controllers.MovimentacaoController",
+    "Method": "ListarDespesaPorTitulo",
+    "RelativePath": "api/movimentacoes/por-titulo",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -1075,6 +881,27 @@
         "Type": "System.String",
         "IsRequired": false
       },
+      {
+        "Name": "pagina",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "quantidade",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ControleFinanceiro.API.Controllers.MovimentacaoController",
+    "Method": "ListarReceitas",
+    "RelativePath": "api/movimentacoes/receitas",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
       {
         "Name": "pagina",
         "Type": "System.Int32",

@@ -1,4 +1,3 @@
-using System;
 using System.Text;
 using ControleFinanceiro.Application.Dtos;
 using ControleFinanceiro.Application.Interfaces;
@@ -29,6 +28,7 @@ using ControleFinanceiro.Application.UseCases.Despesas.ListarDespesaPorCategoria
 using ControleFinanceiro.Application.UseCases.Despesas.ListarDespesaPorContaBancaria;
 using ControleFinanceiro.Application.UseCases.Despesas.ListarDespesaPorData;
 using ControleFinanceiro.Application.UseCases.Despesas.ListarDespesaPorTitulo;
+using ControleFinanceiro.Application.UseCases.Despesas.ListarMovimentacoesReceitas;
 using ControleFinanceiro.Application.UseCases.Financeiro.ListarSaldosContas;
 using ControleFinanceiro.Application.UseCases.Financeiro.ObterDespesasEmAberto;
 using ControleFinanceiro.Application.UseCases.Financeiro.ObterReceitasEmAberto;
@@ -38,15 +38,7 @@ using ControleFinanceiro.Application.UseCases.MesDeReferencia.BuscarMesReferenci
 using ControleFinanceiro.Application.UseCases.MesDeReferencia.CriarMesReferencia;
 using ControleFinanceiro.Application.UseCases.MesDeReferencia.DeletarMesReferencia;
 using ControleFinanceiro.Application.UseCases.MesDeReferencia.ListarMesReferencia;
-using ControleFinanceiro.Application.UseCases.Receitas.AtualizarReceita;
-using ControleFinanceiro.Application.UseCases.Receitas.BuscarReceita;
-using ControleFinanceiro.Application.UseCases.Receitas.CriarReceita;
-using ControleFinanceiro.Application.UseCases.Receitas.DeletarReceita;
-using ControleFinanceiro.Application.UseCases.Receitas.ListarReceitaPorCategoria;
-using ControleFinanceiro.Application.UseCases.Receitas.ListarReceitaPorContaBancaria;
-using ControleFinanceiro.Application.UseCases.Receitas.ListarReceitaPorData;
-using ControleFinanceiro.Application.UseCases.Receitas.ListarReceitaPorTitulo;
-using ControleFinanceiro.Application.UseCases.Receitas.ListarReceitas;
+using ControleFinanceiro.Application.UseCases.Movimentacoess.ListarMovimentacoesPorCategoria;
 using ControleFinanceiro.Application.UseCases.Usuarios.LoginUsuario;
 using ControleFinanceiro.Application.UseCases.Usuarios.RegistroUsuario;
 using ControleFinanceiro.Application.Validators;
@@ -58,7 +50,6 @@ using ControleFinanceiro.Infrastructure.Repositories;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -113,36 +104,22 @@ builder.Services.AddScoped<IBuscarMesReferenciaUseCase, BuscarMesReferenciaUseCa
 builder.Services.AddScoped<IListarMesReferenciaUseCase, ListarMesReferenciaUseCase>();
 builder.Services.AddScoped<IValidator<MesReferenciaCriarDto>, MesReferenciaCriarDtoValidator>();
 
-// Registra todos os use cases para gerenciamento de despesas
-builder.Services.AddScoped<IListarDespesasUseCase, ListarDespesasUseCase>();
-builder.Services.AddScoped<IValidator<DespesaCriarDto>, DespesaCriarDtoValidtor>();
-builder.Services.AddScoped<ICriarDespesaUseCase, CriarDespesaUseCase>();
-builder.Services.AddScoped<IDespesaRepository, DespesaRepository>();
-builder.Services.AddScoped<IAtualizarDespesaUseCase, AtualizarDespesaUseCase>();
-builder.Services.AddScoped<IBuscarDespesaUseCase, BuscarDespesaUseCase>();
-builder.Services.AddScoped<IDeletarDespesaUseCase, DeletarDespesaUseCase>();
+// Registra todos os use cases para gerenciamento de movimentacoes
+builder.Services.AddScoped<IListarMovimentacoesReceitasUseCase, ListarMovimentacoesReceitasUseCase>();
+builder.Services.AddScoped<IListarMovimentacoesDespesasUseCase, ListarMovimentacoesDespesasUseCase>();
+builder.Services.AddScoped<IValidator<MovimentacaoCriarDto>, MovimentacaoCriarDtoValidtor>();
+builder.Services.AddScoped<ICriarMovimentacaoUseCase, CriarMovimentacaoUseCase>();
+builder.Services.AddScoped<IAtualizarMovimentacaoUseCase, AtualizarMovimentacaoUseCase>();
+builder.Services.AddScoped<IBuscarMovimentacaoUseCase, BuscarMovimentacaoUseCase>();
+builder.Services.AddScoped<IDeletarMovimentacaoUseCase, DeletarMovimentacaoUseCase>();
 
-// Use cases para filtros específicos de despesas
-builder.Services.AddScoped<IListarDespesaPorDataUseCase, ListarDespesaPorDataUseCase>();
-builder.Services.AddScoped<IListarDespesaPorContaBancariaUseCase, ListarDespesaPorContaBancariaUseCase>();
-builder.Services.AddScoped<IListarDespesaPorCategoriaUseCase, ListarDespesaPorCategoriaUseCase>();
-builder.Services.AddScoped<IListarDespesaPorTituloUseCase, ListarDespesaPorTituloUseCase>();
-builder.Services.AddScoped<IListarDespesaPorCartaoUseCase, ListarDespesaPorCartaoUseCase>();
-
-// Registra todos os use cases para gerenciamento de receitas
-builder.Services.AddScoped<IListarReceitasUseCase, ListarReceitasUseCase>();
-builder.Services.AddScoped<IValidator<ReceitaCriarDto>, ReceitaCriarDtoValidator>();
-builder.Services.AddScoped<ICriarReceitaUseCase, CriarReceitaUseCase>();
-builder.Services.AddScoped<IReceitaRepository, ReceitaRepository>();
-builder.Services.AddScoped<IAtualizarReceitaUseCase, AtualizarReceitaUseCase>();
-builder.Services.AddScoped<IBuscarReceitaUseCase, BuscarReceitaUseCase>();
-builder.Services.AddScoped<IDeletarReceitaUseCase, DeletarReceitaUseCase>();
-
-// Use cases para filtros específicos de receitas
-builder.Services.AddScoped<IListarReceitaPorDataUseCase, ListarReceitaPorDataUseCase>();
-builder.Services.AddScoped<IListarReceitaPorContaBancariaUseCase, ListarReceitaPorContaBancariaUseCase>();
-builder.Services.AddScoped<IListarReceitaPorCategoriaUseCase, ListarReceitaPorCategoriaUseCase>();
-builder.Services.AddScoped<IListarReceitaPorTituloUseCase, ListarReceitaPorTituloUseCase>();
+// Use cases para filtros específicos de movimentacoes
+builder.Services.AddScoped<IMovimentacoesRepository, MovimentacoesRepository>();
+builder.Services.AddScoped<IListarMovimentacoesPorDataUseCase, ListarMovimentacoesPorDataUseCase>();
+builder.Services.AddScoped<IListarMovimentacoesPorContaBancariaUseCase, ListarMovimentacoesPorContaBancariaUseCase>();
+builder.Services.AddScoped<IListarMovimentacoesPorCategoriaUseCase, ListarMovimentacoesPorCategoriaUseCase>();
+builder.Services.AddScoped<IListarMovimentacoesPorTituloUseCase, ListarMovimentacoesPorTituloUseCase>();
+builder.Services.AddScoped<IListarMovimentacoesPorCartaoUseCase, ListarMovimentacoesPorCartaoUseCase>();
 
 // Registra use cases da tela de dashboard
 builder.Services.AddScoped<IObterValorEmAbertoDespesasUseCase, ObterValorEmAbertoDespesasUseCase>();
@@ -158,7 +135,6 @@ builder.Services.AddAutoMapper(typeof(ContaBancariaMapper));
 builder.Services.AddAutoMapper(typeof(CategoriaMapper));
 builder.Services.AddAutoMapper(typeof(CartaoMapper));
 builder.Services.AddAutoMapper(typeof(MesReferenciaMapper));
-builder.Services.AddAutoMapper(typeof(ReceitaMapper));
 
 
 // CORS 

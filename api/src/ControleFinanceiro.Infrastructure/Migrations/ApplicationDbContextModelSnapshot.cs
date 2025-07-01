@@ -188,6 +188,9 @@ namespace ControleFinanceiro.Infrastructure.Migrations
                     b.Property<DateTime>("DataVencimento")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("FormaDePagamento")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("MesReferenciaId")
                         .HasColumnType("int");
 

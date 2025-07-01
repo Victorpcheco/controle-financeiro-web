@@ -61,8 +61,6 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             .OnDelete(DeleteBehavior.Restrict);
     }
     public DbSet<Usuario> Usuarios { get; set;}
-    public DbSet<Despesa> Despesas { get; set; }
-    public DbSet<Receita> Receitas { get; set; }
     public DbSet<Categoria> Categorias { get; set;}
     public DbSet<ContaBancaria> ContasBancarias { get; set;}
     public DbSet<Cartao> Cartoes { get; set;}
