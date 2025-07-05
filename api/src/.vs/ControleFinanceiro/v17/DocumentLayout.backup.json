@@ -3,16 +3,28 @@
   "WorkspaceRootPath": "C:\\Projects\\controle-financeiro-web\\api\\src\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{DEEACBFC-618D-4EEE-AE8C-5DC8B7949F66}|ControleFinanceiro.API\\ControleFinanceiro.API.csproj|c:\\projects\\controle-financeiro-web\\api\\src\\controlefinanceiro.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{DEEACBFC-618D-4EEE-AE8C-5DC8B7949F66}|ControleFinanceiro.API\\ControleFinanceiro.API.csproj|solutionrelative:controlefinanceiro.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{3F79A41A-A156-4809-BF9E-D9AD10F4D0B9}|ControleFinanceiro.Application\\ControleFinanceiro.Application.csproj|c:\\projects\\controle-financeiro-web\\api\\src\\controlefinanceiro.application\\usecases\\movimentacoes\\atualizarmovimentacao\\atualizarmovimentacaousecase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3F79A41A-A156-4809-BF9E-D9AD10F4D0B9}|ControleFinanceiro.Application\\ControleFinanceiro.Application.csproj|solutionrelative:controlefinanceiro.application\\usecases\\movimentacoes\\atualizarmovimentacao\\atualizarmovimentacaousecase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{32F1F8E2-2585-47C8-BAA6-2254DF27CA53}|ControleFinanceiro.Infrastructure\\ControleFinanceiro.Infrastructure.csproj|c:\\projects\\controle-financeiro-web\\api\\src\\controlefinanceiro.infrastructure\\repositories\\usuariorepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{32F1F8E2-2585-47C8-BAA6-2254DF27CA53}|ControleFinanceiro.Infrastructure\\ControleFinanceiro.Infrastructure.csproj|solutionrelative:controlefinanceiro.infrastructure\\repositories\\usuariorepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{DEEACBFC-618D-4EEE-AE8C-5DC8B7949F66}|ControleFinanceiro.API\\ControleFinanceiro.API.csproj|c:\\projects\\controle-financeiro-web\\api\\src\\controlefinanceiro.api\\controllers\\movimentacaocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DEEACBFC-618D-4EEE-AE8C-5DC8B7949F66}|ControleFinanceiro.API\\ControleFinanceiro.API.csproj|solutionrelative:controlefinanceiro.api\\controllers\\movimentacaocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{32F1F8E2-2585-47C8-BAA6-2254DF27CA53}|ControleFinanceiro.Infrastructure\\ControleFinanceiro.Infrastructure.csproj|c:\\projects\\controle-financeiro-web\\api\\src\\controlefinanceiro.infrastructure\\data\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{32F1F8E2-2585-47C8-BAA6-2254DF27CA53}|ControleFinanceiro.Infrastructure\\ControleFinanceiro.Infrastructure.csproj|solutionrelative:controlefinanceiro.infrastructure\\data\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{5F16E059-E468-42C5-8249-A219E30E035B}|ControleFinanceiro.Domain\\ControleFinanceiro.Domain.csproj|c:\\projects\\controle-financeiro-web\\api\\src\\controlefinanceiro.domain\\entities\\movimentacoes.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5F16E059-E468-42C5-8249-A219E30E035B}|ControleFinanceiro.Domain\\ControleFinanceiro.Domain.csproj|solutionrelative:controlefinanceiro.domain\\entities\\movimentacoes.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{32F1F8E2-2585-47C8-BAA6-2254DF27CA53}|ControleFinanceiro.Infrastructure\\ControleFinanceiro.Infrastructure.csproj|c:\\projects\\controle-financeiro-web\\api\\src\\controlefinanceiro.infrastructure\\repositories\\mesreferenciarepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{32F1F8E2-2585-47C8-BAA6-2254DF27CA53}|ControleFinanceiro.Infrastructure\\ControleFinanceiro.Infrastructure.csproj|solutionrelative:controlefinanceiro.infrastructure\\repositories\\mesreferenciarepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{32F1F8E2-2585-47C8-BAA6-2254DF27CA53}|ControleFinanceiro.Infrastructure\\ControleFinanceiro.Infrastructure.csproj|c:\\projects\\controle-financeiro-web\\api\\src\\controlefinanceiro.infrastructure\\repositories\\movimentacoesrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{32F1F8E2-2585-47C8-BAA6-2254DF27CA53}|ControleFinanceiro.Infrastructure\\ControleFinanceiro.Infrastructure.csproj|solutionrelative:controlefinanceiro.infrastructure\\repositories\\movimentacoesrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DEEACBFC-618D-4EEE-AE8C-5DC8B7949F66}|ControleFinanceiro.API\\ControleFinanceiro.API.csproj|c:\\projects\\controle-financeiro-web\\api\\src\\controlefinanceiro.api\\controllers\\dashboardcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DEEACBFC-618D-4EEE-AE8C-5DC8B7949F66}|ControleFinanceiro.API\\ControleFinanceiro.API.csproj|solutionrelative:controlefinanceiro.api\\controllers\\dashboardcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -22,44 +34,84 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 3,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "UsuarioRepository.cs",
-              "DocumentMoniker": "C:\\Projects\\controle-financeiro-web\\api\\src\\ControleFinanceiro.Infrastructure\\Repositories\\UsuarioRepository.cs",
-              "RelativeDocumentMoniker": "ControleFinanceiro.Infrastructure\\Repositories\\UsuarioRepository.cs",
-              "ToolTip": "C:\\Projects\\controle-financeiro-web\\api\\src\\ControleFinanceiro.Infrastructure\\Repositories\\UsuarioRepository.cs",
-              "RelativeToolTip": "ControleFinanceiro.Infrastructure\\Repositories\\UsuarioRepository.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAACsAAAA0AAAAAAAAAA==",
+              "DocumentIndex": 4,
+              "Title": "MovimentacoesRepository.cs",
+              "DocumentMoniker": "C:\\Projects\\controle-financeiro-web\\api\\src\\ControleFinanceiro.Infrastructure\\Repositories\\MovimentacoesRepository.cs",
+              "RelativeDocumentMoniker": "ControleFinanceiro.Infrastructure\\Repositories\\MovimentacoesRepository.cs",
+              "ToolTip": "C:\\Projects\\controle-financeiro-web\\api\\src\\ControleFinanceiro.Infrastructure\\Repositories\\MovimentacoesRepository.cs",
+              "RelativeToolTip": "ControleFinanceiro.Infrastructure\\Repositories\\MovimentacoesRepository.cs",
+              "ViewState": "AgIAACMAAAAAAAAAAAAwwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-01T02:53:22.415Z",
+              "WhenOpened": "2025-07-05T00:46:01.126Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "MesReferenciaRepository.cs",
+              "DocumentMoniker": "C:\\Projects\\controle-financeiro-web\\api\\src\\ControleFinanceiro.Infrastructure\\Repositories\\MesReferenciaRepository.cs",
+              "RelativeDocumentMoniker": "ControleFinanceiro.Infrastructure\\Repositories\\MesReferenciaRepository.cs",
+              "ToolTip": "C:\\Projects\\controle-financeiro-web\\api\\src\\ControleFinanceiro.Infrastructure\\Repositories\\MesReferenciaRepository.cs",
+              "RelativeToolTip": "ControleFinanceiro.Infrastructure\\Repositories\\MesReferenciaRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-05T00:46:00.145Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "ApplicationDbContext.cs",
-              "DocumentMoniker": "C:\\Projects\\controle-financeiro-web\\api\\src\\ControleFinanceiro.Infrastructure\\Data\\ApplicationDbContext.cs",
-              "RelativeDocumentMoniker": "ControleFinanceiro.Infrastructure\\Data\\ApplicationDbContext.cs",
-              "ToolTip": "C:\\Projects\\controle-financeiro-web\\api\\src\\ControleFinanceiro.Infrastructure\\Data\\ApplicationDbContext.cs",
-              "RelativeToolTip": "ControleFinanceiro.Infrastructure\\Data\\ApplicationDbContext.cs",
-              "ViewState": "AgIAAC4AAAAAAAAAAAAgwD4AAAAvAAAAAAAAAA==",
+              "Title": "Movimentacoes.cs",
+              "DocumentMoniker": "C:\\Projects\\controle-financeiro-web\\api\\src\\ControleFinanceiro.Domain\\Entities\\Movimentacoes.cs",
+              "RelativeDocumentMoniker": "ControleFinanceiro.Domain\\Entities\\Movimentacoes.cs",
+              "ToolTip": "C:\\Projects\\controle-financeiro-web\\api\\src\\ControleFinanceiro.Domain\\Entities\\Movimentacoes.cs",
+              "RelativeToolTip": "ControleFinanceiro.Domain\\Entities\\Movimentacoes.cs",
+              "ViewState": "AgIAACYAAAAAAAAAAAAowEQAAABWAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-01T02:49:50.684Z"
+              "WhenOpened": "2025-07-05T00:44:24.935Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Projects\\controle-financeiro-web\\api\\src\\ControleFinanceiro.API\\Program.cs",
-              "RelativeDocumentMoniker": "ControleFinanceiro.API\\Program.cs",
-              "ToolTip": "C:\\Projects\\controle-financeiro-web\\api\\src\\ControleFinanceiro.API\\Program.cs",
-              "RelativeToolTip": "ControleFinanceiro.API\\Program.cs",
-              "ViewState": "AgIAAHIAAAAAAAAAAAAMwIgAAAA8AAAAAAAAAA==",
+              "Title": "AtualizarMovimentacaoUseCase.cs",
+              "DocumentMoniker": "C:\\Projects\\controle-financeiro-web\\api\\src\\ControleFinanceiro.Application\\UseCases\\Movimentacoes\\AtualizarMovimentacao\\AtualizarMovimentacaoUseCase.cs",
+              "RelativeDocumentMoniker": "ControleFinanceiro.Application\\UseCases\\Movimentacoes\\AtualizarMovimentacao\\AtualizarMovimentacaoUseCase.cs",
+              "ToolTip": "C:\\Projects\\controle-financeiro-web\\api\\src\\ControleFinanceiro.Application\\UseCases\\Movimentacoes\\AtualizarMovimentacao\\AtualizarMovimentacaoUseCase.cs",
+              "RelativeToolTip": "ControleFinanceiro.Application\\UseCases\\Movimentacoes\\AtualizarMovimentacao\\AtualizarMovimentacaoUseCase.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABgAAABxAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-30T23:24:00.066Z",
+              "WhenOpened": "2025-07-05T00:43:49.131Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "MovimentacaoController.cs",
+              "DocumentMoniker": "C:\\Projects\\controle-financeiro-web\\api\\src\\ControleFinanceiro.API\\Controllers\\MovimentacaoController.cs",
+              "RelativeDocumentMoniker": "ControleFinanceiro.API\\Controllers\\MovimentacaoController.cs",
+              "ToolTip": "C:\\Projects\\controle-financeiro-web\\api\\src\\ControleFinanceiro.API\\Controllers\\MovimentacaoController.cs",
+              "RelativeToolTip": "ControleFinanceiro.API\\Controllers\\MovimentacaoController.cs",
+              "ViewState": "AgIAAB0AAAAAAAAAAAAQwE0AAABBAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-05T00:22:45.26Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "DashboardController.cs",
+              "DocumentMoniker": "C:\\Projects\\controle-financeiro-web\\api\\src\\ControleFinanceiro.API\\Controllers\\DashboardController.cs",
+              "RelativeDocumentMoniker": "ControleFinanceiro.API\\Controllers\\DashboardController.cs",
+              "ToolTip": "C:\\Projects\\controle-financeiro-web\\api\\src\\ControleFinanceiro.API\\Controllers\\DashboardController.cs",
+              "RelativeToolTip": "ControleFinanceiro.API\\Controllers\\DashboardController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-05T00:22:41.187Z",
               "EditorCaption": ""
             }
           ]

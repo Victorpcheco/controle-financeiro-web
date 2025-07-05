@@ -21,8 +21,8 @@ public class AtualizarMovimentacaoUseCase(IMovimentacoesRepository repository, I
         if (movimentacoes == null)
             throw new KeyNotFoundException("Despesa não encontrada.");
 
-        movimentacoes.AtualizarMovimentacao(request.Titulo, request.DataVencimento, request.MesReferenciaId, request.CategoriaId,
-            request.CartaoId ?? 0, request.ContaBancariaId, request.Valor, request.Realizado, request.FormaDePagamento ?? string.Empty);
+        movimentacoes.AtualizarMovimentacao(request.Titulo, request.DataVencimento, request.Tipo,request.MesReferenciaId, request.CategoriaId,
+            request.CartaoId, request.ContaBancariaId, request.Valor, request.Realizado, request.FormaDePagamento);
 
         await repository.AtualizarMovimentacoesAsync(movimentacoes);
         return true;

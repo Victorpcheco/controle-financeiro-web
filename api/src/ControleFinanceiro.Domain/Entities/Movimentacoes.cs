@@ -20,7 +20,7 @@ namespace ControleFinanceiro.Domain.Entities
         public bool Realizado { get; private set; } = false;
         public int UsuarioId { get; private set; }
         public Usuario Usuario { get; private set; } = null!;
-        public string? FormaDePagamento { get; private set; } = null!;
+        public string? FormaDePagamento { get; private set; }
 
         public Movimentacoes()
         {
@@ -28,7 +28,7 @@ namespace ControleFinanceiro.Domain.Entities
         }
 
         public Movimentacoes(string titulo, DateOnly dataVencimento, Tipo tipo, int mesReferenciaId, int categoriaId, 
-            int? cartaoId, int contaBancariaId, decimal valor, bool realizado, int usuarioId, string formaDePagamento)
+            int? cartaoId, int contaBancariaId, decimal valor, bool realizado, int usuarioId, string? formaDePagamento)
         {
             ValidarTituloMovimentacao(titulo);
             ValidarDataVencimento(dataVencimento);
@@ -65,13 +65,14 @@ namespace ControleFinanceiro.Domain.Entities
                 throw new ArgumentException("Data muito antiga.");
         }
 
-        public void AtualizarMovimentacao(string titulo, DateOnly dataVencimento, int mesReferenciaId, int categoriaId, 
-            int cartaoId, int contaBancariaId, decimal valor, bool realizado, string formaDePagamento)
+        public void AtualizarMovimentacao(string titulo, DateOnly dataVencimento,Tipo tipo,int mesReferenciaId, int categoriaId, 
+            int? cartaoId, int contaBancariaId, decimal valor, bool realizado, string? formaDePagamento)
         {
             ValidarTituloMovimentacao(titulo);
             ValidarDataVencimento(dataVencimento);
 
             Titulo = titulo;
+            Tipo = tipo;
             DataVencimento = dataVencimento;
             Tipo = Tipo;
             MesReferenciaId = mesReferenciaId;

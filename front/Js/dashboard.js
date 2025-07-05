@@ -7,6 +7,140 @@ let showValues = true
 let showAccountDetails = false
 let currentEditingTransaction = null
 
+// ===== SISTEMA DE NOTIFICAÇÕES =====
+class NotificationSystem {
+  constructor() {
+    this.container = null
+    this.notifications = []
+    this.init()
+  }
+
+  init() {
+    // Criar container de notificações se não existir
+    this.container = document.querySelector(".notification-container")
+    if (!this.container) {
+      this.container = document.createElement("div")
+      this.container.className = "notification-container"
+      document.body.appendChild(this.container)
+    }
+  }
+
+  show(type, title, message, duration = 5000) {
+    const notification = this.createNotification(type, title, message, duration)
+    this.container.appendChild(notification)
+    this.notifications.push(notification)
+
+    // Trigger animation
+    setTimeout(() => {
+      notification.classList.add("show")
+    }, 100)
+
+    // Auto remove
+    if (duration > 0) {
+      this.startProgressBar(notification, duration)
+      setTimeout(() => {
+        this.remove(notification)
+      }, duration)
+    }
+
+    return notification
+  }
+
+  createNotification(type, title, message, duration) {
+    const notification = document.createElement("div")
+    notification.className = `notification ${type}`
+
+    const icons = {
+      success: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+        <polyline points="22,4 12,14.01 9,11.01"></polyline>
+      </svg>`,
+      error: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="15" y1="9" x2="9" y2="15"></line>
+        <line x1="9" y1="9" x2="15" y2="15"></line>
+      </svg>`,
+      warning: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+        <line x1="12" y1="9" x2="12" y2="13"></line>
+        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+      </svg>`,
+      info: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="16" x2="12" y2="12"></line>
+        <line x1="12" y1="8" x2="12.01" y2="8"></line>
+      </svg>`,
+    }
+
+    notification.innerHTML = `
+      <div class="notification-icon">
+        ${icons[type] || icons.info}
+      </div>
+      <div class="notification-content">
+        <h4 class="notification-title">${title}</h4>
+        <p class="notification-message">${message}</p>
+      </div>
+      <button class="notification-close">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+      ${duration > 0 ? '<div class="notification-progress"><div class="notification-progress-bar"></div></div>' : ""}
+    `
+
+    // Event listener para fechar
+    const closeBtn = notification.querySelector(".notification-close")
+    closeBtn.addEventListener("click", () => {
+      this.remove(notification)
+    })
+
+    return notification
+  }
+
+  startProgressBar(notification, duration) {
+    const progressBar = notification.querySelector(".notification-progress-bar")
+    if (progressBar) {
+      progressBar.style.transitionDuration = `${duration}ms`
+      setTimeout(() => {
+        progressBar.style.transform = "translateX(0)"
+      }, 100)
+    }
+  }
+
+  remove(notification) {
+    notification.classList.add("hide")
+    setTimeout(() => {
+      if (notification.parentNode) {
+        notification.parentNode.removeChild(notification)
+      }
+      const index = this.notifications.indexOf(notification)
+      if (index > -1) {
+        this.notifications.splice(index, 1)
+      }
+    }, 400)
+  }
+
+  success(title, message, duration = 5000) {
+    return this.show("success", title, message, duration)
+  }
+
+  error(title, message, duration = 7000) {
+    return this.show("error", title, message, duration)
+  }
+
+  warning(title, message, duration = 6000) {
+    return this.show("warning", title, message, duration)
+  }
+
+  info(title, message, duration = 5000) {
+    return this.show("info", title, message, duration)
+  }
+}
+
+// Instância global do sistema de notificações
+const notifications = new NotificationSystem()
+
 // ===== FUNÇÕES DE FORMATAÇÃO DE DATA =====
 function formatDateToBR(dateString) {
   if (!dateString) return ""
@@ -72,7 +206,6 @@ const API_CONFIG = {
     transactions: "/dashboard/movimentacoes-em-aberto",
     // NOVO ENDPOINT PARA FILTROS
     transactionsFilter: "/movimentacoes/filtrar",
-    editTransaction: "/movimentacoes/editar",
     categories: "/categoria",
     accounts: "/contabancaria",
     cards: "/cartao",
@@ -289,9 +422,7 @@ async function fetchTransactionsFromApi(pagina = 1, quantidadePorPagina = 10) {
   }
 }
 
-// ===== NOVA FUNÇÃO PARA BUSCAR MOVIMENTAÇÕES COM FILTROS =====
-
-// ===== FUNÇÃO PARA EDITAR MOVIMENTAÇÃO =====
+// ===== FUNÇÃO CORRIGIDA PARA EDITAR MOVIMENTAÇÃO =====
 async function updateTransaction(transactionData) {
   try {
     const token = buscaTokenJwt()
@@ -305,19 +436,54 @@ async function updateTransaction(transactionData) {
     }
 
     console.log("Enviando dados para API:", transactionData)
+    console.log("URL da requisição:", `${API_CONFIG.baseUrl}/movimentacoes/${transactionData.id}`)
 
-    const response = await fetch(`${API_CONFIG.baseUrl}${API_CONFIG.endpoints.editTransaction}`, {
+    // Preparar dados no formato correto para o backend
+    const requestData = {
+      titulo: transactionData.titulo,
+      valor: transactionData.valor,
+      tipo: transactionData.tipo,
+      dataVencimento: transactionData.dataVencimento,
+      categoriaId: transactionData.categoriaId,
+      contaBancariaId: transactionData.contaBancariaId,
+      cartaoId: transactionData.cartaoId,
+      formaDePagamento: transactionData.formaDePagamento,
+      mesReferenciaId: transactionData.mesReferenciaId,
+      realizado: transactionData.realizado,
+    }
+    
+    if (requestData.cartaoId == "") {
+      console.log("Cartão não selecionado, removendo campo cartaoId")
+    }
+
+    console.log("Dados formatados para envio:", requestData)
+
+    const response = await fetch(`${API_CONFIG.baseUrl}/movimentacoes/${transactionData.id}`, {
       method: "PUT",
       headers: headers,
-      body: JSON.stringify(transactionData),
+      body: JSON.stringify(requestData),
     })
+
+    console.log("Status da resposta:", response.status)
+    console.log("Headers da resposta:", response.headers)
 
     if (!response.ok) {
       const errorBody = await response.text()
+      console.error("Erro na resposta:", errorBody)
       throw new Error(`Erro na API: ${response.status} - ${response.statusText}. Detalhes: ${errorBody}`)
     }
 
-    const data = await response.json()
+    // Verificar se há conteúdo na resposta
+    const contentType = response.headers.get("content-type")
+    let data = null
+
+    if (contentType && contentType.includes("application/json")) {
+      data = await response.json()
+    } else {
+      // Se não há JSON, considerar sucesso se status é 200-299
+      data = { success: true, message: "Movimentação atualizada com sucesso" }
+    }
+
     console.log("Movimentação atualizada com sucesso:", data)
     return data
   } catch (error) {
@@ -693,7 +859,7 @@ class MovementsManager {
         if (value && value.length === 10) {
           const isoDate = formatDateToISO(value)
           if (!isoDate) {
-            alert("Data inválida. Use o formato DD/MM/AAAA")
+            notifications.error("Data Inválida", "Use o formato DD/MM/AAAA")
             e.target.value = ""
           }
         }
@@ -811,7 +977,7 @@ class MovementsManager {
           (transaction.categoriaNome || "").toLowerCase().includes(searchTerm) ||
           (transaction.contaBancariaNome || "").toLowerCase().includes(searchTerm) ||
           (transaction.cartaoNome || "").toLowerCase().includes(searchTerm) ||
-          (transaction.formaPagamento || "").toLowerCase().includes(searchTerm),
+          (transaction.formaDePagamento || "").toLowerCase().includes(searchTerm),
       )
     }
 
@@ -932,7 +1098,7 @@ class MovementsManager {
           <td>${transaction.categoriaNome || "N/A"}</td>
           <td>${transaction.contaBancariaNome || "N/A"}</td>
           <td>${transaction.cartaoNome || "N/A"}</td>
-          <td>${transaction.formaPagamento || "N/A"}</td>
+          <td>${transaction.formaDePagamento || "N/A"}</td>
           <td>
               <span class="transaction-amount transaction-amount-${transaction.tipo && transaction.tipo.toLowerCase() === "despesa" ? "expense" : "income"}">
                   ${transaction.tipo === "Despesa" ? "-" : "+"} ${formatCurrency(transaction.valor || 0)}
@@ -1241,7 +1407,7 @@ async function openEditModal(transactionId) {
     const transaction = window.movementsManager.allTransactions.find((t) => t.id === transactionId)
 
     if (!transaction) {
-      alert("Transação não encontrada!")
+      notifications.error("Erro", "Transação não encontrada!")
       return
     }
 
@@ -1257,7 +1423,7 @@ async function openEditModal(transactionId) {
     }
   } catch (error) {
     console.error("Erro ao abrir modal de edição:", error)
-    alert("Erro ao carregar dados da movimentação")
+    notifications.error("Erro", "Erro ao carregar dados da movimentação")
   }
 }
 
@@ -1283,20 +1449,20 @@ async function populateEditForm(transaction) {
     const valueField = document.getElementById("editValor")
     const typeField = document.getElementById("editTipo")
     const dateField = document.getElementById("editDataVencimento")
-    const paymentMethodField = document.getElementById("editFormaPagamento")
+    const paymentMethodField = document.getElementById("editformaDePagamento")
     const completedField = document.getElementById("editRealizado")
 
     if (titleField) titleField.value = transaction.titulo || ""
     if (valueField) valueField.value = transaction.valor || ""
     if (typeField) typeField.value = transaction.tipo || ""
     if (dateField) dateField.value = formatDateForInput(transaction.dataVencimento)
-    if (paymentMethodField) paymentMethodField.value = transaction.formaPagamento || ""
+    if (paymentMethodField) paymentMethodField.value = transaction.formaDePagamento || ""
     if (completedField) completedField.checked = transaction.realizado || false
 
     console.log("Formulário preenchido com sucesso")
   } catch (error) {
     console.error("Erro ao preencher formulário:", error)
-    alert("Erro ao carregar dados para edição")
+    notifications.error("Erro", "Erro ao carregar dados para edição")
   }
 }
 
@@ -1346,7 +1512,7 @@ function closeEditModal() {
 async function saveTransaction() {
   try {
     if (!currentEditingTransaction) {
-      alert("Nenhuma transação selecionada para edição")
+      notifications.error("Erro", "Nenhuma transação selecionada para edição")
       return
     }
 
@@ -1362,7 +1528,7 @@ async function saveTransaction() {
       categoriaId: Number.parseInt(formData.get("categoriaId")) || null,
       contaBancariaId: Number.parseInt(formData.get("contaBancariaId")) || null,
       cartaoId: formData.get("cartaoId") ? Number.parseInt(formData.get("cartaoId")) : null,
-      formaPagamento: formData.get("formaPagamento") || null,
+      formaDePagamento: formData.get("formaDePagamento") || null,
       mesReferenciaId: Number.parseInt(formData.get("mesReferenciaId")) || null,
       realizado: formData.get("realizado") === "on",
     }
@@ -1370,25 +1536,36 @@ async function saveTransaction() {
     console.log("Dados para envio:", transactionData)
 
     if (!transactionData.titulo || !transactionData.valor || !transactionData.tipo) {
-      alert("Por favor, preencha todos os campos obrigatórios (título, valor e tipo)")
+      notifications.error(
+        "Campos Obrigatórios",
+        "Por favor, preencha todos os campos obrigatórios (título, valor e tipo)",
+      )
       return
     }
 
     if (!transactionData.categoriaId || !transactionData.contaBancariaId || !transactionData.mesReferenciaId) {
-      alert("Por favor, selecione categoria, conta bancária e mês de referência")
+      notifications.error("Campos Obrigatórios", "Por favor, selecione categoria, conta bancária e mês de referência")
       return
     }
 
+    // Mostrar notificação de carregamento
+    const loadingNotification = notifications.info("Salvando...", "Atualizando movimentação, aguarde...", 0)
+
     await updateTransaction(transactionData)
+
+    // Remover notificação de carregamento
+    notifications.remove(loadingNotification)
 
     closeEditModal()
 
+    // Recarregar movimentações
     await window.movementsManager.loadTransactions()
 
-    alert("Movimentação atualizada com sucesso!")
+    // Mostrar notificação de sucesso
+    notifications.success("Sucesso!", "Movimentação atualizada com sucesso!")
   } catch (error) {
     console.error("Erro ao salvar transação:", error)
-    alert("Erro ao salvar movimentação: " + error.message)
+    notifications.error("Erro ao Salvar", `Erro ao salvar movimentação: ${error.message}`)
   }
 }
 
@@ -1578,7 +1755,7 @@ function refreshDashboard() {
 
 function exportTransactions() {
   console.log("Exportar transações...")
-  alert("Funcionalidade de exportação será implementada")
+  notifications.info("Em Desenvolvimento", "Funcionalidade de exportação será implementada em breve")
 }
 
 console.log("Dashboard JavaScript carregado com sucesso! 🚀")
