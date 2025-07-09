@@ -2,7 +2,7 @@ using ControleFinanceiro.Application.Dtos;
 
 namespace ControleFinanceiro.Application.UseCases.Despesas.ListarDespesa;
 
-public interface IListarMovimentacoesDespesasUseCase 
+public interface IListarMovimentacoesUseCase 
 {
     Task<MovimentacaoPaginadoResponseDto> ExecuteAsync(PaginadoRequestDto request);
 }

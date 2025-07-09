@@ -1,11 +1,6 @@
 // ===== VARIÁVEIS GLOBAIS =====
-let apiAccountsData = null
-let apiSaldoTotal = 0
-let apiPendingIncomes = 0
-let apiPendingExpenses = 0
-let showValues = true
-let showAccountDetails = false
 let currentEditingTransaction = null
+let currentDeletingTransaction = null
 
 // ===== SISTEMA DE NOTIFICAÇÕES =====
 class NotificationSystem {
@@ -198,14 +193,14 @@ function applyDateMask(value) {
 const API_CONFIG = {
   baseUrl: "https://localhost:7101/api",
   endpoints: {
-    saldoTotalRotaApi: "/dashboard/saldo-total",
-    accountsBalance: "/dashboard/saldo-contas",
-    ReceitasTotaisRotaApi: "/dashboard/valor-em-aberto-receitas",
-    pendingExpenses: "/dashboard/valor-em-aberto-despesas",
-    // Endpoint para movimentações com paginação e filtros
-    transactions: "/dashboard/movimentacoes-dashboard",
+    // Endpoint para buscar movimentações com paginação e filtros
+    allTransactions: "/dashboard/movimentacoes-dashboard",
+    // Endpoint para criar nova movimentação
+    createTransaction: "/movimentacoes",
     // Endpoint para atualizar movimentação
     updateTransaction: "/movimentacoes",
+    // Endpoint para deletar movimentação
+    deleteTransaction: "/movimentacoes",
     // Endpoints para dados dos selects
     categories: "/categoria",
     accounts: "/contabancaria",
@@ -237,139 +232,8 @@ function buscaTokenJwt() {
 }
 
 // ===== FUNÇÕES DE API =====
-async function buscaApiSaldoTotal() {
-  try {
-    const token = buscaTokenJwt()
 
-    if (!token) {
-      console.warn("Usuário não autenticado, token não encontrado")
-      return null
-    }
-
-    const headers = {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    }
-
-    const response = await fetch(`${API_CONFIG.baseUrl}${API_CONFIG.endpoints.saldoTotalRotaApi}`, {
-      method: "GET",
-      headers: headers,
-    })
-
-    if (!response.ok) {
-      console.error(`Erro na API (saldo total): ${response.status} - ${response.statusText}`)
-      throw new Error(`Erro na API: ${response.status} - ${response.statusText}`)
-    }
-
-    const data = await response.json()
-    apiSaldoTotal = typeof data === "number" ? data : data.saldo || data.balance || data.total || 0
-    return apiSaldoTotal
-  } catch (error) {
-    console.error("Erro ao buscar saldo total da API:", error.message)
-    return null
-  }
-}
-
-async function buscaAPiReceitasPendentes() {
-  try {
-    const token = buscaTokenJwt()
-
-    if (!token) {
-      console.warn("Usuário não autenticado, token não encontrado")
-      return null
-    }
-
-    const headers = {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    }
-
-    const response = await fetch(`${API_CONFIG.baseUrl}${API_CONFIG.endpoints.ReceitasTotaisRotaApi}`, {
-      method: "GET",
-      headers: headers,
-    })
-
-    if (!response.ok) {
-      const errorBody = await response.text()
-      throw new Error(`Erro na API: ${response.status} - ${response.statusText}. Detalhes: ${errorBody}`)
-    }
-
-    const data = await response.json()
-    apiPendingIncomes = typeof data === "number" ? data : data.receitas || data.pendingIncomes || data.total || 0
-    return apiPendingIncomes
-  } catch (error) {
-    console.error("Erro ao buscar receitas pendentes da API:", error.message)
-    return null
-  }
-}
-
-async function fetchPendingExpenses() {
-  try {
-    const token = buscaTokenJwt()
-
-    if (!token) {
-      console.warn("Usuário não autenticado, token não encontrado")
-      return null
-    }
-
-    const headers = {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    }
-
-    const response = await fetch(`${API_CONFIG.baseUrl}${API_CONFIG.endpoints.pendingExpenses}`, {
-      method: "GET",
-      headers: headers,
-    })
-
-    if (!response.ok) {
-      const errorBody = await response.text()
-      throw new Error(`Erro na API (despesas): ${response.status} - ${response.statusText}. Detalhes: ${errorBody}`)
-    }
-
-    const data = await response.json()
-    apiPendingExpenses = typeof data === "number" ? data : data.despesas || data.pendingExpenses || data.total || 0
-    return apiPendingExpenses
-  } catch (error) {
-    console.error("Erro ao buscar despesas pendentes da API:", error.message)
-    return null
-  }
-}
-
-async function fetchAccountsBalance() {
-  try {
-    const token = buscaTokenJwt()
-
-    if (!token) {
-      console.warn("Usuário não autenticado, token não encontrado")
-      return null
-    }
-
-    const headers = {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    }
-
-    const response = await fetch(`${API_CONFIG.baseUrl}${API_CONFIG.endpoints.accountsBalance}`, {
-      method: "GET",
-      headers: headers,
-    })
-
-    if (!response.ok) {
-      const errorBody = await response.text()
-      throw new Error(`Erro na API: ${response.status} - ${response.statusText}. Detalhes: ${errorBody}`)
-    }
-
-    const data = await response.json()
-    apiAccountsData = data
-    return data
-  } catch (error) {
-    console.error("Erro ao buscar saldos das contas da API:", error.message)
-    return null
-  }
-}
-
-// ===== FUNÇÃO PARA BUSCAR MOVIMENTAÇÕES COM PAGINAÇÃO E FILTROS DA API =====
+// Função para buscar movimentações com paginação e filtros da API
 async function fetchTransactionsFromApi(pagina = 1, quantidadePorPagina = 10, filtros = {}) {
   try {
     const token = buscaTokenJwt()
@@ -389,48 +253,41 @@ async function fetchTransactionsFromApi(pagina = 1, quantidadePorPagina = 10, fi
       quantidadePorPagina: quantidadePorPagina.toString(),
     })
 
-    // Log dos filtros recebidos para debug
-    console.log("Filtros recebidos na API:", filtros)
-
     // Adicionar filtros aos parâmetros se existirem
     if (filtros.search && filtros.search.trim() !== "") {
       params.append("pesquisa", filtros.search.trim())
-      console.log("Adicionando filtro de pesquisa:", filtros.search.trim())
     }
 
     if (filtros.specificDate && filtros.specificDate.trim() !== "") {
       params.append("dataEspecifica", filtros.specificDate.trim())
-      console.log("Adicionando filtro de data específica:", filtros.specificDate.trim())
     }
 
     if (filtros.month && filtros.month.trim() !== "") {
       params.append("mesReferenciaId", filtros.month.trim())
-      console.log("Adicionando filtro de mês:", filtros.month.trim())
+    }
+
+    if (filtros.type && filtros.type.trim() !== "") {
+      params.append("tipo", filtros.type.trim())
     }
 
     if (filtros.card && filtros.card.trim() !== "") {
       params.append("cartaoId", filtros.card.trim())
-      console.log("Adicionando filtro de cartão:", filtros.card.trim())
     }
 
     if (filtros.category && filtros.category.trim() !== "") {
       params.append("categoriaId", filtros.category.trim())
-      console.log("Adicionando filtro de categoria:", filtros.category.trim())
     }
 
     if (filtros.account && filtros.account.trim() !== "") {
       params.append("contaBancariaId", filtros.account.trim())
-      console.log("Adicionando filtro de conta:", filtros.account.trim())
     }
 
     if (filtros.status && filtros.status.trim() !== "") {
       params.append("status", filtros.status.trim())
-      console.log("Adicionando filtro de status:", filtros.status.trim())
     }
 
-    const url = `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.transactions}?${params.toString()}`
-    console.log("URL completa da requisição:", url)
-    console.log("Parâmetros enviados:", params.toString())
+    const url = `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.allTransactions}?${params.toString()}`
+    console.log("Buscando movimentações da URL:", url)
 
     const response = await fetch(url, {
       method: "GET",
@@ -463,7 +320,55 @@ async function fetchTransactionsFromApi(pagina = 1, quantidadePorPagina = 10, fi
   }
 }
 
-// ===== FUNÇÃO PARA ATUALIZAR MOVIMENTAÇÃO =====
+// Função para criar nova movimentação
+async function createTransaction(transactionData) {
+  try {
+    const token = buscaTokenJwt()
+    if (!token) {
+      throw new Error("Usuário não autenticado")
+    }
+
+    const headers = {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    }
+
+    console.log("Criando nova movimentação:", transactionData)
+
+    const response = await fetch(`${API_CONFIG.baseUrl}${API_CONFIG.endpoints.createTransaction}`, {
+      method: "POST",
+      headers: headers,
+      body: JSON.stringify(transactionData),
+    })
+
+    console.log("Status da resposta:", response.status)
+
+    if (!response.ok) {
+      const errorBody = await response.text()
+      console.error("Erro na resposta:", errorBody)
+      throw new Error(`Erro na API: ${response.status} - ${response.statusText}. Detalhes: ${errorBody}`)
+    }
+
+    // Verificar se há conteúdo na resposta
+    const contentType = response.headers.get("content-type")
+    let data = null
+
+    if (contentType && contentType.includes("application/json")) {
+      data = await response.json()
+    } else {
+      // Se não há JSON, considerar sucesso se status é 200-299
+      data = { success: true, message: "Movimentação criada com sucesso" }
+    }
+
+    console.log("Movimentação criada com sucesso:", data)
+    return data
+  } catch (error) {
+    console.error("Erro ao criar movimentação:", error.message)
+    throw error
+  }
+}
+
+// Função para atualizar movimentação
 async function updateTransaction(transactionData) {
   try {
     const token = buscaTokenJwt()
@@ -534,6 +439,42 @@ async function updateTransaction(transactionData) {
     return data
   } catch (error) {
     console.error("Erro ao atualizar movimentação:", error.message)
+    throw error
+  }
+}
+
+// Função para deletar movimentação
+async function deleteTransaction(transactionId) {
+  try {
+    const token = buscaTokenJwt()
+    if (!token) {
+      throw new Error("Usuário não autenticado")
+    }
+
+    const headers = {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    }
+
+    console.log("Deletando movimentação ID:", transactionId)
+
+    const response = await fetch(`${API_CONFIG.baseUrl}${API_CONFIG.endpoints.deleteTransaction}/${transactionId}`, {
+      method: "DELETE",
+      headers: headers,
+    })
+
+    console.log("Status da resposta:", response.status)
+
+    if (!response.ok) {
+      const errorBody = await response.text()
+      console.error("Erro na resposta:", errorBody)
+      throw new Error(`Erro na API: ${response.status} - ${response.statusText}. Detalhes: ${errorBody}`)
+    }
+
+    console.log("Movimentação deletada com sucesso")
+    return { success: true, message: "Movimentação deletada com sucesso" }
+  } catch (error) {
+    console.error("Erro ao deletar movimentação:", error.message)
     throw error
   }
 }
@@ -708,111 +649,6 @@ function formatDateForInput(dateString) {
   return dateOnly
 }
 
-function updateValueDisplay(element, value) {
-  if (element) {
-    if (showValues) {
-      element.textContent = formatCurrency(value)
-    } else {
-      element.textContent = "••••••"
-    }
-  }
-}
-
-// ===== FUNÇÃO PARA RENDERIZAR DETALHES DAS CONTAS =====
-async function renderAccountDetails() {
-  const accountDetailsEl = document.getElementById("accountDetails")
-
-  if (!showAccountDetails || !accountDetailsEl) return
-
-  console.log("Renderizando detalhes das contas...")
-
-  const accountsData = await fetchAccountsBalance()
-  let html = ""
-
-  if (accountsData && Array.isArray(accountsData)) {
-    console.log("Dados das contas:", accountsData)
-
-    accountsData.forEach((account) => {
-      html += `
-        <div class="account-item">
-          <div class="account-info">
-            <span class="account-name">${account.nomeConta || account.name || "Conta sem nome"}</span>
-            <span class="account-type">${account.tipoConta || account.type || ""}</span>
-          </div>
-          <div class="account-balance">
-            <span class="balance-value ${(account.saldoAtual || account.balance || 0) >= 0 ? "positive" : "negative"}">
-              ${showValues ? formatCurrency(account.saldoAtual || account.balance || 0) : "••••••"}
-            </span>
-          </div>
-        </div>
-      `
-    })
-  } else {
-    console.error("Falha ao carregar dados das contas da API")
-    html = `
-      <div class="account-item error">
-        <div class="account-info">
-          <span class="account-name">Erro ao carregar contas</span>
-          <span class="account-type">Verifique sua conexão</span>
-        </div>
-        <div class="account-balance">
-          <span class="balance-value">-</span>
-        </div>
-      </div>
-    `
-  }
-
-  const totalBalance = await buscaApiSaldoTotal()
-  html += `
-    <div class="account-total">
-      <div class="account-info">
-        <span class="account-name">Total Geral</span>
-      </div>
-      <div class="account-balance">
-        <span class="balance-value total ${totalBalance >= 0 ? "positive" : "negative"}">
-          ${showValues ? formatCurrency(totalBalance) : "••••••"}
-        </span>
-      </div>
-    </div>
-  `
-
-  accountDetailsEl.innerHTML = html
-}
-
-// ===== FUNÇÃO PARA ATUALIZAR DASHBOARD =====
-async function updateDashboard() {
-  console.log("Atualizando dashboard...")
-
-  const totalBalanceEl = document.getElementById("totalBalance")
-  const pendingIncomesEl = document.getElementById("pendingIncomes")
-  const pendingExpensesEl = document.getElementById("pendingExpenses")
-
-  try {
-    const totalBalance = await buscaApiSaldoTotal()
-    if (totalBalance !== null) {
-      updateValueDisplay(totalBalanceEl, totalBalance)
-    }
-
-    const pendingIncomes = await buscaAPiReceitasPendentes()
-    if (pendingIncomes !== null) {
-      updateValueDisplay(pendingIncomesEl, pendingIncomes)
-    }
-
-    const pendingExpenses = await fetchPendingExpenses()
-    if (pendingExpenses !== null) {
-      updateValueDisplay(pendingExpensesEl, pendingExpenses)
-    }
-
-    if (showAccountDetails) {
-      await renderAccountDetails()
-    }
-
-    console.log("Dashboard atualizado com sucesso")
-  } catch (error) {
-    console.error("Erro ao atualizar dashboard:", error)
-  }
-}
-
 // ===== CLASSE PARA GERENCIAR MOVIMENTAÇÕES COM PAGINAÇÃO DA API =====
 class MovementsManager {
   constructor() {
@@ -820,6 +656,7 @@ class MovementsManager {
       search: "",
       specificDate: "",
       month: "",
+      type: "",
       card: "",
       category: "",
       account: "",
@@ -848,6 +685,7 @@ class MovementsManager {
 
     this.specificDateInput = document.getElementById("specificDate")
     this.monthSelect = document.getElementById("monthFilter")
+    this.typeSelect = document.getElementById("typeFilter")
     this.cardSelect = document.getElementById("cardFilter")
     this.categorySelect = document.getElementById("categoryFilter")
     this.accountSelect = document.getElementById("accountFilter")
@@ -975,8 +813,6 @@ class MovementsManager {
   }
 
   handleSearchInput(value) {
-    console.log("Valor de pesquisa recebido:", value)
-
     if (this.searchClear) {
       if (value.length > 0) {
         this.searchClear.style.display = "block"
@@ -985,9 +821,8 @@ class MovementsManager {
       }
     }
 
-    // Atualizar o filtro de pesquisa imediatamente
-    this.filters.search = value?.trim() || ""
-    console.log("Filtro de pesquisa atualizado para:", this.filters.search)
+    // Atualizar o filtro mas não aplicar automaticamente
+    this.filters.search = value
   }
 
   clearSearch() {
@@ -1001,21 +836,15 @@ class MovementsManager {
   }
 
   updateFiltersFromForm() {
-    // Log antes de atualizar os filtros
-    console.log("Atualizando filtros do formulário...")
-    console.log("Valor atual do searchInput:", this.searchInput?.value)
-
     // Atualizar todos os filtros baseado nos valores dos campos
-    this.filters.search = this.searchInput?.value?.trim() || ""
+    this.filters.search = this.searchInput?.value || ""
     this.filters.specificDate = this.specificDateInput?.value ? formatDateToISO(this.specificDateInput.value) : ""
     this.filters.month = this.monthSelect?.value || ""
+    this.filters.type = this.typeSelect?.value || ""
     this.filters.card = this.cardSelect?.value || ""
     this.filters.category = this.categorySelect?.value || ""
     this.filters.account = this.accountSelect?.value || ""
     this.filters.status = this.statusSelect?.value || ""
-
-    // Log após atualizar os filtros
-    console.log("Filtros atualizados:", this.filters)
   }
 
   async applyFilters() {
@@ -1084,7 +913,7 @@ class MovementsManager {
         (transaction) => `
       <tr class="transaction-row-${transaction.tipo && transaction.tipo.toLowerCase() === "despesa" ? "expense" : "income"}">
           <td class="transaction-name">${transaction.titulo || "Sem título"}</td>
-          <td>${transaction.mesReferenciaNome || "N/A"}</td>
+          <td class="transaction-type">${transaction.mesReferenciaNome || "N/A"}</td>
           <td class="transaction-date">${formatDate(transaction.dataVencimento)}</td>
           <td>
               ${
@@ -1107,11 +936,20 @@ class MovementsManager {
               </span>
           </td>
           <td>
-              <button class="transaction-arrow" onclick="openEditModal(${transaction.id})" title="Editar movimentação">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <path d="M9 18l6-6-6-6"/>
-                  </svg>
-              </button>
+              <div class="table-actions">
+                  <button class="action-btn action-btn-edit" onclick="openEditModal(${transaction.id})" title="Editar movimentação">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                      </svg>
+                  </button>
+                  <button class="action-btn action-btn-delete" onclick="openDeleteModal(${transaction.id}, '${transaction.titulo}')" title="Excluir movimentação">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <path d="M3 6h18l-2 13H5L3 6z"></path>
+                          <path d="M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2"></path>
+                      </svg>
+                  </button>
+              </div>
           </td>
       </tr>
     `,
@@ -1138,6 +976,10 @@ class MovementsManager {
       const selectedOption = monthSelect?.querySelector(`option[value="${this.filters.month}"]`)
       const monthName = selectedOption?.textContent || this.filters.month
       activeFilters.push({ key: "month", label: `Mês: ${monthName}` })
+    }
+
+    if (this.filters.type) {
+      activeFilters.push({ key: "type", label: `Tipo: ${this.filters.type}` })
     }
 
     if (this.filters.card) {
@@ -1202,6 +1044,7 @@ class MovementsManager {
       search: this.searchInput,
       specificDate: this.specificDateInput,
       month: this.monthSelect,
+      type: this.typeSelect,
       card: this.cardSelect,
       category: this.categorySelect,
       account: this.accountSelect,
@@ -1229,6 +1072,7 @@ class MovementsManager {
       this.searchInput,
       this.specificDateInput,
       this.monthSelect,
+      this.typeSelect,
       this.cardSelect,
       this.categorySelect,
       this.accountSelect,
@@ -1367,7 +1211,116 @@ class MovementsManager {
   }
 }
 
-// ===== FUNÇÕES DA MODAL DE EDIÇÃO =====
+// ===== FUNÇÕES DAS MODAIS =====
+
+// Modal de Nova Movimentação
+async function openNewMovementModal() {
+  try {
+    console.log("Abrindo modal de nova movimentação")
+
+    await populateNewMovementForm()
+
+    const modal = document.getElementById("newMovementModalOverlay")
+    if (modal) {
+      modal.classList.add("active")
+      document.body.style.overflow = "hidden"
+    }
+  } catch (error) {
+    console.error("Erro ao abrir modal de nova movimentação:", error)
+    notifications.error("Erro", "Erro ao carregar formulário de nova movimentação")
+  }
+}
+
+async function populateNewMovementForm() {
+  try {
+    const [categories, accounts, cards, months] = await Promise.all([
+      fetchCategories(),
+      fetchAccounts(),
+      fetchCards(),
+      fetchMonths(),
+    ])
+
+    populateSelect("newCategoria", categories, "id", "nomeCategoria")
+    populateSelect("newContaBancaria", accounts, "id", "nomeConta")
+    populateSelect("newCartao", cards, "id", "nomeCartao")
+    populateSelect("newMesReferencia", months, "id", "nomeMes")
+
+    console.log("Formulário de nova movimentação preenchido com sucesso")
+  } catch (error) {
+    console.error("Erro ao preencher formulário de nova movimentação:", error)
+    notifications.error("Erro", "Erro ao carregar dados para nova movimentação")
+  }
+}
+
+function closeNewMovementModal() {
+  const modal = document.getElementById("newMovementModalOverlay")
+  if (modal) {
+    modal.classList.remove("active")
+    document.body.style.overflow = ""
+  }
+
+  // Limpar formulário
+  const form = document.getElementById("newMovementForm")
+  if (form) {
+    form.reset()
+  }
+}
+
+async function saveNewMovement() {
+  try {
+    const form = document.getElementById("newMovementForm")
+    const formData = new FormData(form)
+
+    const transactionData = {
+      titulo: formData.get("titulo"),
+      valor: Number.parseFloat(formData.get("valor")),
+      tipo: formData.get("tipo"),
+      dataVencimento: formData.get("dataVencimento"),
+      categoriaId: Number.parseInt(formData.get("categoriaId")) || null,
+      contaBancariaId: Number.parseInt(formData.get("contaBancariaId")) || null,
+      cartaoId: formData.get("cartaoId") ? Number.parseInt(formData.get("cartaoId")) : null,
+      formaDePagamento: formData.get("formaDePagamento") || null,
+      mesReferenciaId: Number.parseInt(formData.get("mesReferenciaId")) || null,
+      realizado: formData.get("realizado") === "on",
+    }
+
+    console.log("Dados para criação:", transactionData)
+
+    if (!transactionData.titulo || !transactionData.valor || !transactionData.tipo) {
+      notifications.error(
+        "Campos Obrigatórios",
+        "Por favor, preencha todos os campos obrigatórios (título, valor e tipo)",
+      )
+      return
+    }
+
+    if (!transactionData.categoriaId || !transactionData.contaBancariaId || !transactionData.mesReferenciaId) {
+      notifications.error("Campos Obrigatórios", "Por favor, selecione categoria, conta bancária e mês de referência")
+      return
+    }
+
+    // Mostrar notificação de carregamento
+    const loadingNotification = notifications.info("Criando...", "Criando nova movimentação, aguarde...", 0)
+
+    await createTransaction(transactionData)
+
+    // Remover notificação de carregamento
+    notifications.remove(loadingNotification)
+
+    closeNewMovementModal()
+
+    // Recarregar movimentações
+    await window.movementsManager.loadTransactions()
+
+    // Mostrar notificação de sucesso
+    notifications.success("Sucesso!", "Movimentação criada com sucesso!")
+  } catch (error) {
+    console.error("Erro ao criar movimentação:", error)
+    notifications.error("Erro ao Criar", `Erro ao criar movimentação: ${error.message}`)
+  }
+}
+
+// Modal de Edição
 async function openEditModal(transactionId) {
   try {
     console.log("Abrindo modal de edição para transação:", transactionId)
@@ -1417,7 +1370,7 @@ async function populateEditForm(transaction) {
     const valueField = document.getElementById("editValor")
     const typeField = document.getElementById("editTipo")
     const dateField = document.getElementById("editDataVencimento")
-    const paymentMethodField = document.getElementById("editformaDePagamento")
+    const paymentMethodField = document.getElementById("editFormaDePagamento")
     const completedField = document.getElementById("editRealizado")
 
     if (titleField) titleField.value = transaction.titulo || ""
@@ -1431,40 +1384,6 @@ async function populateEditForm(transaction) {
   } catch (error) {
     console.error("Erro ao preencher formulário:", error)
     notifications.error("Erro", "Erro ao carregar dados para edição")
-  }
-}
-
-function populateSelect(selectId, options, valueField, textField, selectedValue) {
-  const select = document.getElementById(selectId)
-  if (!select) {
-    console.warn(`Select ${selectId} não encontrado`)
-    return
-  }
-
-  console.log(`Populando select ${selectId} com ${options.length} opções`)
-
-  const firstOption = select.querySelector("option")
-  select.innerHTML = ""
-  if (firstOption) {
-    select.appendChild(firstOption)
-  }
-
-  let optionSelected = false
-  options.forEach((option) => {
-    const optionElement = document.createElement("option")
-    optionElement.value = option[valueField]
-    optionElement.textContent = option[textField]
-
-    if (option[valueField] === selectedValue) {
-      optionElement.selected = true
-      optionSelected = true
-    }
-
-    select.appendChild(optionElement)
-  })
-
-  if (selectedValue && !optionSelected) {
-    console.warn(`Valor ${selectedValue} não encontrado nas opções do select ${selectId}`)
   }
 }
 
@@ -1526,9 +1445,8 @@ async function saveTransaction() {
 
     closeEditModal()
 
-    // Recarregar movimentações e dashboard
+    // Recarregar movimentações
     await window.movementsManager.loadTransactions()
-    await updateDashboard()
 
     // Mostrar notificação de sucesso
     notifications.success("Sucesso!", "Movimentação atualizada com sucesso!")
@@ -1538,14 +1456,118 @@ async function saveTransaction() {
   }
 }
 
+// Modal de Exclusão
+function openDeleteModal(transactionId, transactionTitle) {
+  try {
+    console.log("Abrindo modal de exclusão para transação:", transactionId)
+
+    const transaction = window.movementsManager.currentTransactions.find((t) => t.id === transactionId)
+
+    if (!transaction) {
+      notifications.error("Erro", "Transação não encontrada!")
+      return
+    }
+
+    currentDeletingTransaction = transaction
+
+    const titleElement = document.getElementById("deleteMovementTitle")
+    if (titleElement) {
+      titleElement.textContent = transactionTitle || transaction.titulo || "Movimentação sem título"
+    }
+
+    const modal = document.getElementById("deleteModalOverlay")
+    if (modal) {
+      modal.classList.add("active")
+      document.body.style.overflow = "hidden"
+    }
+  } catch (error) {
+    console.error("Erro ao abrir modal de exclusão:", error)
+    notifications.error("Erro", "Erro ao abrir modal de exclusão")
+  }
+}
+
+function closeDeleteModal() {
+  const modal = document.getElementById("deleteModalOverlay")
+  if (modal) {
+    modal.classList.remove("active")
+    document.body.style.overflow = ""
+  }
+  currentDeletingTransaction = null
+}
+
+async function confirmDeleteTransaction() {
+  try {
+    if (!currentDeletingTransaction) {
+      notifications.error("Erro", "Nenhuma transação selecionada para exclusão")
+      return
+    }
+
+    console.log("Confirmando exclusão da transação:", currentDeletingTransaction.id)
+
+    // Mostrar notificação de carregamento
+    const loadingNotification = notifications.info("Excluindo...", "Excluindo movimentação, aguarde...", 0)
+
+    await deleteTransaction(currentDeletingTransaction.id)
+
+    // Remover notificação de carregamento
+    notifications.remove(loadingNotification)
+
+    closeDeleteModal()
+
+    // Recarregar movimentações
+    await window.movementsManager.loadTransactions()
+
+    // Mostrar notificação de sucesso
+    notifications.success("Sucesso!", "Movimentação excluída com sucesso!")
+  } catch (error) {
+    console.error("Erro ao excluir transação:", error)
+    notifications.error("Erro ao Excluir", `Erro ao excluir movimentação: ${error.message}`)
+  }
+}
+
+// Função auxiliar para popular selects
+function populateSelect(selectId, options, valueField, textField, selectedValue) {
+  const select = document.getElementById(selectId)
+  if (!select) {
+    console.warn(`Select ${selectId} não encontrado`)
+    return
+  }
+
+  console.log(`Populando select ${selectId} com ${options.length} opções`)
+
+  const firstOption = select.querySelector("option")
+  select.innerHTML = ""
+  if (firstOption) {
+    select.appendChild(firstOption)
+  }
+
+  let optionSelected = false
+  options.forEach((option) => {
+    const optionElement = document.createElement("option")
+    optionElement.value = option[valueField]
+    optionElement.textContent = option[textField]
+
+    if (option[valueField] === selectedValue) {
+      optionElement.selected = true
+      optionSelected = true
+    }
+
+    select.appendChild(optionElement)
+  })
+
+  if (selectedValue && !optionSelected) {
+    console.warn(`Valor ${selectedValue} não encontrado nas opções do select ${selectId}`)
+  }
+}
+
 // ===== INICIALIZAÇÃO PRINCIPAL =====
 document.addEventListener("DOMContentLoaded", async () => {
-  console.log("Inicializando aplicação...")
+  console.log("Inicializando aplicação de movimentações...")
 
   const token = buscaTokenJwt()
   if (!token) {
     console.warn("Usuário não autenticado, redirecionando para login")
-    window.location.replace("login.html")
+    window.location.replace("../login.html")
     return
   }
 
@@ -1604,78 +1626,70 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
       closeVerticalMenu()
+      closeNewMovementModal()
       closeEditModal()
+      closeDeleteModal()
     }
   })
 
   // ===== CONFIGURAR LOGOUT =====
-  const logoutBtn = document.querySelector(".logout-btn")
+  const logoutBtn = document.getElementById("logoutBtn")
   if (logoutBtn) {
     logoutBtn.addEventListener("click", () => {
       localStorage.removeItem("authToken")
       sessionStorage.clear()
-      window.location.replace("login.html")
+      window.location.replace("../login.html")
     })
   }
 
-  // ===== CONFIGURAR TOGGLES DE VISIBILIDADE =====
-  const toggleValuesButton = document.getElementById("toggleValues")
-  if (toggleValuesButton) {
-    toggleValuesButton.addEventListener("click", () => {
-      showValues = !showValues
-      const eyeIcon = document.getElementById("eyeIcon")
-      const eyeSlashIcon = document.getElementById("eyeSlashIcon")
-      if (eyeIcon) eyeIcon.classList.toggle("hidden")
-      if (eyeSlashIcon) eyeSlashIcon.classList.toggle("hidden")
-      updateDashboard()
+  // ===== CONFIGURAR BOTÃO NOVA MOVIMENTAÇÃO =====
+  const newMovementBtn = document.getElementById("newMovementBtn")
+  if (newMovementBtn) {
+    newMovementBtn.addEventListener("click", openNewMovementModal)
+  }
+
+  // ===== CONFIGURAR MODAIS =====
+
+  // Modal de Nova Movimentação
+  const closeNewMovementBtn = document.getElementById("closeNewMovementModal")
+  const cancelNewMovementBtn = document.getElementById("cancelNewMovementModal")
+  const newMovementForm = document.getElementById("newMovementForm")
+
+  if (closeNewMovementBtn) {
+    closeNewMovementBtn.addEventListener("click", closeNewMovementModal)
+  }
+
+  if (cancelNewMovementBtn) {
+    cancelNewMovementBtn.addEventListener("click", closeNewMovementModal)
+  }
+
+  if (newMovementForm) {
+    newMovementForm.addEventListener("submit", (e) => {
+      e.preventDefault()
+      saveNewMovement()
     })
   }
 
-  const toggleEyeButtons = document.querySelectorAll(".toggle-eye")
-  toggleEyeButtons.forEach((button) => {
-    button.addEventListener("click", function () {
-      const icons = this.querySelectorAll(".eye-icon")
-      icons.forEach((icon) => icon.classList.toggle("hidden"))
-      showValues = !showValues
-      updateDashboard()
-    })
-  })
-
-  // ===== CONFIGURAR BOTÃO "MOSTRAR POR CONTA" =====
-  const toggleAccountDetailsBtn = document.getElementById("toggleAccountDetails")
-  const accountSummaryEl = document.getElementById("accountSummary")
-  const accountDetailsEl = document.getElementById("accountDetails")
-
-  if (toggleAccountDetailsBtn) {
-    toggleAccountDetailsBtn.addEventListener("click", async function () {
-      showAccountDetails = !showAccountDetails
-
-      console.log("Toggle account details:", showAccountDetails)
-
-      if (showAccountDetails) {
-        if (accountSummaryEl) accountSummaryEl.classList.add("hidden")
-        if (accountDetailsEl) accountDetailsEl.classList.remove("hidden")
-        this.textContent = "Ocultar detalhes"
-        await renderAccountDetails()
-      } else {
-        if (accountSummaryEl) accountSummaryEl.classList.remove("hidden")
-        if (accountDetailsEl) accountDetailsEl.classList.add("hidden")
-        this.textContent = "Mostrar por conta"
+  const newMovementModalOverlay = document.getElementById("newMovementModalOverlay")
+  if (newMovementModalOverlay) {
+    newMovementModalOverlay.addEventListener("click", (e) => {
+      if (e.target === newMovementModalOverlay) {
+        closeNewMovementModal()
       }
     })
   }
 
-  // ===== CONFIGURAR MODAL DE EDIÇÃO =====
-  const closeModalBtn = document.getElementById("closeEditModal")
-  const cancelModalBtn = document.getElementById("cancelEditModal")
+  // Modal de Edição
+  const closeEditModalBtn = document.getElementById("closeEditModal")
+  const cancelEditModalBtn = document.getElementById("cancelEditModal")
   const editForm = document.getElementById("editTransactionForm")
 
-  if (closeModalBtn) {
-    closeModalBtn.addEventListener("click", closeEditModal)
+  if (closeEditModalBtn) {
+    closeEditModalBtn.addEventListener("click", closeEditModal)
   }
 
-  if (cancelModalBtn) {
-    cancelModalBtn.addEventListener("click", closeEditModal)
+  if (cancelEditModalBtn) {
+    cancelEditModalBtn.addEventListener("click", closeEditModal)
   }
 
   if (editForm) {
@@ -1685,11 +1699,37 @@ document.addEventListener("DOMContentLoaded", async () => {
     })
   }
 
-  const modalOverlay = document.getElementById("editModalOverlay")
-  if (modalOverlay) {
-    modalOverlay.addEventListener("click", (e) => {
-      if (e.target === modalOverlay) {
+  const editModalOverlay = document.getElementById("editModalOverlay")
+  if (editModalOverlay) {
+    editModalOverlay.addEventListener("click", (e) => {
+      if (e.target === editModalOverlay) {
         closeEditModal()
+      }
+    })
+  }
+
+  // Modal de Exclusão
+  const closeDeleteModalBtn = document.getElementById("closeDeleteModal")
+  const cancelDeleteModalBtn = document.getElementById("cancelDeleteModal")
+  const confirmDeleteModalBtn = document.getElementById("confirmDeleteModal")
+
+  if (closeDeleteModalBtn) {
+    closeDeleteModalBtn.addEventListener("click", closeDeleteModal)
+  }
+
+  if (cancelDeleteModalBtn) {
+    cancelDeleteModalBtn.addEventListener("click", closeDeleteModal)
+  }
+
+  if (confirmDeleteModalBtn) {
+    confirmDeleteModalBtn.addEventListener("click", confirmDeleteTransaction)
+  }
+
+  const deleteModalOverlay = document.getElementById("deleteModalOverlay")
+  if (deleteModalOverlay) {
+    deleteModalOverlay.addEventListener("click", (e) => {
+      if (e.target === deleteModalOverlay) {
+        closeDeleteModal()
       }
     })
   }
@@ -1701,9 +1741,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   // ===== CARREGAR DADOS INICIAIS =====
   try {
     console.log("Carregando dados iniciais...")
-    await updateDashboard()
-    await movementsManager.loadTransactions() // Carrega com paginação da API
-    console.log("Aplicação inicializada com sucesso!")
+    await movementsManager.loadTransactions() // Carrega movimentações com paginação da API
+    console.log("Aplicação de movimentações inicializada com sucesso!")
   } catch (error) {
     console.error("Erro ao inicializar aplicação:", error)
   }
@@ -1714,17 +1753,15 @@ function editTransaction(id) {
   openEditModal(id)
 }
 
-function refreshDashboard() {
-  console.log("Atualizando dashboard...")
-  updateDashboard()
+function deleteMovement(id, title) {
+  openDeleteModal(id, title)
+}
+
+function refreshMovements() {
+  console.log("Atualizando movimentações...")
   if (window.movementsManager) {
     window.movementsManager.loadTransactions()
   }
 }
 
-function exportTransactions() {
-  console.log("Exportar transações...")
-  notifications.info("Em Desenvolvimento", "Funcionalidade de exportação será implementada em breve")
-}
-
-console.log("Dashboard JavaScript com paginação da API carregado com sucesso! 🚀")
+console.log("Movimentações JavaScript com paginação da API carregado com sucesso! 🚀")

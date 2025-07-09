@@ -106,7 +106,7 @@ builder.Services.AddScoped<IValidator<MesReferenciaCriarDto>, MesReferenciaCriar
 
 // Registra todos os use cases para gerenciamento de movimentacoes
 builder.Services.AddScoped<IListarMovimentacoesReceitasUseCase, ListarMovimentacoesReceitasUseCase>();
-builder.Services.AddScoped<IListarMovimentacoesDespesasUseCase, ListarMovimentacoesDespesasUseCase>();
+builder.Services.AddScoped<IListarMovimentacoesUseCase, ListarMovimentacoesUseCase>();
 builder.Services.AddScoped<IValidator<MovimentacaoCriarDto>, MovimentacaoCriarDtoValidtor>();
 builder.Services.AddScoped<ICriarMovimentacaoUseCase, CriarMovimentacaoUseCase>();
 builder.Services.AddScoped<IAtualizarMovimentacaoUseCase, AtualizarMovimentacaoUseCase>();

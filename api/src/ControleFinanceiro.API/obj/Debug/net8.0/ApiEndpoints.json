@@ -432,7 +432,7 @@
   {
     "ContainingType": "ControleFinanceiro.API.Controllers.FinanceiroController",
     "Method": "MovimentacoesEmAberto",
-    "RelativePath": "api/dashboard/movimentacoes-em-aberto",
+    "RelativePath": "api/dashboard/movimentacoes-dashboard",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -676,6 +676,27 @@
   },
   {
     "ContainingType": "ControleFinanceiro.API.Controllers.MovimentacaoController",
+    "Method": "ListarMovimentacoes",
+    "RelativePath": "api/movimentacoes",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "pagina",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "quantidade",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ControleFinanceiro.API.Controllers.MovimentacaoController",
     "Method": "CriarDespesa",
     "RelativePath": "api/movimentacoes",
     "HttpMethod": "POST",
@@ -739,27 +760,6 @@
         "Name": "id",
         "Type": "System.Int32",
         "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "ControleFinanceiro.API.Controllers.MovimentacaoController",
-    "Method": "ListarDespesas",
-    "RelativePath": "api/movimentacoes/despesas",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "pagina",
-        "Type": "System.Int32",
-        "IsRequired": false
-      },
-      {
-        "Name": "quantidade",
-        "Type": "System.Int32",
-        "IsRequired": false
       }
     ],
     "ReturnTypes": []

@@ -5,7 +5,7 @@ using ControleFinanceiro.Domain.Interfaces;
 
 namespace ControleFinanceiro.Application.UseCases.Despesas.ListarDespesa;
 
-public class ListarMovimentacoesDespesasUseCase(IMovimentacoesRepository repository, IUserContext context, IMapper mapper) : IListarMovimentacoesDespesasUseCase
+public class ListarMovimentacoesUseCase(IMovimentacoesRepository repository, IUserContext context, IMapper mapper) : IListarMovimentacoesUseCase
 {
     public async Task<MovimentacaoPaginadoResponseDto> ExecuteAsync(PaginadoRequestDto request)
     {
@@ -14,7 +14,7 @@ public class ListarMovimentacoesDespesasUseCase(IMovimentacoesRepository reposit
         
         var usuarioId = context.UsuarioId;
         
-        var movimentacoes = await repository.ListarMovimentacoesDespesasPaginadoAsync(usuarioId, request.Pagina, request.Quantidade);
+        var movimentacoes = await repository.ListarMovimentacoesPaginadoAsync(usuarioId, request.Pagina, request.Quantidade);
         var total = await repository.ContarMovimentacoesDespesasAsync(usuarioId);
         var movimentacoesResponse = mapper.Map<List<MovimentacaoResponseDto>>(movimentacoes);
         

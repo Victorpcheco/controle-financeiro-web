@@ -52,7 +52,7 @@ namespace ControleFinanceiro.API.Controllers
             return Ok(response);
         }
 
-        [HttpGet("movimentacoes-em-aberto")]
+        [HttpGet("movimentacoes-dashboard")]
         public async Task<ActionResult> MovimentacoesEmAberto(
         [FromQuery] int usuarioId,
         [FromQuery] int pagina = 1,

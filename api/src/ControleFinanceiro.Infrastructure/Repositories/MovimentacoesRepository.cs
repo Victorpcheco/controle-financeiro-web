@@ -9,10 +9,10 @@ namespace ControleFinanceiro.Infrastructure.Repositories
     public class MovimentacoesRepository(ApplicationDbContext context) : IMovimentacoesRepository
     {
 
-        public async Task<IReadOnlyList<Movimentacoes>> ListarMovimentacoesDespesasPaginadoAsync(int usuarioId, int pagina, int quantidade)
+        public async Task<IReadOnlyList<Movimentacoes>> ListarMovimentacoesPaginadoAsync(int usuarioId, int pagina, int quantidade)
         {
             return await context.Movimentacoes
-                .Where(d => d.UsuarioId == usuarioId && d.Tipo == Tipo.Despesa)
+                .Where(d => d.UsuarioId == usuarioId)
                 .OrderByDescending(d => d.DataVencimento)
                 .Skip((pagina - 1) * quantidade)
                 .Take(quantidade)

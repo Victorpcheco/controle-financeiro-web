@@ -828,7 +828,7 @@
         }
       }
     },
-    "/api/dashboard/movimentacoes-em-aberto": {
+    "/api/dashboard/movimentacoes-dashboard": {
       "get": {
         "tags": [
           "Financeiro"
@@ -1106,7 +1106,7 @@
         }
       }
     },
-    "/api/movimentacoes/despesas": {
+    "/api/movimentacoes": {
       "get": {
         "tags": [
           "Movimentacao"
@@ -1131,6 +1131,35 @@
             }
           }
         ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Movimentacao"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MovimentacaoCriarDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MovimentacaoCriarDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/MovimentacaoCriarDto"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "OK"
@@ -1247,37 +1276,6 @@
             }
           }
         ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/movimentacoes": {
-      "post": {
-        "tags": [
-          "Movimentacao"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/MovimentacaoCriarDto"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/MovimentacaoCriarDto"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/MovimentacaoCriarDto"
-              }
-            }
-          }
-        },
         "responses": {
           "200": {
             "description": "OK"

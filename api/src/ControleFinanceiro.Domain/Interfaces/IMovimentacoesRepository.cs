@@ -4,7 +4,7 @@ namespace ControleFinanceiro.Domain.Interfaces
 {
     public interface IMovimentacoesRepository
     {
-        Task<IReadOnlyList<Movimentacoes>> ListarMovimentacoesDespesasPaginadoAsync(int usuarioId, int pagina, int quantidade);
+        Task<IReadOnlyList<Movimentacoes>> ListarMovimentacoesPaginadoAsync(int usuarioId, int pagina, int quantidade);
         Task<IReadOnlyList<Movimentacoes>> ListarMovimentacoesReceitasPaginadoAsync(int usuarioId, int pagina, int quantidade);
         Task<int> ContarMovimentacoesDespesasAsync(int usuarioId);
         Task<int> ContarMovimentacoesReceitasAsync(int usuarioId);

@@ -18,7 +18,7 @@ namespace ControleFinanceiro.API.Controllers;
 [ApiController]
 [Route("api/movimentacoes")]
 [Authorize]
-public class MovimentacaoController(IListarMovimentacoesDespesasUseCase listarDespesasUseCase,
+public class MovimentacaoController(IListarMovimentacoesUseCase listarDespesasUseCase,
     IListarMovimentacoesReceitasUseCase listarMovimentacoesReceitas,
     ICriarMovimentacaoUseCase criarDespesaUseCase,
     IBuscarMovimentacaoUseCase buscarDespesaUseCase,
@@ -31,8 +31,8 @@ public class MovimentacaoController(IListarMovimentacoesDespesasUseCase listarDe
     IListarMovimentacoesPorCartaoUseCase listarPorCartaoUseCase
     ) : ControllerBase
 {
-    [HttpGet("despesas")]
-    public async Task<ActionResult> ListarDespesas(      
+    [HttpGet]
+    public async Task<ActionResult> ListarMovimentacoes(      
         [FromQuery] int pagina = 1,
         [FromQuery] int quantidade = 10)
     {
@@ -59,35 +59,35 @@ public class MovimentacaoController(IListarMovimentacoesDespesasUseCase listarDe
     }
 
     [HttpGet("{id:int}")]
-    public async Task<ActionResult> BuscarDespesa(int id)
+    public async Task<ActionResult> BuscarMovimentacao(int id)
     {
         var response = await buscarDespesaUseCase.ExecuteAsync(id);
         return Ok(response);
     }
     
     [HttpPost]
-    public async Task<ActionResult> CriarDespesa([FromBody] MovimentacaoCriarDto request)
+    public async Task<ActionResult> CriarMovimentacao([FromBody] MovimentacaoCriarDto request)
     {
         var response = await criarDespesaUseCase.ExecuteAsync(request);
         return Ok(response);
     }
     
     [HttpPut("{id:int}")]
-    public async Task<ActionResult> AtualizarDespesa(int id, [FromBody] MovimentacaoCriarDto request)
+    public async Task<ActionResult> AtualizarMovimentacao(int id, [FromBody] MovimentacaoCriarDto request)
     {
         var response = await atualizarDespesaUseCase.ExecuteAsync(id, request);
         return Ok(response);
     }
     
     [HttpDelete("{id:int}")]
-    public async Task<ActionResult> DeletarDespesa(int id)
+    public async Task<ActionResult> DeletarMovimentacao(int id)
     {
         await despesaUseCase.ExecuteAsync(id);
         return NoContent();
     }
 
     [HttpGet("por-data")]
-    public async Task<ActionResult> ListarDespesaPorData([FromQuery] string data, 
+    public async Task<ActionResult> ListarMovimentacaoPorData([FromQuery] string data, 
         [FromQuery] int pagina = 1, 
         [FromQuery] int quantidade = 10)
     {
@@ -106,7 +106,7 @@ public class MovimentacaoController(IListarMovimentacoesDespesasUseCase listarDe
     }
 
     [HttpGet("por-conta")]
-    public async Task<ActionResult> ListarDespesaPorContaBancaria([FromQuery] int contaId, 
+    public async Task<ActionResult> ListarMovimentacaoPorContaBancaria([FromQuery] int contaId, 
         [FromQuery] int pagina = 1, 
         [FromQuery] int quantidade = 10)
     {
@@ -121,7 +121,7 @@ public class MovimentacaoController(IListarMovimentacoesDespesasUseCase listarDe
     }
 
     [HttpGet("por-categoria")]
-    public async Task<ActionResult> ListarDespesaPorCategoria([FromQuery] int categoriaId, 
+    public async Task<ActionResult> ListarMovimentacaoPorCategoria([FromQuery] int categoriaId, 
         [FromQuery] int pagina = 1, 
         [FromQuery] int quantidade = 10)
     {
@@ -136,7 +136,7 @@ public class MovimentacaoController(IListarMovimentacoesDespesasUseCase listarDe
     }
 
     [HttpGet("por-titulo")]
-    public async Task<ActionResult> ListarDespesaPorTitulo([FromQuery] string titulo, 
+    public async Task<ActionResult> ListarMovimentacaoPorTitulo([FromQuery] string titulo, 
         [FromQuery] int pagina = 1, 
         [FromQuery] int quantidade = 10)
     {
@@ -151,7 +151,7 @@ public class MovimentacaoController(IListarMovimentacoesDespesasUseCase listarDe
     }
     
     [HttpGet("por-cartao")]
-    public async Task<ActionResult> ListarDespesaPorTitulo([FromQuery] int cartaoId, 
+    public async Task<ActionResult> ListarMovimentacaoPorTitulo([FromQuery] int cartaoId, 
         [FromQuery] int pagina = 1, 
         [FromQuery] int quantidade = 10)
     {
