@@ -55,13 +55,13 @@ namespace ControleFinanceiro.API.Controllers
         [HttpGet("movimentacoes-dashboard")]
         public async Task<ActionResult> MovimentacoesEmAberto(
         [FromQuery] int usuarioId,
-        [FromQuery] int pagina = 1,
-        [FromQuery] int quantidade = 10)
+        [FromQuery] int pagina,
+        [FromQuery] int quantidadePorPagina)
         {
             var request = new PaginadoRequestDto
             {
                 Pagina = pagina,
-                Quantidade = quantidade
+                Quantidade = quantidadePorPagina
             };
 
             var resultado = await movimentacoesEmAberto.ExecuteAsync(request);

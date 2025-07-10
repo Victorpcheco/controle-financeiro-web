@@ -448,7 +448,7 @@
         "IsRequired": false
       },
       {
-        "Name": "quantidade",
+        "Name": "quantidadePorPagina",
         "Type": "System.Int32",
         "IsRequired": false
       }
@@ -697,7 +697,7 @@
   },
   {
     "ContainingType": "ControleFinanceiro.API.Controllers.MovimentacaoController",
-    "Method": "CriarDespesa",
+    "Method": "CriarMovimentacao",
     "RelativePath": "api/movimentacoes",
     "HttpMethod": "POST",
     "IsController": true,
@@ -713,7 +713,7 @@
   },
   {
     "ContainingType": "ControleFinanceiro.API.Controllers.MovimentacaoController",
-    "Method": "BuscarDespesa",
+    "Method": "BuscarMovimentacao",
     "RelativePath": "api/movimentacoes/{id}",
     "HttpMethod": "GET",
     "IsController": true,
@@ -729,7 +729,7 @@
   },
   {
     "ContainingType": "ControleFinanceiro.API.Controllers.MovimentacaoController",
-    "Method": "AtualizarDespesa",
+    "Method": "AtualizarMovimentacao",
     "RelativePath": "api/movimentacoes/{id}",
     "HttpMethod": "PUT",
     "IsController": true,
@@ -750,7 +750,7 @@
   },
   {
     "ContainingType": "ControleFinanceiro.API.Controllers.MovimentacaoController",
-    "Method": "DeletarDespesa",
+    "Method": "DeletarMovimentacao",
     "RelativePath": "api/movimentacoes/{id}",
     "HttpMethod": "DELETE",
     "IsController": true,
@@ -766,7 +766,7 @@
   },
   {
     "ContainingType": "ControleFinanceiro.API.Controllers.MovimentacaoController",
-    "Method": "ListarDespesaPorTitulo",
+    "Method": "ListarMovimentacaoPorTitulo",
     "RelativePath": "api/movimentacoes/por-cartao",
     "HttpMethod": "GET",
     "IsController": true,
@@ -792,7 +792,7 @@
   },
   {
     "ContainingType": "ControleFinanceiro.API.Controllers.MovimentacaoController",
-    "Method": "ListarDespesaPorCategoria",
+    "Method": "ListarMovimentacaoPorCategoria",
     "RelativePath": "api/movimentacoes/por-categoria",
     "HttpMethod": "GET",
     "IsController": true,
@@ -818,7 +818,7 @@
   },
   {
     "ContainingType": "ControleFinanceiro.API.Controllers.MovimentacaoController",
-    "Method": "ListarDespesaPorContaBancaria",
+    "Method": "ListarMovimentacaoPorContaBancaria",
     "RelativePath": "api/movimentacoes/por-conta",
     "HttpMethod": "GET",
     "IsController": true,
@@ -844,7 +844,7 @@
   },
   {
     "ContainingType": "ControleFinanceiro.API.Controllers.MovimentacaoController",
-    "Method": "ListarDespesaPorData",
+    "Method": "ListarMovimentacaoPorData",
     "RelativePath": "api/movimentacoes/por-data",
     "HttpMethod": "GET",
     "IsController": true,
@@ -870,7 +870,7 @@
   },
   {
     "ContainingType": "ControleFinanceiro.API.Controllers.MovimentacaoController",
-    "Method": "ListarDespesaPorTitulo",
+    "Method": "ListarMovimentacaoPorTitulo",
     "RelativePath": "api/movimentacoes/por-titulo",
     "HttpMethod": "GET",
     "IsController": true,

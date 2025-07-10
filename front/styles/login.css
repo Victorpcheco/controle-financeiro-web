@@ -1,9 +1,9 @@
 :root {
-  --primary: #19234d;
-  --primary-hover: #566088;
+  --primary: #000000;
+  --primary-hover: #1cff92;
   --text-primary: #1A1F2C;
   --text-secondary: #8E9196;
-  --background: #ffffff;
+  --background: #000000;
   --card-background: #ffffff;
   --border: #e4e4e7;
   --error: #ef4444;
@@ -20,7 +20,7 @@
 
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(to bottom right, #ffffff, #f5f3ff);
+  background: linear-gradient(to bottom right, #000000, #000000);
   color: var(--text-primary);
   line-height: 1.5;
   min-height: 100vh;
@@ -88,6 +88,7 @@ body {
 
 .link:hover {
   text-decoration: underline;
+  color: #1cff92;
 }
 
 .auth-container {
@@ -96,7 +97,7 @@ body {
   align-items: center;
   justify-content: center;
   padding: 1.5rem;
-  background: linear-gradient(to bottom right, #ffffff, #f5f3ff);
+  background: linear-gradient(to bottom right, #000000, #000000);
 }
 
 .auth-card {

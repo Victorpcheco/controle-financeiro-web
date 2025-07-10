@@ -7,22 +7,23 @@
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  background-color: #f5f7fa;
-  color: #333333;
+  background-color: #ededed;
+  color: #000000;
   line-height: 1.6;
 }
 
 /* Container */
 .container {
   width: 100%;
-  max-width: 1500px;
+  max-width: full-width;
   margin: 0 auto;
   padding: 0 15px;
 }
 
 /* Navbar Styles */
 .navbar {
-  background: linear-gradient(135deg, #19234d 0%, #303d72 100%);
+  height: 90px; /* altura fixa da navbar */
+  background: black;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   position: sticky;
   top: 0;
@@ -31,15 +32,13 @@ body {
 
 .navbar-container {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  height: 70px;
+  justify-content: space-between;
 }
 
-.navbar-logo {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: white;
+.navbar-logo img.logo-image {
+  height: 100px; 
+  width: auto;
 }
 
 /* Navbar Actions */
@@ -51,6 +50,7 @@ body {
 
 /* Logout Button */
 .logout-btn {
+  height: 50px; 
   display: flex;
   align-items: center;
   gap: 8px;
@@ -75,6 +75,7 @@ body {
 }
 
 .vertical-menu-toggle {
+  height: 50px; 
   background: rgba(255, 255, 255, 0.1);
   color: white;
   border: 1px solid rgba(255, 255, 255, 0.2);
@@ -139,7 +140,7 @@ body {
 
 .vertical-menu-link:hover {
   background-color: #f8f9fa;
-  color: #667eea;
+  color: #18bb6c;
   border-radius: 8px;
 }
 
@@ -172,8 +173,16 @@ body {
 
 .vertical-submenu-link:hover {
   background-color: #f0f0f0;
-  color: #667eea;
-  border-left-color: #667eea;
+  color: #18bb6c;
+  border-left-color: #18bb6c;
+}
+
+.faixa {
+  height: 10px;
+  background: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.0); 
+  top: 0;
+  z-index: 1000;
 }
 
 /* Overlay */
@@ -261,7 +270,7 @@ body {
 .page-title {
   font-size: 1.5rem;
   font-weight: bold;
-  color: #333333;
+  color: #000000;
   margin-bottom: 0.5rem;
 }
 
@@ -309,7 +318,7 @@ body {
   text-align: center;
   font-size: 1.5rem;
   font-weight: bold;
-  color: #19234d;
+  color: #000000;
 }
 
 .account-list {
@@ -336,7 +345,7 @@ body {
   margin-top: 1rem;
   text-align: center;
   font-size: 0.875rem;
-  color: #19234d;
+  color: #000000;
   text-decoration: none;
   background: none;
   border: none;
@@ -356,80 +365,10 @@ body {
   color: #ea4335;
 }
 
-/* Filter Section */
-.filter-section {
-  background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  padding: 1rem;
-  margin-bottom: 1.5rem;
-}
-
-.filter-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 0.5rem;
-}
-
-.filter-title {
-  font-size: 1.125rem;
-  font-weight: 500;
-}
-
-.filter-body {
-  display: none;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 1rem;
-  margin-top: 1rem;
-}
-
-.filter-body.active {
-  display: grid;
-}
-
-.filter-group {
-  margin-bottom: 0.5rem;
-}
-
-.filter-input {
-  width: 100%;
-  padding: 0.5rem;
-  border: 1px solid #d1d5db;
-  border-radius: 4px;
-  font-size: 0.875rem;
-}
-
-.filter-select {
-  width: 100%;
-  padding: 0.5rem;
-  border: 1px solid #d1d5db;
-  border-radius: 4px;
-  font-size: 0.875rem;
-}
-
-/* Adicionar estilos para o campo de data com máscara */
-.filter-input[placeholder="DD/MM/AAAA"] {
-  font-family: monospace;
-  letter-spacing: 1px;
-}
-
-.filter-input[placeholder="DD/MM/AAAA"]:focus {
-  outline: none;
-  border-color: #19234d;
-  box-shadow: 0 0 0 3px rgba(25, 35, 77, 0.1);
-}
-
-.filter-actions {
-  display: flex;
-  gap: 0.5rem;
-  grid-column: 1 / -1;
-}
-
 .button-secondary {
-  background-color: white;
-  color: #333333;
-  border: 1px solid #d1d5db;
+  background-color: rgb(0, 0, 0);
+  color: #000000;
+  border: 1px solid #000000;
 }
 
 .button-secondary:hover {
@@ -584,7 +523,7 @@ body {
 .movements-title {
   font-size: 1.5rem;
   font-weight: 600;
-  color: #1f2937;
+  color: #000000;
   margin: 0;
 }
 
@@ -593,7 +532,7 @@ body {
   align-items: center;
   gap: 8px;
   padding: 8px 16px;
-  background: #19234d;
+  background: #000000;
   color: white;
   border: none;
   border-radius: 8px;
@@ -604,12 +543,12 @@ body {
 }
 
 .filter-toggle:hover {
-  background: #494e61;
+  background: #18bb6c;
   transform: translateY(-1px);
 }
 
 .filter-toggle.active {
-  background: #494e61;
+  background: #18bb6c;
 }
 
 /* ===== PAINEL DE FILTROS ===== */
@@ -641,8 +580,8 @@ body {
 
 .search-input:focus {
   outline: none;
-  border-color: #19234d;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  border-color: #18bb6c;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
 }
 
 .search-icon {
@@ -661,7 +600,7 @@ body {
   transform: translateY(-50%);
   background: none;
   border: none;
-  color: #6b7280;
+  color: #b4b4b4;
   cursor: pointer;
   padding: 4px;
   border-radius: 4px;
@@ -670,7 +609,7 @@ body {
 
 .search-clear:hover {
   background: #f3f4f6;
-  color: #374151;
+  color: #ffffff;
 }
 
 /* ===== FILTROS AVANÇADOS (ESCONDIDOS POR PADRÃO) ===== */
@@ -708,7 +647,7 @@ body {
 .filter-label {
   font-size: 0.875rem;
   font-weight: 500;
-  color: #374151;
+  color: #000000;
 }
 
 .filter-input,
@@ -724,7 +663,7 @@ body {
 .filter-input:focus,
 .filter-select:focus {
   outline: none;
-  border-color: #19234d;
+  border-color: #000000;
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
@@ -751,20 +690,28 @@ body {
   transition: all 0.2s ease;
 }
 
+.button-primary {
+  background: #1cff92;
+  color: #000000;
+}
+
+.button-primary:hover {
+  background: #15b065;
+}
+
 .button-secondary {
   background: #f3f4f6;
-  color: #374151;
-  border: 1px solid #d1d5db;
+  color: #000000;
 }
 
 .button-secondary:hover {
-  background: #e5e7eb;
+  background: #ceced0;
 }
 
 /* ===== FILTROS ATIVOS ===== */
 .active-filters {
   padding: 12px 24px;
-  background: #eff6ff;
+  background: #f3f4f6;
   border-bottom: 1px solid #e5e7eb;
   display: none;
   align-items: center;
@@ -775,7 +722,7 @@ body {
 .active-filters-label {
   font-size: 0.875rem;
   font-weight: 500;
-  color: #19234d;
+  color: #000000;
 }
 
 .active-filters-list {
@@ -1145,7 +1092,7 @@ body {
 .form-checkbox {
   width: 16px;
   height: 16px;
-  accent-color: #19234d;
+  accent-color: #16cb74;
 }
 
 .checkbox-text {
@@ -1169,12 +1116,12 @@ body {
 }
 
 .btn-primary {
-  background: #19234d;
-  color: white;
+  background: #1cff92;
+  color: rgb(0, 0, 0);
 }
 
 .btn-primary:hover {
-  background: #151e3d;
+  background: #129f5b;
   transform: translateY(-1px);
 }
 

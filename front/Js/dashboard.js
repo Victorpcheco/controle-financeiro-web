@@ -383,54 +383,16 @@ async function fetchTransactionsFromApi(pagina = 1, quantidadePorPagina = 10, fi
       "Content-Type": "application/json",
     }
 
-    // Construir parâmetros da URL
+    // Construir parâmetros da URL - APENAS PAGINAÇÃO
     const params = new URLSearchParams({
       pagina: pagina.toString(),
       quantidadePorPagina: quantidadePorPagina.toString(),
     })
 
-    // Log dos filtros recebidos para debug
-    console.log("Filtros recebidos na API:", filtros)
-
-    // Adicionar filtros aos parâmetros se existirem
-    if (filtros.search && filtros.search.trim() !== "") {
-      params.append("pesquisa", filtros.search.trim())
-      console.log("Adicionando filtro de pesquisa:", filtros.search.trim())
-    }
-
-    if (filtros.specificDate && filtros.specificDate.trim() !== "") {
-      params.append("dataEspecifica", filtros.specificDate.trim())
-      console.log("Adicionando filtro de data específica:", filtros.specificDate.trim())
-    }
-
-    if (filtros.month && filtros.month.trim() !== "") {
-      params.append("mesReferenciaId", filtros.month.trim())
-      console.log("Adicionando filtro de mês:", filtros.month.trim())
-    }
-
-    if (filtros.card && filtros.card.trim() !== "") {
-      params.append("cartaoId", filtros.card.trim())
-      console.log("Adicionando filtro de cartão:", filtros.card.trim())
-    }
-
-    if (filtros.category && filtros.category.trim() !== "") {
-      params.append("categoriaId", filtros.category.trim())
-      console.log("Adicionando filtro de categoria:", filtros.category.trim())
-    }
-
-    if (filtros.account && filtros.account.trim() !== "") {
-      params.append("contaBancariaId", filtros.account.trim())
-      console.log("Adicionando filtro de conta:", filtros.account.trim())
-    }
-
-    if (filtros.status && filtros.status.trim() !== "") {
-      params.append("status", filtros.status.trim())
-      console.log("Adicionando filtro de status:", filtros.status.trim())
-    }
+    console.log("Buscando dados da API sem filtros (apenas paginação)")
 
     const url = `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.transactions}?${params.toString()}`
     console.log("URL completa da requisição:", url)
-    console.log("Parâmetros enviados:", params.toString())
 
     const response = await fetch(url, {
       method: "GET",
@@ -829,6 +791,7 @@ class MovementsManager {
     this.isFiltersExpanded = false
     this.searchTimeout = null
     this.currentTransactions = []
+    this.allTransactions = [] // Nova propriedade para armazenar todos os dados
 
     // Configurações de paginação
     this.currentPage = 1
@@ -879,13 +842,13 @@ class MovementsManager {
       })
     }
 
-    // Pesquisa em tempo real (mas não aplica filtros automaticamente)
+    // CORREÇÃO 1: Pesquisa em tempo real com debounce
     if (this.searchInput) {
       this.searchInput.addEventListener("input", (e) => {
         this.handleSearchInput(e.target.value)
       })
 
-      // NOVO: Aplicar filtros ao pressionar Enter
+      // Aplicar filtros ao pressionar Enter
       this.searchInput.addEventListener("keydown", (e) => {
         if (e.key === "Enter") {
           e.preventDefault()
@@ -950,12 +913,19 @@ class MovementsManager {
       this.lastPageBtn.addEventListener("click", () => this.goToPage(this.totalPages))
     }
 
-    // Mudança no tamanho da página
+    // CORREÇÃO 2: Mudança no tamanho da página com log para debug
     if (this.pageSizeSelect) {
       this.pageSizeSelect.addEventListener("change", (e) => {
-        this.pageSize = Number.parseInt(e.target.value)
+        const newPageSize = Number.parseInt(e.target.value)
+        console.log(`Mudando tamanho da página de ${this.pageSize} para ${newPageSize}`)
+
+        this.pageSize = newPageSize
         this.currentPage = 1 // Voltar para primeira página
-        this.loadTransactions() // Recarregar com novo tamanho
+
+        console.log(`Novo pageSize definido: ${this.pageSize}`)
+
+        // Recarregar com novo tamanho
+        this.loadTransactions()
       })
     }
   }
@@ -974,6 +944,7 @@ class MovementsManager {
     }
   }
 
+  // CORREÇÃO 1: Implementar busca com debounce para aplicar automaticamente
   handleSearchInput(value) {
     console.log("Valor de pesquisa recebido:", value)
 
@@ -985,9 +956,21 @@ class MovementsManager {
       }
     }
 
-    // Atualizar o filtro de pesquisa imediatamente
+    // Atualizar o filtro de pesquisa
     this.filters.search = value?.trim() || ""
     console.log("Filtro de pesquisa atualizado para:", this.filters.search)
+
+    // Aplicar todos os filtros no frontend
+    if (this.searchTimeout) {
+      clearTimeout(this.searchTimeout)
+    }
+
+    this.searchTimeout = setTimeout(() => {
+      console.log("Aplicando todos os filtros no frontend")
+      this.applyAllFrontendFilters()
+      this.renderTransactions()
+      this.updateActiveFiltersDisplay()
+    }, 300)
   }
 
   clearSearch() {
@@ -998,6 +981,10 @@ class MovementsManager {
       this.searchClear.style.display = "none"
     }
     this.filters.search = ""
+
+    // Aplicar filtros automaticamente após limpar
+    this.currentPage = 1
+    this.loadTransactions()
   }
 
   updateFiltersFromForm() {
@@ -1030,19 +1017,23 @@ class MovementsManager {
   async loadTransactions() {
     try {
       console.log(`Carregando movimentações - Página: ${this.currentPage}, Tamanho: ${this.pageSize}`)
-      console.log("Filtros aplicados:", this.filters)
+      console.log("Filtros que serão aplicados no frontend:", this.filters)
 
       this.showLoading()
 
-      // Buscar movimentações da API com paginação e filtros
-      const apiResponse = await fetchTransactionsFromApi(this.currentPage, this.pageSize, this.filters)
+      // Buscar da API sem nenhum filtro (apenas paginação)
+      const apiResponse = await fetchTransactionsFromApi(this.currentPage, this.pageSize, {})
 
-      this.currentTransactions = apiResponse.movimentacoes || []
+      this.allTransactions = apiResponse.movimentacoes || []
+
+      // Aplicar TODOS os filtros no frontend
+      this.applyAllFrontendFilters()
+
       this.totalRecords = apiResponse.total || 0
       this.totalPages = Math.ceil(this.totalRecords / this.pageSize)
       this.currentPage = apiResponse.pagina || this.currentPage
 
-      console.log(`Carregadas ${this.currentTransactions.length} movimentações de ${this.totalRecords} total`)
+      console.log(`Exibindo ${this.currentTransactions.length} movimentações de ${this.totalRecords} total`)
 
       this.renderTransactions()
       await this.loadFilterOptions()
@@ -1054,6 +1045,120 @@ class MovementsManager {
       this.hideLoading()
       notifications.error("Erro", "Erro ao carregar movimentações")
     }
+  }
+
+  applyAllFrontendFilters() {
+    let filteredTransactions = this.allTransactions || []
+    console.log(`Aplicando filtros no frontend. Total de registros: ${filteredTransactions.length}`)
+
+    // Filtro de pesquisa (texto)
+    if (this.filters.search && this.filters.search.trim() !== "") {
+      const searchTerm = this.filters.search.toLowerCase().trim()
+      filteredTransactions = filteredTransactions.filter((transaction) => {
+        return (
+          (transaction.titulo && transaction.titulo.toLowerCase().includes(searchTerm)) ||
+          (transaction.categoriaNome && transaction.categoriaNome.toLowerCase().includes(searchTerm)) ||
+          (transaction.contaBancariaNome && transaction.contaBancariaNome.toLowerCase().includes(searchTerm)) ||
+          (transaction.cartaoNome && transaction.cartaoNome.toLowerCase().includes(searchTerm)) ||
+          (transaction.formaDePagamento && transaction.formaDePagamento.toLowerCase().includes(searchTerm)) ||
+          (transaction.valor && transaction.valor.toString().includes(searchTerm))
+        )
+      })
+      console.log(`Filtro de pesquisa aplicado: ${filteredTransactions.length} registros restantes`)
+    }
+
+    // Filtro de data específica
+    if (this.filters.specificDate && this.filters.specificDate.trim() !== "") {
+      filteredTransactions = filteredTransactions.filter((transaction) => {
+        if (!transaction.dataVencimento) return false
+        const transactionDate = transaction.dataVencimento.split("T")[0] // YYYY-MM-DD
+        return transactionDate === this.filters.specificDate
+      })
+      console.log(`Filtro de data específica aplicado: ${filteredTransactions.length} registros restantes`)
+    }
+
+    // Filtro de mês de referência
+    if (this.filters.month && this.filters.month.trim() !== "") {
+      const monthId = Number.parseInt(this.filters.month)
+      filteredTransactions = filteredTransactions.filter((transaction) => {
+        return transaction.mesReferenciaId === monthId
+      })
+      console.log(`Filtro de mês aplicado: ${filteredTransactions.length} registros restantes`)
+    }
+
+    // Filtro de cartão
+    if (this.filters.card && this.filters.card.trim() !== "") {
+      const cardId = Number.parseInt(this.filters.card)
+      filteredTransactions = filteredTransactions.filter((transaction) => {
+        return transaction.cartaoId === cardId
+      })
+      console.log(`Filtro de cartão aplicado: ${filteredTransactions.length} registros restantes`)
+    }
+
+    // Filtro de categoria
+    if (this.filters.category && this.filters.category.trim() !== "") {
+      const categoryId = Number.parseInt(this.filters.category)
+      filteredTransactions = filteredTransactions.filter((transaction) => {
+        return transaction.categoriaId === categoryId
+      })
+      console.log(`Filtro de categoria aplicado: ${filteredTransactions.length} registros restantes`)
+    }
+
+    // Filtro de conta bancária
+    if (this.filters.account && this.filters.account.trim() !== "") {
+      const accountId = Number.parseInt(this.filters.account)
+      filteredTransactions = filteredTransactions.filter((transaction) => {
+        return transaction.contaBancariaId === accountId
+      })
+      console.log(`Filtro de conta aplicado: ${filteredTransactions.length} registros restantes`)
+    }
+
+    // Filtro de status
+    if (this.filters.status && this.filters.status.trim() !== "") {
+      filteredTransactions = filteredTransactions.filter((transaction) => {
+        const status = this.filters.status.toLowerCase()
+        if (status === "pendente") {
+          return !transaction.realizado
+        } else if (status === "pago" || status === "recebido") {
+          return transaction.realizado
+        }
+        return true
+      })
+      console.log(`Filtro de status aplicado: ${filteredTransactions.length} registros restantes`)
+    }
+
+    this.currentTransactions = filteredTransactions
+    console.log(`Total final após todos os filtros: ${this.currentTransactions.length} registros`)
+  }
+
+  // Modificar o método handleSearchInput para usar o novo método:
+
+  handleSearchInput(value) {
+    console.log("Valor de pesquisa recebido:", value)
+
+    if (this.searchClear) {
+      if (value.length > 0) {
+        this.searchClear.style.display = "block"
+      } else {
+        this.searchClear.style.display = "none"
+      }
+    }
+
+    // Atualizar o filtro de pesquisa
+    this.filters.search = value?.trim() || ""
+    console.log("Filtro de pesquisa atualizado para:", this.filters.search)
+
+    // Aplicar todos os filtros no frontend
+    if (this.searchTimeout) {
+      clearTimeout(this.searchTimeout)
+    }
+
+    this.searchTimeout = setTimeout(() => {
+      console.log("Aplicando todos os filtros no frontend")
+      this.applyAllFrontendFilters()
+      this.renderTransactions()
+      this.updateActiveFiltersDisplay()
+    }, 300)
   }
 
   renderTransactions() {
@@ -1289,8 +1394,10 @@ class MovementsManager {
 
     this.renderPageNumbers()
 
+    // CORREÇÃO 2: Garantir que o select mostre o valor correto
     if (this.pageSizeSelect) {
       this.pageSizeSelect.value = this.pageSize.toString()
+      console.log(`Select de paginação atualizado para: ${this.pageSize}`)
     }
   }
 
@@ -1727,4 +1834,4 @@ function exportTransactions() {
   notifications.info("Em Desenvolvimento", "Funcionalidade de exportação será implementada em breve")
 }
 
-console.log("Dashboard JavaScript com paginação da API carregado com sucesso! 🚀")
+console.log("Dashboard JavaScript com correções aplicadas! 🚀")

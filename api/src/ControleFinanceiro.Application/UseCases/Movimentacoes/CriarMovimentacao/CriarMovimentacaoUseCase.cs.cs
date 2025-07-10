@@ -17,7 +17,7 @@ public class CriarMovimentacaoUseCase(IMovimentacoesRepository repository, IUser
         var usuarioId = context.UsuarioId;
 
         var movimentacao = new Movimentacoes(request.Titulo, request.DataVencimento, request.Tipo, request.MesReferenciaId, request.CategoriaId,
-            request.CartaoId ?? 0, request.ContaBancariaId, request.Valor, request.Realizado, usuarioId, request.FormaDePagamento ?? string.Empty);
+            request.CartaoId, request.ContaBancariaId, request.Valor, request.Realizado, usuarioId, request.FormaDePagamento);
 
         await repository.AdicionarMovimentacoesAsync(movimentacao);
         return true;

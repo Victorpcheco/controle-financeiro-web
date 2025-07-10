@@ -10,7 +10,11 @@
     <!-- Nav -->
     <nav class="navbar">
         <div class="container navbar-container">
-            <div class="navbar-logo">Logo</div>
+            <div class="navbar-logo">
+              <a href="../pages/dashboard.html" class="logo-link">
+              <img src="../img/logo.png" alt="Logo" class="logo-image">
+              </a>
+            </div>
             <div class="navbar-actions">
                 <button class="logout-btn">
                     <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -37,7 +41,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path>
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5a2 2 0 012-2h4a2 2 0 012 2v0H8v0z"></path>
                                 </svg>
-                                Visão Geral
+                                Dashboard
                             </a>
                         </div>
                         
@@ -51,7 +55,6 @@
                             
                             <div class="vertical-submenu">
                                 <a href="../pages/movimentacoes.html" class="vertical-submenu-link">Movimentações</a>
-                                <a href="#" class="vertical-submenu-link">Relatórios</a>
                             </div>
                         </div>
                         
@@ -64,9 +67,10 @@
                             </div>
                             
                             <div class="vertical-submenu">
-                                <a href="#" class="vertical-submenu-link">Categorias</a>
-                                <a href="#" class="vertical-submenu-link">Contas Bancárias</a>
-                                <a href="#" class="vertical-submenu-link">Cartões de Crédito</a>
+                                <a href="../pages/gerenciamento.html" class="vertical-submenu-link">Categorias</a>
+                                <a href="../pages/gerenciamento.html" class="vertical-submenu-link">Contas Bancárias</a>
+                                <a href="../pages/gerenciamento.html" class="vertical-submenu-link">Cartões de Crédito</a>
+                                <a href="../pages/gerenciamento.html" class="vertical-submenu-link">Meses</a>
                             </div>
                         </div>
                     </div>
@@ -75,12 +79,14 @@
         </div>
     </nav>
 
+    <div class="faixa"></div>
+
     <div class="overlay" id="overlay"></div>
     
     <div class="container" id="mainContent">
       <div class="page-header">
-        <h1 class="page-title">Meu Controle Financeiro</h1>
-        <p class="page-subtitle">Acompanhe suas finanças em um só lugar</p>
+        <h1 class="page-title">Dashboard Inicial</h1>
+        <p class="page-subtitle">Aqui você acompanha um visão macro das suas finanças</p>
       </div>
       
       <!-- Cards -->
@@ -118,7 +124,7 @@
         <!-- Receitas a Vencer -->
         <div class="card">
           <div class="card-header">
-            <h2 class="card-title">Receitas a Vencer</h2>
+            <h2 class="card-title">Receitas a Receber</h2>
             <button class="eye-button toggle-eye">
               <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
@@ -160,7 +166,7 @@
 <div class="movements-section">
   <!-- Cabeçalho com Título e Botão de Filtros -->
   <div class="movements-header">
-    <h2 class="movements-title">Movimentações</h2>
+    <h2 class="movements-title">Últimas Movimentações</h2>
     <button class="filter-toggle" id="toggleFilters">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path>
