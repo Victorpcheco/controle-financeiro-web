@@ -1,0 +1,157 @@
+:root {
+  --primary: #ffffff;
+  --primary-hover: #1cff92;
+  --text-primary: #000000;
+  --text-secondary: #8E9196;
+  --background: #ffffff;
+  --card-background: #ffffff;
+  --border: #e4e4e7;
+  --error: #ef4444;
+  --success: #10b981;
+  --border-radius: 0.5rem;
+  --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(to bottom right, #000000, #010101);
+  color: var(--text-primary);
+  line-height: 1.5;
+  min-height: 100vh;
+}
+
+.logo-container {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.logo-image {
+  max-width: 550px; /* ajuste conforme o tamanho do seu logo */
+  height: auto;
+}
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+/* Tela de boas vindas  */
+.welcome-screen {
+  text-align: center;     
+  padding: 3rem 1rem;       
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 90vh;               
+}
+
+.title {
+  color: var(--primary);
+  font-size: 2.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.description {
+  color: var(--text-secondary);
+  font-size: 1.25rem;
+  max-width: 600px;
+  margin-bottom: 2rem;
+}
+
+.buttons {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.buttons .button {
+  min-width: 150px;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  font-weight: 500;
+  text-align: center;
+  text-decoration: none;
+  border-radius: var(--border-radius);
+  transition: all 0.2s ease;
+  cursor: pointer;
+  border: none;
+  height: 2.5rem;
+}
+
+.button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.button.primary {
+  background-color: var(--primary);
+  color: rgb(0, 0, 0);
+}
+
+.button.primary:hover:not(:disabled) {
+  background-color: var(--primary-hover);
+}
+
+.button.outline {
+  background-color: transparent;
+  border: 1px solid var(--primary);
+  color: var(--primary);
+}
+
+.button.outline:hover:not(:disabled) {
+  background-color: #1cff9194;
+}
+
+.button.full-width {
+  width: 100%;
+}
+
+.footer-text {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+.footer-text p {
+  margin-bottom: 0.5rem;
+}
+
+/* Configurações de responsividade */
+@media (max-width: 640px) {
+  .buttons {
+    flex-direction: column;
+  }
+  .title {
+    font-size: 2rem;
+  }
+  .description {
+    font-size: 1rem;
+  }
+}
+
+.link {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+
+

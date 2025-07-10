@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "TiZyldjxw68=",
+  "success": true,
+  "projectFilePath": "C:\\Projects\\controle-financeiro-web\\api\\src\\ControleFinanceiro.Domain\\ControleFinanceiro.Domain.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\victo\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512"
+  ],
+  "logs": []
+}

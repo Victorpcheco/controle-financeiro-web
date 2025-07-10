@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciamento - Sistema Financeiro</title>
+    <link rel="stylesheet" href="../styles/gerenciamento.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container navbar-container">
+            <div class="navbar-logo">
+              <a href="../pages/dashboard.html" class="logo-link">
+              <img src="../img/logo.png" alt="Logo" class="logo-image">
+              </a>
+            </div>
+            <div class="navbar-actions">
+                <button class="logout-btn">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                    </svg>
+                    Sair
+                </button>
+                
+                <!-- Botão menu -->
+                <div class="vertical-menu-container">
+                    <button class="vertical-menu-toggle" id="verticalMenuToggle">
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                            <circle cx="12" cy="5" r="2"></circle>
+                            <circle cx="12" cy="12" r="2"></circle>
+                            <circle cx="12" cy="19" r="2"></circle>
+                        </svg>
+                    </button>
+                    
+                    <!-- Menu vertical -->
+                    <div class="vertical-menu" id="verticalMenu">
+                        <div class="vertical-menu-item">
+                            <a href="../pages/dashboard.html" class="vertical-menu-link">
+                                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5a2 2 0 012-2h4a2 2 0 012 2v0H8v0z"></path>
+                                </svg>
+                                Dashboard
+                            </a>
+                        </div>
+                        
+                        <div class="vertical-menu-item">
+                            <div class="vertical-menu-category">
+                                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+                                </svg>
+                                Financeiro
+                            </div>
+                            
+                            <div class="vertical-submenu">
+                                <a href="../pages/movimentacoes.html" class="vertical-submenu-link">Movimentações</a>
+                            </div>
+                        </div>
+                        
+                        <div class="vertical-menu-item">
+                            <div class="vertical-menu-category">
+                                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
+                                </svg>
+                                Mais
+                            </div>
+                            
+                            <div class="vertical-submenu">
+                                <a href="../pages/gerenciamento.html" class="vertical-submenu-link">Categorias</a>
+                                <a href="../pages/gerenciamento.html" class="vertical-submenu-link">Contas Bancárias</a>
+                                <a href="../pages/gerenciamento.html" class="vertical-submenu-link">Cartões de Crédito</a>
+                                <a href="../pages/gerenciamento.html" class="vertical-submenu-link">Meses</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="faixa"></div>
+
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Container Principal -->
+    <div class="main-container">
+        <!-- Sistema de Abas -->
+        <div class="tabs-container">
+            <div class="tabs-header">
+                <button class="tab-button active" data-tab="categories">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+                    </svg>
+                    Categorias
+                </button>
+                <button class="tab-button" data-tab="months">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                    </svg>
+                    Meses
+                </button>
+                <button class="tab-button" data-tab="accounts">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                        <line x1="1" y1="10" x2="23" y2="10"></line>
+                    </svg>
+                    Contas Bancárias
+                </button>
+                <button class="tab-button" data-tab="cards">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                        <line x1="1" y1="10" x2="23" y2="10"></line>
+                    </svg>
+                    Cartões
+                </button>
+            </div>
+
+            <!-- Aba Categorias -->
+            <div class="tab-content active" id="categories">
+                <div class="content-header">
+                    <h2>Gerenciar Categorias</h2>
+                    <button class="btn btn-primary" id="newCategoryBtn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                        Nova Categoria
+                    </button>
+                </div>
+
+                <!-- Filtros Categorias -->
+                <div class="filters-section">
+                    <div class="search-container">
+                        <div class="search-input-wrapper">
+                            <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <path d="M21 21l-4.35-4.35"></path>
+                            </svg>
+                            <input type="text" id="categoriesSearchInput" placeholder="Pesquisar categorias..." class="search-input">
+                            <button class="search-clear" id="categoriesSearchClear" style="display: none;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Filtros Ativos -->
+                    <div class="active-filters" id="categoriesActiveFilters" style="display: none;">
+                        <span class="active-filters-label">Filtros ativos:</span>
+                        <div class="active-filters-list" id="categoriesActiveFiltersList"></div>
+                    </div>
+                </div>
+
+                <!-- Tabela Categorias -->
+                <div class="table-container">
+                    <div class="loading-state hidden" id="categoriesLoadingState">
+                        <div class="loading-spinner"></div>
+                        <p>Carregando categorias...</p>
+                    </div>
+
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Nome da Categoria</th>
+                                <th>Tipo</th>                               
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="categoriesTableBody">
+                        </tbody>
+                    </table>
+
+                    <div class="empty-state hidden" id="categoriesEmptyState">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="M21 21l-4.35-4.35"></path>
+                        </svg>
+                        <h3>Nenhuma categoria encontrada</h3>
+                        <p>Tente ajustar os filtros ou adicionar novas categorias.</p>
+                    </div>
+                </div>
+
+                <!-- Paginação Categorias -->
+                <div class="pagination-container" id="categoriesPaginationContainer">
+                    <div class="pagination-info" id="categoriesPaginationInfo"></div>
+                    <div class="pagination-controls">
+                        <button class="pagination-btn" id="categoriesFirstPageBtn">Primeira</button>
+                        <button class="pagination-btn" id="categoriesPrevPageBtn">Anterior</button>
+                        <div class="pagination-pages" id="categoriesPaginationPages"></div>
+                        <button class="pagination-btn" id="categoriesNextPageBtn">Próxima</button>
+                        <button class="pagination-btn" id="categoriesLastPageBtn">Última</button>
+                    </div>
+                    <div class="pagination-size">
+                        <label for="categoriesPageSize">Itens por página:</label>
+                        <select id="categoriesPageSize">
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Aba Meses -->
+            <div class="tab-content" id="months">
+                <div class="content-header">
+                    <h2>Gerenciar Meses</h2>
+                    <button class="btn btn-primary" id="newMonthBtn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                        Novo Mês
+                    </button>
+                </div>
+
+                <!-- Filtros Meses -->
+                <div class="filters-section">
+                    <div class="search-container">
+                        <div class="search-input-wrapper">
+                            <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <path d="M21 21l-4.35-4.35"></path>
+                            </svg>
+                            <input type="text" id="monthsSearchInput" placeholder="Pesquisar meses..." class="search-input">
+                            <button class="search-clear" id="monthsSearchClear" style="display: none;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Filtros Ativos -->
+                    <div class="active-filters" id="monthsActiveFilters" style="display: none;">
+                        <span class="active-filters-label">Filtros ativos:</span>
+                        <div class="active-filters-list" id="monthsActiveFiltersList"></div>
+                    </div>
+                </div>
+
+                <!-- Tabela Meses -->
+                <div class="table-container">
+                    <div class="loading-state hidden" id="monthsLoadingState">
+                        <div class="loading-spinner"></div>
+                        <p>Carregando meses...</p>
+                    </div>
+
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Nome do Mês</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="monthsTableBody">
+                        </tbody>
+                    </table>
+
+                    <div class="empty-state hidden" id="monthsEmptyState">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="M21 21l-4.35-4.35"></path>
+                        </svg>
+                        <h3>Nenhum mês encontrado</h3>
+                        <p>Tente ajustar os filtros ou adicionar novos meses.</p>
+                    </div>
+                </div>
+
+                <!-- Paginação Meses -->
+                <div class="pagination-container" id="monthsPaginationContainer">
+                    <div class="pagination-info" id="monthsPaginationInfo"></div>
+                    <div class="pagination-controls">
+                        <button class="pagination-btn" id="monthsFirstPageBtn">Primeira</button>
+                        <button class="pagination-btn" id="monthsPrevPageBtn">Anterior</button>
+                        <div class="pagination-pages" id="monthsPaginationPages"></div>
+                        <button class="pagination-btn" id="monthsNextPageBtn">Próxima</button>
+                        <button class="pagination-btn" id="monthsLastPageBtn">Última</button>
+                    </div>
+                    <div class="pagination-size">
+                        <label for="monthsPageSize">Itens por página:</label>
+                        <select id="monthsPageSize">
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Aba Contas Bancárias -->
+            <div class="tab-content" id="accounts">
+                <div class="content-header">
+                    <h2>Gerenciar Contas Bancárias</h2>
+                    <button class="btn btn-primary" id="newAccountBtn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                        Nova Conta
+                    </button>
+                </div>
+
+                <!-- Filtros Contas -->
+                <div class="filters-section">
+                    <div class="search-container">
+                        <div class="search-input-wrapper">
+                            <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <path d="M21 21l-4.35-4.35"></path>
+                            </svg>
+                            <input type="text" id="accountsSearchInput" placeholder="Pesquisar contas..." class="search-input">
+                            <button class="search-clear" id="accountsSearchClear" style="display: none;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Filtros Ativos -->
+                    <div class="active-filters" id="accountsActiveFilters" style="display: none;">
+                        <span class="active-filters-label">Filtros ativos:</span>
+                        <div class="active-filters-list" id="accountsActiveFiltersList"></div>
+                    </div>
+                </div>
+
+                <!-- Tabela Contas -->
+                <div class="table-container">
+                    <div class="loading-state hidden" id="accountsLoadingState">
+                        <div class="loading-spinner"></div>
+                        <p>Carregando contas...</p>
+                    </div>
+
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Nome da Conta</th>
+                                <th>Saldo Inicial</th>
+                                <th>Ações</th>                                
+                            </tr>
+                        </thead>
+                        <tbody id="accountsTableBody">
+                        </tbody>
+                    </table>
+
+                    <div class="empty-state hidden" id="accountsEmptyState">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="M21 21l-4.35-4.35"></path>
+                        </svg>
+                        <h3>Nenhuma conta encontrada</h3>
+                        <p>Tente ajustar os filtros ou adicionar novas contas.</p>
+                    </div>
+                </div>
+
+                <!-- Paginação Contas -->
+                <div class="pagination-container" id="accountsPaginationContainer">
+                    <div class="pagination-info" id="accountsPaginationInfo"></div>
+                    <div class="pagination-controls">
+                        <button class="pagination-btn" id="accountsFirstPageBtn">Primeira</button>
+                        <button class="pagination-btn" id="accountsPrevPageBtn">Anterior</button>
+                        <div class="pagination-pages" id="accountsPaginationPages"></div>
+                        <button class="pagination-btn" id="accountsNextPageBtn">Próxima</button>
+                        <button class="pagination-btn" id="accountsLastPageBtn">Última</button>
+                    </div>
+                    <div class="pagination-size">
+                        <label for="accountsPageSize">Itens por página:</label>
+                        <select id="accountsPageSize">
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Aba Cartões -->
+            <div class="tab-content" id="cards">
+                <div class="content-header">
+                    <h2>Gerenciar Cartões</h2>
+                    <button class="btn btn-primary" id="newCardBtn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                        Novo Cartão
+                    </button>
+                </div>
+
+                <!-- Filtros Cartões -->
+                <div class="filters-section">
+                    <div class="search-container">
+                        <div class="search-input-wrapper">
+                            <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <path d="M21 21l-4.35-4.35"></path>
+                            </svg>
+                            <input type="text" id="cardsSearchInput" placeholder="Pesquisar cartões..." class="search-input">
+                            <button class="search-clear" id="cardsSearchClear" style="display: none;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Filtros Ativos -->
+                    <div class="active-filters" id="cardsActiveFilters" style="display: none;">
+                        <span class="active-filters-label">Filtros ativos:</span>
+                        <div class="active-filters-list" id="cardsActiveFiltersList"></div>
+                    </div>
+                </div>
+
+                <!-- Tabela Cartões -->
+                <div class="table-container">
+                    <div class="loading-state hidden" id="cardsLoadingState">
+                        <div class="loading-spinner"></div>
+                        <p>Carregando cartões...</p>
+                    </div>
+
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Nome do Cartão</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cardsTableBody">
+                        </tbody>
+                    </table>
+
+                    <div class="empty-state hidden" id="cardsEmptyState">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="M21 21l-4.35-4.35"></path>
+                        </svg>
+                        <h3>Nenhum cartão encontrado</h3>
+                        <p>Tente ajustar os filtros ou adicionar novos cartões.</p>
+                    </div>
+                </div>
+
+                <!-- Paginação Cartões -->
+                <div class="pagination-container" id="cardsPaginationContainer">
+                    <div class="pagination-info" id="cardsPaginationInfo"></div>
+                    <div class="pagination-controls">
+                        <button class="pagination-btn" id="cardsFirstPageBtn">Primeira</button>
+                        <button class="pagination-btn" id="cardsPrevPageBtn">Anterior</button>
+                        <div class="pagination-pages" id="cardsPaginationPages"></div>
+                        <button class="pagination-btn" id="cardsNextPageBtn">Próxima</button>
+                        <button class="pagination-btn" id="cardsLastPageBtn">Última</button>
+                    </div>
+                    <div class="pagination-size">
+                        <label for="cardsPageSize">Itens por página:</label>
+                        <select id="cardsPageSize">
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Categoria -->
+    <div class="modal-overlay" id="categoryModalOverlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="categoryModalTitle">Nova Categoria</h3>
+                <button class="modal-close" id="closeCategoryModal">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <form id="categoryForm" class="modal-form">
+                <div class="form-group">
+                    <label for="categoryName">Nome da Categoria *</label>
+                    <input type="text" id="categoryName" name="nomeCategoria" required>
+                </div>
+                                <div class="form-group">
+                    <label for="categoryType">Tipo *</label>
+                    <select id="categoryType" name="tipo" required>
+                        <option value="">Selecione o tipo</option>
+                        <option value="Receita">Receita</option>
+                        <option value="Despesa">Despesa</option>
+                    </select>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" id="cancelCategoryModal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Mês -->
+    <div class="modal-overlay" id="monthModalOverlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="monthModalTitle">Novo Mês</h3>
+                <button class="modal-close" id="closeMonthModal">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <form id="monthForm" class="modal-form">
+                <div class="form-group">
+                    <label for="monthName">Nome do Mês *</label>
+                    <input type="text" id="monthName" name="nomeMes" required>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" id="cancelMonthModal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Conta Bancária -->
+    <div class="modal-overlay" id="accountModalOverlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="accountModalTitle">Nova Conta Bancária</h3>
+                <button class="modal-close" id="closeAccountModal">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <form id="accountForm" class="modal-form">
+                <div class="form-group">
+                    <label for="accountName">Nome da Conta *</label>
+                    <input type="text" id="accountName" name="nomeConta" required>
+                </div>
+                <div class="form-group" id="initialBalanceGroup">
+                    <label for="accountBalance">Saldo Inicial</label>
+                    <input type="number" id="accountBalance" name="saldoInicial" step="0.01" placeholder="0,00">
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" id="cancelAccountModal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Cartão -->
+    <div class="modal-overlay" id="cardModalOverlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="cardModalTitle">Novo Cartão</h3>
+                <button class="modal-close" id="closeCardModal">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <form id="cardForm" class="modal-form">
+                <div class="form-group">
+                    <label for="cardName">Nome do Cartão *</label>
+                    <input type="text" id="cardName" name="nomeCartao" required>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" id="cancelCardModal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmação de Exclusão -->
+    <div class="modal-overlay" id="deleteModalOverlay">
+        <div class="modal modal-small">
+            <div class="modal-header">
+                <h3>Confirmar Exclusão</h3>
+                <button class="modal-close" id="closeDeleteModal">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="delete-confirmation">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2">
+                        <path d="M3 6h18l-2 13H5L3 6z"></path>
+                        <path d="M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2"></path>
+                    </svg>
+                    <p>Tem certeza que deseja excluir <strong id="deleteItemName"></strong>?</p>
+                    <p class="delete-warning">Esta ação não pode ser desfeita.</p>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" id="cancelDeleteModal">Cancelar</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteModal">Excluir</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Container de Notificações -->
+    <div class="notification-container"></div>
+
+    <script src="../Js/gerenciamento.js"></script>
+</body>
+</html>

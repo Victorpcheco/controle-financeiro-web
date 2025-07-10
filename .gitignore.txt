@@ -1,0 +1,12 @@
+bin/
+obj/
+out/
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+.idea/
+*.cache
+*.tmp
+
