@@ -54,11 +54,10 @@ using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configura o Entity Framework com SQL Server
+// configuração do entity com o sql server
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Registra serviços relacionados ao gerenciamento de usuários
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<ILoginUsuarioUseCase, LoginUsuarioUseCase>();
 builder.Services.AddScoped<IRegistroUsuarioUseCase, RegistroUsuarioUseCase>();
@@ -67,7 +66,6 @@ builder.Services.AddScoped<IValidator<RegisterRequestDto>, RegisterRequestDtoVal
 builder.Services.AddScoped<IGerarToken, GerarToken>();
 builder.Services.AddScoped<IGerarRefreshToken, GerarRefreshToken>();
 
-// Registra todos os use cases e validadores para contas bancárias
 builder.Services.AddScoped<IContaBancariaRepository, ContaBancariaRepository>();
 builder.Services.AddScoped<IListarContasBancariasUseCase, ListarContasBancariasUseCase>();
 builder.Services.AddScoped<IBuscarContaBancariaUseCase, BuscarContaBancariaUseCase>();
@@ -77,7 +75,6 @@ builder.Services.AddScoped<IDeletarContaBancariaUseCase, DeletarContaBancariaUse
 builder.Services.AddScoped<IValidator<ContaBancariaCriarDto>, ContaBancariaCriarDtoValidator>();
 builder.Services.AddScoped<IValidator<ContaBancariaAtualizarDto>, ContaBancariaAtualizarDtoValidator>();
 
-// Registra serviços para gerenciamento de categorias de receitas/despesas
 builder.Services.AddScoped<ICategoriaRepository, CategoriaRepository>();
 builder.Services.AddScoped<IListarCategoriasUseCase, ListarCategoriasUseCase>();
 builder.Services.AddScoped<IBuscarCategoriaUseCase, BuscarCategoriaUseCase>();
@@ -86,7 +83,6 @@ builder.Services.AddScoped<IAtualizarCategoriaUseCase, AtualizarCategoriaUseCase
 builder.Services.AddScoped<IDeletarCategoriaUseCase, DeletarCategoriaUseCase>();
 builder.Services.AddScoped<IValidator<CategoriaCriarDto>, CategoriaRequestValidator>();
 
-// Registra serviços para gerenciamento de cartões de crédito/débito
 builder.Services.AddScoped<ICartaoRepository, CartaoRepository>();
 builder.Services.AddScoped<IListarCartaoPaginadoUseCase, ListarCartaoPaginadoUseCase>();
 builder.Services.AddScoped<IBuscarCartaoUseCase, BuscarCartaoUseCase>();
@@ -95,7 +91,6 @@ builder.Services.AddScoped<IAtualizarCartaoUseCase, AtualizarCartaoUseCase>();
 builder.Services.AddScoped<IDeletarCartaoUseCase, DeletarCartaoUseCase>();
 builder.Services.AddScoped<IValidator<CartaoCriarDto>, CartaoCriarDtoValidator>();
 
-// Registra serviços para controle de períodos/meses de referência
 builder.Services.AddScoped<IMesReferenciaRepository, MesReferenciaRepository>();
 builder.Services.AddScoped<IAtualizarMesReferenciaUseCase, AtualizarMesReferenciaUseCase>();
 builder.Services.AddScoped<ICriarMesReferenciaUseCase, CriarMesReferenciaUseCase>();
@@ -104,7 +99,6 @@ builder.Services.AddScoped<IBuscarMesReferenciaUseCase, BuscarMesReferenciaUseCa
 builder.Services.AddScoped<IListarMesReferenciaUseCase, ListarMesReferenciaUseCase>();
 builder.Services.AddScoped<IValidator<MesReferenciaCriarDto>, MesReferenciaCriarDtoValidator>();
 
-// Registra todos os use cases para gerenciamento de movimentacoes
 builder.Services.AddScoped<IListarMovimentacoesReceitasUseCase, ListarMovimentacoesReceitasUseCase>();
 builder.Services.AddScoped<IListarMovimentacoesUseCase, ListarMovimentacoesUseCase>();
 builder.Services.AddScoped<IValidator<MovimentacaoCriarDto>, MovimentacaoCriarDtoValidtor>();
@@ -113,7 +107,6 @@ builder.Services.AddScoped<IAtualizarMovimentacaoUseCase, AtualizarMovimentacaoU
 builder.Services.AddScoped<IBuscarMovimentacaoUseCase, BuscarMovimentacaoUseCase>();
 builder.Services.AddScoped<IDeletarMovimentacaoUseCase, DeletarMovimentacaoUseCase>();
 
-// Use cases para filtros específicos de movimentacoes
 builder.Services.AddScoped<IMovimentacoesRepository, MovimentacoesRepository>();
 builder.Services.AddScoped<IListarMovimentacoesPorDataUseCase, ListarMovimentacoesPorDataUseCase>();
 builder.Services.AddScoped<IListarMovimentacoesPorContaBancariaUseCase, ListarMovimentacoesPorContaBancariaUseCase>();
@@ -121,7 +114,6 @@ builder.Services.AddScoped<IListarMovimentacoesPorCategoriaUseCase, ListarMovime
 builder.Services.AddScoped<IListarMovimentacoesPorTituloUseCase, ListarMovimentacoesPorTituloUseCase>();
 builder.Services.AddScoped<IListarMovimentacoesPorCartaoUseCase, ListarMovimentacoesPorCartaoUseCase>();
 
-// Registra use cases da tela de dashboard
 builder.Services.AddScoped<IObterValorEmAbertoDespesasUseCase, ObterValorEmAbertoDespesasUseCase>();
 builder.Services.AddScoped<IObterValorEmAbertoReceitasUseCase, ObterValorEmAbertoReceitasUseCase>();
 builder.Services.AddScoped<IObterSaldoTotalUseCase, ObterSaldoTotalUseCase>();
@@ -129,7 +121,6 @@ builder.Services.AddScoped<IListarContasComSaldoTotalUseCase, ListarContasComSal
 builder.Services.AddScoped<IListarMovimentacoesEmAbertoUseCase, ListarMovimentacoesEmAbertoUseCase>();
 builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
 
-// Configura o AutoMapper para conversão entre DTOs e entidades
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddAutoMapper(typeof(ContaBancariaMapper));
 builder.Services.AddAutoMapper(typeof(CategoriaMapper));
@@ -140,33 +131,28 @@ builder.Services.AddAutoMapper(typeof(MesReferenciaMapper));
 // CORS 
 builder.Services.AddCors(options =>
 {
-    // POLÍTICA RESTRITIVA - Para ambiente de PRODUÇÃO
-    // Define exatamente quais origens, métodos e headers são permitidos
     options.AddPolicy("PoliticaRestritiva", policy =>
     {
         policy.WithOrigins(
-                // Adicione aqui os domínios reais do seu frontend
-                "http://localhost:3000",     // React local (HTTP)
-                "https://localhost:3000",    // React local (HTTPS)
-                "http://localhost:4200",     // Angular local (HTTP)
-                "https://localhost:4200",    // Angular local (HTTPS)
-                "https://localhost:5173",    // Vite (React/Vue)
-                "https://meuapp.com.br",     // Seu domínio de produção
-                "https://www.meuapp.com.br"  // Variação com www
+                // teste para conhecimento da configuração de CORS
+                "http://localhost:3000", 
+                "https://localhost:3000",
+                "http://localhost:4200",
+                "https://localhost:4200",
+                "https://localhost:5173",
+                "https://meuapp.com.br", 
+                "https://www.meuapp.com.br"
             )
-            .WithMethods("GET", "POST", "PUT", "DELETE", "PATCH") // Métodos HTTP permitidos
-            .WithHeaders("Content-Type", "Authorization", "Accept", "X-Requested-With") // Headers permitidos
-            .AllowCredentials(); // Permite envio de cookies e tokens de autenticação
+            .WithMethods("GET", "POST", "PUT", "DELETE", "PATCH")
+            .WithHeaders("Content-Type", "Authorization", "Accept", "X-Requested-With")
+            .AllowCredentials();
     });
-
-    // POLÍTICA PERMISSIVA - Para ambiente de DESENVOLVIMENTO
-    // Permite qualquer origem, método e header (mais flexível para desenvolvimento)
+    // Dev
     options.AddPolicy("PoliticaDesenvolvimento", policy =>
     {
-        policy.AllowAnyOrigin()   // Qualquer origem pode acessar
-            .AllowAnyMethod()     // Qualquer método HTTP
-            .AllowAnyHeader();    // Qualquer header
-        // IMPORTANTE: AllowCredentials() NÃO pode ser usado com AllowAnyOrigin()
+        policy.AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader();
     });
 
 });
@@ -178,7 +164,6 @@ builder.Services.AddScoped<IUserContext, UserContext>();
 // Configura a autenticação usando JSON Web Tokens
 builder.Services.AddAuthentication(options =>
 {
-    // Define JWT como esquema padrão de autenticação
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -186,27 +171,26 @@ builder.Services.AddAuthentication(options =>
     .AddJwtBearer(options =>
     {
         options.SaveToken = true;            // Salva o token para uso posterior
-        options.RequireHttpsMetadata = false; // Permite HTTP em desenvolvimento (mudar para true em produção)
+        options.RequireHttpsMetadata = false; // Permite HTTP em dev
 
         // Parâmetros de validação do token JWT
         options.TokenValidationParameters = new TokenValidationParameters
         {
-            ValidateIssuer = true,           // Valida quem emitiu o token
-            ValidateAudience = true,         // Valida para quem o token foi emitido
-            ValidateLifetime = true,         // Valida se o token não expirou
-            ValidateIssuerSigningKey = true, // Valida a assinatura do token
+            // Validações básicas do token
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
 
-            // Valores obtidos do appsettings.json
             ValidIssuer = builder.Configuration["JWT:Issuer"],
             ValidAudience = builder.Configuration["JWT:Audience"],
             IssuerSigningKey = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"]!)
             ),
-            ClockSkew = TimeSpan.Zero // Remove tolerância de tempo (mais seguro)
+            ClockSkew = TimeSpan.Zero
         };
     });
 
-// Configura os controllers da API e opções de serialização JSON
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
@@ -214,37 +198,37 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
     });
 
-// Gera documentação automática da API
+// doc automática da API com Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Swagger apenas em desenvolvimento
+// Swagger apenas em dev
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();         // Gera a especificação OpenAPI
-    app.UseSwaggerUI();       // Interface gráfica do Swagger
+    app.UseSwagger();    // Gera a especificação OpenAPI
+    app.UseSwaggerUI(); // Interface gráfica do Swagger
 }
 
 // Redireciona HTTP para HTTPS
 app.UseHttpsRedirection();
 
-// CORS deve vir CEDO no pipeline, antes da autenticação
+// Configura o CORS
 if (app.Environment.IsDevelopment())
 {
-    app.UseDeveloperExceptionPage(); // Página de erro detalhada em desenvolvimento
-    app.UseCors("PoliticaDesenvolvimento"); // Política permissiva para desenvolvimento
+    app.UseDeveloperExceptionPage(); 
+    app.UseCors("PoliticaDesenvolvimento"); 
 }
 else
 {
-    app.UseCors("PoliticaRestritiva"); // Política restritiva para produção
+    app.UseCors("PoliticaRestritiva"); 
 }
 
-// middleware customizado para tratamento de erros
+// middleware para tratamento de erros
 app.UseMiddleware<ControleFinanceiro.API.Middlewares.ExceptionMiddleware>();
 
-// Authentication sempre antes de Authorization
+// Authentication sempre antes de Authorization 
 app.UseAuthentication();
 app.UseAuthorization();  
 
@@ -252,33 +236,3 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
-
-// ===============================================
-// RESUMO DAS CONFIGURAÇÕES CORS:
-// ===============================================
-/*
- * DESENVOLVIMENTO:
- * - Permite qualquer origem, método e header
- * - Mais flexível para testes
- * - NÃO permite credentials com AllowAnyOrigin
- * 
- * PRODUÇÃO:
- * - Apenas origens específicas são permitidas
- * - Métodos HTTP limitados
- * - Headers controlados
- * - Permite credentials (cookies, tokens)
- * 
- * ORDEM NO PIPELINE:
- * 1. HTTPS Redirection
- * 2. CORS (deve vir cedo)
- * 3. Middlewares customizados
- * 4. Authentication
- * 5. Authorization
- * 6. Controllers
- * 
- * DICAS IMPORTANTES:
- * - Sempre teste CORS em diferentes ambientes
- * - Use políticas restritivas em produção
- * - AllowCredentials + AllowAnyOrigin = ERRO
- * - CORS não é segurança, é convenção do browser
- */
